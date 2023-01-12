@@ -1,0 +1,705 @@
+<div layout="column">
+    <h2>General</h2>
+    <div layout="column" class="no-margin" flex>
+        <md-input-container class="no-margin"  flex-gt-sm>
+            <label>构建任务名称</label>
+            <!--<input name="jobName" ng-model="item.name" required ng-disabled="isEdit">-->
+            <input name="jobName" ng-model="item.name" required>
+        </md-input-container>
+
+        <md-input-container  flex-gt-sm>
+            <label>描述</label>
+            <textarea name="description" ng-model="item.description" rows="3"></textarea>
+        </md-input-container>
+
+        <md-input-container>
+            <md-checkbox ng-model="buildDiscard">
+                丢弃旧的构建
+            </md-checkbox>
+        </md-input-container>
+    </div>
+
+    <div ng-repeat="property in item.properties" class="no-margin">
+        <div ng-if="property.type === 'BUILD_DISCARDER' && buildDiscard" layout="column">
+            <md-input-container flex style="margin-top: 10px">
+                <label>构建保持天数</label>
+                <input name="daysToKeep" ng-model="property.strategy.daysToKeep"
+                       ng-pattern="/^([0-9]+)|-1$/">
+                <div ng-messages="jenkinsAddForm.daysToKeep.$error">
+                    <div ng-message="pattern">只能正整数或-1(永久).</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container flex>
+                <label>构建保持个数</label>
+                <input name="numToKeep" ng-model="property.strategy.numToKeep"
+                       ng-pattern="/^([0-9]+)|-1$/">
+                <div ng-messages="jenkinsAddForm.numToKeep.$error">
+                    <div ng-message="pattern">只能正整数或-1(不限制).</div>
+                </div>
+            </md-input-container>
+
+            <div id="buildDiscarder" flex layout="column">
+                <md-input-container >
+                    <label>发布包保留天数</label>
+                    <input name="daysToKeep"
+                           ng-model="property.strategy.artifactDaysToKeep"
+                           ng-pattern="/^([0-9]+)|-1$/">
+                    <div ng-messages="jenkinsAddForm.artifactDaysToKeep.$error">
+                        <div ng-message="pattern">只能正整数或-1(永久).</div>
+                    </div>
+                </md-input-container>
+                <md-input-container flex="25%">
+                    <label>发布包最大保留个数</label>
+                    <input name="numToKeep" ng-model="property.strategy.artifactNumToKeep"
+                           ng-pattern="/^([0-9]+)|-1$/">
+                    <div ng-messages="jenkinsAddForm.artifactNumToKeep.$error">
+                        <div ng-message="pattern">只能正整数或-1(不限制).</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <show-more-button show-btn-name="高级..." selector="#buildDiscarder" init-status="false"/>
+        </div>
+    </div>
+
+    <!--  新增参数化构建参数  -->
+    <div layout="column" class="no-margin" flex>
+        <md-input-container>
+            <md-checkbox ng-model="item.parameterizedBuild">
+                参数化构建过程
+            </md-checkbox>
+        </md-input-container>
+    </div>
+
+    <div ng-repeat="property in item.properties" class="no-margin">
+        <div ng-if="property.type === 'PARAMETERS_DEFINITION' && item.parameterizedBuild" layout="column">
+            <div ng-repeat="parameter in property.parameterDefinitions" class="no-margin">
+                <string-parameter parameter="parameter" parameters="property.parameterDefinitions" title="字符参数" closeable="true" ng-if="parameter.type === 'STRING_PARAMETER' "/>
+                <password-parameter parameter="parameter" parameters="property.parameterDefinitions" title="密码参数" closeable="true" ng-if="parameter.type === 'PASSWORD_PARAMETER' "/>
+                <boolean-parameter parameter="parameter" parameters="property.parameterDefinitions" title="布尔值参数" closeable="true" ng-if="parameter.type === 'BOOLEAN_PARAMETER' "/>
+                <file-parameter parameter="parameter" parameters="property.parameterDefinitions" title="文件参数" closeable="true" ng-if="parameter.type === 'FILE_PARAMETER' "/>
+                <text-parameter parameter="parameter" parameters="property.parameterDefinitions" title="文本参数" closeable="true" ng-if="parameter.type === 'TEXT_PARAMETER' "/>
+                <run-parameter parameter="parameter" parameters="property.parameterDefinitions" filters="filters" filter="ALL" title="运行时参数" closeable="true" ng-if="parameter.type === 'RUN_PARAMETER' "/>
+                <choice-parameter parameter="parameter" parameters="property.parameterDefinitions" title="选项参数" closeable="true" ng-if="parameter.type === 'CHOICE_PARAMETER' "/>
+            </div>
+            <md-input-container flex="20" layout-align="start center">
+                <md-menu class="menu-button" style="margin: 0" has-permissions="JENKINS_JOB:READ+CREATE">
+                    <md-button aria-label="添加参数" class="md-primary" ng-click="$mdMenu.open($event)">
+                        <md-icon>add_circle_outline</md-icon>
+                        添加参数
+                    </md-button>
+                    <md-menu-content>
+                        <!--                <md-menu-item>-->
+                        <!--                    <md-button ng-click="addBuildStep('SHELL','builders')">-->
+                        <!--                        凭据参数-->
+                        <!--                    </md-button>-->
+                        <!--                </md-menu-item>-->
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('STRING_PARAMETER','parameterDefinitions')">
+                                字符参数
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('CHOICE_PARAMETER','parameterDefinitions')">
+                                选项参数
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('BOOLEAN_PARAMETER','parameterDefinitions')">
+                                布尔值参数
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('TEXT_PARAMETER','parameterDefinitions')">
+                                文本参数
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('PASSWORD_PARAMETER','parameterDefinitions')">
+                                密码参数
+                            </md-button>
+                        </md-menu-item>
+
+<!--                        <md-menu-item>-->
+<!--                            <md-button ng-click="addParameterDefinition('FILE_PARAMETER','parameterDefinitions')">-->
+<!--                                文件参数-->
+<!--                            </md-button>-->
+<!--                        </md-menu-item>-->
+
+<!--                        <md-menu-item>-->
+<!--                            <md-button ng-click="addParameterDefinition('RUN_PARAMETER','parameterDefinitions')">-->
+<!--                                运行时参数-->
+<!--                            </md-button>-->
+<!--                        </md-menu-item>-->
+
+                    </md-menu-content>
+                </md-menu>
+            </md-input-container>
+        </div>
+    </div>
+
+
+
+
+    <div layout="column" class="no-margin" flex>
+        <md-input-container flex>
+            <md-checkbox ng-model="item.disabled">关闭构建</md-checkbox>
+        </md-input-container>
+        <md-input-container flex>
+            <md-checkbox ng-model="item.concurrentBuild">在必要时并发构建</md-checkbox>
+        </md-input-container>
+    </div>
+
+    <md-input-container flex="100">
+        <label>选择JDK</label>
+        <md-select name="jdk" ng-model="item.jdk">
+            <md-option ng-repeat="jdk in jdkVersions" value="{{jdk.paramValue}}">
+                {{jdk.paramValue}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+
+    <div layout="column" class="no-margin" flex>
+        <md-input-container>
+            <label>只在特定节点上运行</label>
+            <input ng-model="item.assignedNode"/>
+        </md-input-container>
+    </div>
+
+    <div id="propElem" layout="column" class="no-margin" flex>
+        <md-input-container>
+            <label>安静期(秒钟)</label>
+            <input ng-model="item.quietPeriod" type="number" min="0"/>
+        </md-input-container>
+
+        <md-input-container>
+            <label>SCM 签出重试次数</label>
+            <input ng-model="item.scmCheckoutRetryCount" type="number" min="0"/>
+        </md-input-container>
+
+        <md-input-container>
+            <md-checkbox ng-model="item.blockBuildWhenUpstreamBuilding">
+                该项目的上游项目正在构建时阻止该项目构建
+            </md-checkbox>
+        </md-input-container>
+
+        <md-input-container>
+            <md-checkbox ng-model="item.blockBuildWhenDownstreamBuilding">
+                该项目的下游项目正在构建时阻止该项目构建
+            </md-checkbox>
+        </md-input-container>
+
+        <md-input-container>
+            <md-checkbox ng-model="item.keepDependencies">
+                保留构建的依赖日志
+            </md-checkbox>
+        </md-input-container>
+    </div>
+    <show-more-button show-btn-name="高级..." init-status="false" selector="#propElem"/>
+
+    <h2>源码管理</h2>
+    <div layout-gt-sm="row">
+        <md-input-container  flex-gt-sm>
+            <label>选择源码管理类型</label>
+            <md-select name="scmType" ng-model="item.scm.type" ng-change="changeScm()">
+                <md-option ng-repeat="scmType in scmTypes" value="{{scmType.id}}">
+                    {{scmType.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+
+    <!--GIT-->
+    <div class="jenkins-svn" layout="column" ng-if="item.scm.type === 'SCM_GIT'">
+        <div class="jenkins-svn no-margin" ng-repeat="userRemoteConfig in item.scm.userRemoteConfigs" layout="column">
+            <md-input-container  flex-gt-sm style="margin-top: 14px">
+                <label>源码URL</label>
+                <input name="url" ng-model="userRemoteConfig.url" required>
+                <div ng-messages="jenkinsAddForm.url.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-input-container  flex>
+                <label>credentialID</label>
+                <md-select name="credentialsId" ng-model="userRemoteConfig.credentialsId">
+                    <md-option ng-repeat="credential in credentials" value="{{credential.id}}">
+                        {{credential.displayName}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+            <div layout="row" style="margin-top: 14px">
+                <md-input-container  flex>
+                    <label>Name</label>
+                    <input name="repoName" ng-model="userRemoteConfig.name">
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>Refspec</label>
+                    <input name="repoRefspec" ng-model="userRemoteConfig.refspec">
+                </md-input-container>
+                <md-button class="md-primary" flex="20"
+                           ng-click="deleteItem(item.scm.userRemoteConfigs,userRemoteConfig)"
+                           ng-disabled="item.scm.userRemoteConfigs.length === 1">
+                    <aria-label>删除仓库</aria-label>
+                    <md-icon>
+                        delete
+                    </md-icon>
+                </md-button>
+            </div>
+        </div>
+        <div layout="row" layout-align="end center">
+            <md-button class="md-primary md-raised" flex="10" ng-click="addRepo()">
+                新增仓库
+            </md-button>
+        </div>
+        <div class="jenkins-svn" layout-gt-sm="row" ng-repeat="branch in item.scm.branches">
+            <md-input-container  flex-gt-sm>
+                <label>分支</label>
+                <input name="branch" ng-model="branch.name" required>
+                <div ng-messages="jenkinsAddForm.branch.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-button class="md-primary" ng-click="deleteItem(item.scm.branches,branch)"
+                       ng-disabled="item.scm.branches.length === 1">
+                <aria-label>删除分支</aria-label>
+                <md-icon>
+                    delete
+                </md-icon>
+            </md-button>
+        </div>
+        <div layout="row" layout-align="end center" ng-if="item.scm.userRemoteConfigs">
+            <md-button class="md-primary md-raised" flex="10" ng-click="addBranch()">
+                新增分支
+            </md-button>
+        </div>
+    </div>
+    <!--SVN-->
+    <div class="jenkins-svn" layout="column" ng-if="item.scm.type === 'SCM_SVN'">
+        <div class="jenkins-svn no-margin" ng-repeat="module in item.scm.locations" layout="column">
+            <md-input-container  flex-gt-sm style="margin-top: 14px">
+                <label>SVN仓库地址</label>
+                <input name="remote" ng-model="module.remote" >
+                <div ng-messages="jenkinsAddForm.remote.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-input-container  flex-gt-sm>
+                <label>credentialID</label>
+                <md-select name="credentialsId" ng-model="module.credentialsId">
+                    <md-option ng-repeat="credential in credentials" value="{{credential.id}}">
+                        {{credential.displayName}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container  flex-gt-sm style="margin-top: 14px">
+                <label>Local module directory</label>
+                <input name="local" ng-model="module.local">
+            </md-input-container>
+            <md-input-container  flex-gt-sm>
+                <label>Repository depth</label>
+                <md-select name="depthOption" ng-model="module.depthOption">
+                    <md-option ng-repeat="depthOption in depthOptions" value="{{depthOption.id}}">
+                        {{depthOption.name}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container  flex-gt-sm>
+                <md-switch aria-label="Active"  ng-model="module.ignoreExternalsOption">
+                    Ignore externals
+                </md-switch>
+            </md-input-container>
+            <div layout-gt-sm="row">
+                <md-input-container  flex>
+                    <md-switch aria-label="Active"  ng-model="module.cancelProcessOnExternalsFail">
+                        Cancel process on externals fail
+                    </md-switch>
+                </md-input-container>
+                <md-button class="md-primary" flex="20"
+                           ng-click="deleteItem(item.scm.locations,module)"
+                           ng-disabled="item.scm.locations.length === 1">
+                    <aria-label>删除模块</aria-label>
+                    <md-icon>
+                        delete
+                    </md-icon>
+                </md-button>
+            </div>
+        </div>
+        <div layout="row" layout-align="end center">
+            <md-button class="md-primary md-raised" flex="10" ng-click="addModule()">
+                新增模块
+            </md-button>
+        </div>
+        <div class="jenkins-svn no-margin" ng-if="item.scm.locations" layout="column">
+            <md-input-container  flex style="margin-top: 14px">
+                <label>Check-out Strategy</label>
+                <md-select name="workspaceUpdater" ng-model="item.scm.workspaceUpdater.classStr">
+                    <md-option ng-repeat="workspaceUpdater in workspaceUpdaters"
+                               value="{{workspaceUpdater.id}}">
+                        {{workspaceUpdater.name}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container  flex>
+                <md-switch aria-label="Active"  ng-model="item.scm.quietOperation">
+                    Quiet check-out
+                </md-switch>
+            </md-input-container>
+            <div id="svnElem" layout="column">
+                <md-input-container  flex>
+                    <md-switch aria-label="Active"  ng-model="item.scm.ignoreDirPropChanges">
+                        Ignore Property Changes on directories
+                    </md-switch>
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>Excluded Regions</label>
+                    <textarea ng-model="item.scm.excludedRegions" ></textarea>
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>Included Regions</label>
+                    <textarea ng-model="item.scm.includedRegions" ></textarea>
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>Excluded Users</label>
+                    <textarea ng-model="item.scm.excludedUsers" ></textarea>
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>Excluded Commit Messages</label>
+                    <textarea ng-model="item.scm.excludedCommitMessages" ></textarea>
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>Exclusion revprop name</label>
+                    <input ng-model="item.scm.excludedRevprop" >
+                </md-input-container>
+                <md-input-container  flex>
+                    <md-switch aria-label="Active"  ng-model="item.scm.filterChangelog">
+                        Filter changelog
+                    </md-switch>
+                </md-input-container>
+            </div>
+            <show-more-button selector="#svnElem" show-btn-name="高级..." init-status="false"/>
+        </div>
+    </div>
+
+    <h2>构建触发器</h2>
+    <div layout="column" class="no-margin">
+        <md-input-container>
+            <md-checkbox ng-model="triggerRemoteBuild" ng-change="triggerRemoteBuildChange()">触发远程构建(例如,使用脚本)</md-checkbox>
+        </md-input-container>
+        <md-input-container ng-if="triggerRemoteBuild" style="margin-top: 10px">
+            <label>身份验证令牌</label>
+            <input ng-model="item.authToken">
+        </md-input-container>
+    </div>
+
+    <div layout-gt-sm="column" class="no-margin" flex>
+        <md-input-container  flex-gt-sm>
+            <md-checkbox ng-model="buildAfterOthers"> <!--aria-label="Active"  -->
+                其他任务构建后触发
+            </md-checkbox>
+        </md-input-container>
+    </div>
+    <div ng-repeat="trigger in item.triggers">
+        <build-trigger job-items="jobItems" style-class="application-setting" other-jobs="trigger.upstreamProjects"
+                       ng-if="trigger.type === 'REVERSE_BUILD_TRIGGER' && buildAfterOthers" thresholds="thresholds"
+                       threshold="trigger.threshold" closeable="false"/>
+    </div>
+
+    <div layout="column" class="no-margin" flex>
+        <div layout-gt-sm="row">
+            <md-input-container  flex-gt-sm>
+                <md-checkbox ng-model="cronBuild"> <!--aria-label="Active"  -->
+                    定时构建
+                </md-checkbox>
+            </md-input-container>
+        </div>
+        <div ng-repeat="trigger in item.triggers">
+            <div layout-gt-sm="row" ng-if="trigger.type === 'TIMER_TRIGGER' && cronBuild">
+                <md-input-container  flex-gt-sm style="margin-top: 10px">
+                    <label>JENKINS定时构建表达式</label>
+                    <input name="spec" ng-model="trigger.spec">
+                    <div ng-messages="jenkinsAddForm.spec.$error">
+                        <div ng-message="required">必填.</div>
+                    </div>
+                </md-input-container>
+            </div>
+        </div>
+    </div>
+
+    <!--Added gitlab支持-->
+    <div layout="column" class="no-margin" flex>
+        <div layout-gt-sm="row">
+            <md-input-container  flex-gt-sm>
+                <md-checkbox ng-model="buildOnPushGitLab"> <!--aria-label="Active"  -->
+                    当一个变更推送到gitlab后自动构建 GitLab 地址[{{webhookUrl}}]
+                </md-checkbox>
+            </md-input-container>
+        </div>
+
+
+    <!--flex="20" layout-align="start center"-->
+        <div ng-repeat="trigger in item.triggers" class="no-margin" style="padding-left: 20px">
+            <div layout-gt-sm="column" ng-if="trigger.type === 'GITLAB_PUSH_TRIGGER' && buildOnPushGitLab" >
+                <!--                <md-input-container  flex-gt-sm style="margin-top: 10px">-->
+                <!--                    <label>推送事件</label>-->
+                <!--                    <input name="spec" ng-model="trigger.spec">-->
+                <!--                    <div ng-messages="jenkinsAddForm.spec.$error">-->
+                <!--                        <div ng-message="required">必填.</div>-->
+                <!--                    </div>-->
+                <!--                </md-input-container>-->
+
+
+                <md-input-container flex style="margin-top: 10px">
+                    <md-checkbox ng-model="trigger.triggerOnPush">
+                        推送事件（Push Events）
+                    </md-checkbox>
+                </md-input-container>
+                <md-input-container flex>
+                    <md-checkbox ng-model="trigger.triggerToBranchDeleteRequest">
+                        假如删除分支时推送事件（Push Events in case of branch delete）
+                    </md-checkbox>
+                </md-input-container>
+                <md-input-container flex>
+                    <md-checkbox ng-model="trigger.triggerOnMergeRequest">
+                        开启合并请求事件（Opened Merge Request Events）
+                    </md-checkbox>
+                </md-input-container>
+                <md-input-container flex>
+                    <md-checkbox ng-model="trigger.triggerOnlyIfNewCommitsPushed">
+                        仅仅在新的提交推送的时候构建（Build only if new commits were pushed to Merge Request）
+                    </md-checkbox>
+                </md-input-container>
+                <md-input-container flex>
+                    <md-checkbox ng-model="trigger.triggerOnAcceptedMergeRequest">
+                        接受合并请求事件时（Accepted Merge Request Events）
+                    </md-checkbox>
+                </md-input-container>
+                <md-input-container flex>
+                    <md-checkbox ng-model="trigger.triggerOnClosedMergeRequest">
+                        关闭合并请求事件（Closed Merge Request Events）
+                    </md-checkbox>
+                </md-input-container>
+
+                <md-input-container  flex-gt-sm style="margin-top: 10px">
+                    <label>开启合并请求后是否允许重新构建(Rebuild open Merge Requests)</label>
+                    <!--ng-change=""-->
+                    <md-select name="OnPushOperation" ng-model="trigger.triggerOpenMergeRequestOnPush">
+                        <md-option ng-repeat="operation in onPushOperations" value="{{operation.id}}">
+                            {{operation.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container flex>
+                    <md-checkbox ng-model="trigger.triggerOnApprovedMergeRequest">
+                        同意合并请求（Approved Merge Requests (EE-only)）
+                    </md-checkbox>
+                </md-input-container>
+                <md-input-container flex>
+                    <md-checkbox ng-model="trigger.triggerOnNoteRequest">
+                        NoteRequest（Comments）
+                    </md-checkbox>
+                </md-input-container>
+
+                <md-input-container  flex>
+                    <label>Comment (regex) for triggering a build</label>
+                    <input ng-model="trigger.noteRegex" > <!--Jenkins please retry a build-->
+                </md-input-container>
+
+
+                <div id="gitLabTriggersAdvanced" flex layout="column">
+
+                    <md-input-container flex>
+                        <md-checkbox ng-model="trigger.ciSkip">
+                            Enable [ci-skip]
+                        </md-checkbox>
+                    </md-input-container>
+
+                    <md-input-container flex>
+                        <md-checkbox ng-model="trigger.skipWorkInProgressMergeRequest">
+                            Ignore WIP Merge Requests
+                        </md-checkbox>
+                    </md-input-container>
+
+                    <md-input-container flex>
+                        <label>Labels that forces builds if they are added (comma-separated)</label>
+                        <input ng-model="trigger.labelsThatForcesBuildIfAdded" >
+                    </md-input-container>
+
+                    <md-input-container flex>
+                        <md-checkbox ng-model="trigger.setBuildDescription">
+                            Set build description to build cause (eg. Merge request or Git Push )
+                        </md-checkbox>
+                    </md-input-container>
+
+                    <md-input-container flex>
+                        <md-checkbox ng-model="trigger.triggerOnPipelineEvent">
+                            Build on successful pipeline events
+                        </md-checkbox>
+                    </md-input-container>
+
+                    <md-input-container flex>
+                        <label>Pending build name for pipeline</label>
+                        <input ng-model="trigger.pendingBuildName" >
+                    </md-input-container>
+
+                    <md-input-container flex>
+                        <md-checkbox ng-model="trigger.cancelPendingBuildsOnUpdate">
+                            Cancel pending merge request builds on update
+                        </md-checkbox>
+                    </md-input-container>
+
+                    Allowed branches
+                    <div class="md-block" flex-gt-sm>
+                        <md-radio-group ng-model="trigger.branchFilterType">
+                            <md-radio-button class="md-primary" value="All">Allow all branches to trigger this job</md-radio-button>
+                            <md-radio-button class="md-primary" value="NameBasedFilter">Filter branches by name</md-radio-button>
+                            <div ng-if="trigger.branchFilterType == 'NameBasedFilter'" class="no-margin" layout-gt-sm="column" style="padding-left: 20px">
+                                <md-input-container flex>
+                                    <label>Include</label>
+                                    <input ng-model="trigger.includeBranchesSpec" >
+                                </md-input-container>
+                                <md-input-container flex>
+                                    <label>Exclude</label>
+                                    <input ng-model="trigger.excludeBranchesSpec" >
+                                </md-input-container>
+                            </div>
+                            <md-radio-button class="md-primary" value="RegexBasedFilter">Filter branches by regex</md-radio-button>
+                            <div ng-if="trigger.branchFilterType == 'RegexBasedFilter'" class="no-margin" layout-gt-sm="column" style="padding-left: 20px">
+                                <md-input-container flex>
+                                    <label>Source Branch Regex</label>
+                                    <input ng-model="trigger.sourceBranchRegex" >
+                                </md-input-container>
+                                <md-input-container flex>
+                                    <label>Target Branch Regex</label>
+                                    <input ng-model="trigger.targetBranchRegex" >
+                                </md-input-container>
+                            </div>
+
+                        </md-radio-group>
+                    </div>
+
+                    <md-input-container  flex-gt-sm>
+                        <!--ng-if和ng-repeat都会生成单独的作用域 其中的ng-model需要通过$parent外部引用控制器的作用域 不然值在ng-repeat的作用域中会混乱-->
+                        <md-checkbox ng-model="$parent.$parent.labelFilterEnable"> <!--aria-label="Active" -->
+                            Filter merge request by label
+                        </md-checkbox>
+                    </md-input-container>
+                    <div ng-if="$parent.$parent.labelFilterEnable" class="no-margin" layout-gt-sm="column" style="padding-left: 20px">
+                        <md-input-container flex>
+                            <label>Include</label>
+                            <input ng-model="trigger.mergeRequestLabelFilterConfig.include" >
+                        </md-input-container>
+                        <md-input-container flex>
+                            <label>Exclude</label>
+                            <input ng-model="trigger.mergeRequestLabelFilterConfig.exclude" >
+                        </md-input-container>
+                    </div>
+
+
+                    <md-input-container flex>
+                        <label>Secret token</label>
+                        <input ng-model="trigger.secretToken" readonly>
+                    </md-input-container>
+                    <div layout="row" layout-align="end center">
+                        <md-button class="md-primary md-raised" flex="10" ng-click="generateSecretToken()">
+                            生成
+                        </md-button>
+                        <md-button class="md-primary md-raised" flex="10" ng-click="trigger.secretToken = null">
+                            清除
+                        </md-button>
+                    </div>
+
+                </div>
+                <show-more-button show-btn-name="高级..." selector="#gitLabTriggersAdvanced" init-status="false"/>
+
+    <!--            <md-input-container flex>-->
+    <!--                -->
+    <!--            </md-input-container>-->
+
+            </div>
+        </div>
+
+    <!--    <div ng-repeat="property in item.properties" class="no-margin">-->
+    <!--        <div ng-if="property.type === 'BUILD_DISCARDER' && buildDiscard" layout="column">-->
+    <!--            <md-input-container flex style="margin-top: 10px">-->
+
+    </div>
+
+    <h2>构建环境</h2>
+    <!--Added 构建前清空工作目录功能-->
+    <div layout="column" class="no-margin" flex>
+        <md-input-container  flex-gt-sm>
+            <md-checkbox aria-label="Active" ng-model="withPreBuildCleanUp">
+                构建前清空工作目录
+            </md-checkbox>
+        </md-input-container>
+        <div id="preBuildCleanUp">
+            <div ng-repeat="buildWrapper in item.buildWrappers" class="no-margin">
+                <div ng-if="buildWrapper.type === 'PRE_BUILD_CLEANUP' && withPreBuildCleanUp" layout="column" style="padding-left: 20px">
+                    <label>要删除的文件的模式</label>
+                    <div ng-repeat="p in buildWrapper.patterns" class="no-margin">
+                        <pattern-div parameter="p" parameters="buildWrapper.patterns" closeable="true"/>
+                    </div>
+                    <div layout="row">
+                        <md-button class="md-raised md-primary" ng-click="addPattern(buildWrapper)">
+                            新增
+                        </md-button>
+                    </div>
+                    <md-input-container  flex-gt-sm>
+                        <md-checkbox aria-label="Active" ng-model="buildWrapper.deleteDirs">
+                            是否应用在目录上
+                        </md-checkbox>
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>检查参数</label>
+                        <input name="name" ng-model="buildWrapper.cleanupParameter" />
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>外部删除命令</label>
+                        <input name="name" ng-model="buildWrapper.externalDelete" />
+                    </md-input-container>
+                    <md-input-container  flex-gt-sm>
+                        <md-checkbox aria-label="Active" ng-model="buildWrapper.disableDeferredWipeout">
+                            是否启用延迟清除
+                        </md-checkbox>
+                    </md-input-container>
+                </div>
+            </div>
+        </div>
+        <show-more-button show-btn-name="高级..." selector="#preBuildCleanUp" init-status="false"/>
+    </div>
+
+
+
+    <!--Added Ant支持-->
+    <div layout-gt-sm="column" class="no-margin">
+        <md-input-container  flex-gt-sm>
+            <md-checkbox aria-label="Active" ng-model="withAnt">
+                使用ant插件
+            </md-checkbox>
+        </md-input-container>
+    <div ng-repeat="buildWrapper in item.buildWrappers" class="no-margin">
+        <div ng-if="buildWrapper.type === 'ANT_WRAPPER' && withAnt" layout="column">
+
+            <md-input-container flex style="margin-top: 20px">
+                <label>选择Ant版本</label>
+                <!--后续可改进 ng-init="buildWrapper.installation = antVersions[0]"-->
+                <md-select name="ant" ng-init="buildWrapper.installation = buildWrapper.installation === null ? 'Default' : buildWrapper.installation" ng-model="buildWrapper.installation">
+                    <md-option ng-repeat="ant in antVersions" value="{{ant.paramValue}}">
+                        {{ant.paramValue}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container flex="100" style="margin-top: 20px">
+                <label>选择JDK</label>
+                <md-select name="jdk" ng-init="buildWrapper.jdk = buildWrapper.jdk === null ? 'Default' : buildWrapper.jdk" ng-model="buildWrapper.jdk">
+                    <md-option ng-repeat="jdk in antJdkVersions" value="{{jdk.paramValue}}">
+                        {{jdk.paramValue}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+
+        </div>
+    </div>
+    </div>
+</div>

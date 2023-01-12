@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtVariableMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.VariableDTO"
+               extends="com.fit2cloud.devops.base.mapper.VariableMapper.BaseResultMap">
+        <result column="resource_name" property="resourceName" jdbcType="VARCHAR"/>
+        <result column="workspace_name" property="workspaceName" jdbcType="VARCHAR"/>
+        <result column="organization_name" property="organizationName" jdbcType="VARCHAR"/>
+        <result column="workspace_id" property="workspaceId" jdbcType="VARCHAR"/>
+        <result column="organization_id" property="organizationId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectVariables" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT *
+        FROM (SELECT
+        devops_variable.*,
+        devops_cluster.name resource_name,
+        workspace.id workspace_id,
+        organization.id organization_id,
+        workspace.name workspace_name,
+        organization.name organization_name
+        FROM devops_variable
+        JOIN devops_cluster ON resource_id = devops_cluster.id
+        JOIN workspace ON devops_cluster.workspace_id = workspace.id
+        JOIN organization ON workspace.organization_id = organization.id
+        WHERE resource_type = 'cluster'
+        UNION
+        SELECT
+        devops_variable.*,
+        devops_cluster_role.name resource_name,
+        workspace.id workspace_id,
+        organization.id organization_id,
+        workspace.name workspace_name,
+        organization.name organization_name
+        FROM devops_variable
+        JOIN devops_cluster_role ON resource_id = devops_cluster_role.id
+        JOIN devops_cluster ON devops_cluster_role.cluster_id = devops_cluster.id
+        JOIN workspace ON devops_cluster.workspace_id = workspace.id
+        JOIN organization ON workspace.organization_id = organization.id
+        WHERE resource_type = 'clusterRole'
+        UNION
+        SELECT
+        devops_variable.*,
+        devops_cloud_server.instance_name resource_name,
+        workspace.id workspace_id,
+        organization.id organization_id,
+        workspace.name workspace_name,
+        organization.name organization_name
+        FROM devops_variable
+        JOIN devops_cloud_server_devops ON devops_cloud_server_devops.id = resource_id
+        JOIN devops_cloud_server
+        ON devops_cloud_server_devops.id = devops_cloud_server.id AND devops_cloud_server.instance_status != 'Deleted'
+        JOIN devops_cluster_role ON devops_cloud_server_devops.cluster_role_id = devops_cluster_role.id
+        JOIN devops_cluster ON devops_cluster_role.cluster_id = devops_cluster.id
+        JOIN workspace ON devops_cluster.workspace_id = workspace.id
+        JOIN organization ON workspace.organization_id = organization.id
+        WHERE resource_type = 'cloudServer') variable
+        <where>
+            <if test="workspaceId != null ">
+                and variable.workspace_id=#{workspaceId}
+            </if>
+            <if test="organizationId != null ">
+                and variable.organization_id=#{organizationId}
+            </if>
+            <if test="clusterId != null ">
+                and (variable.resource_type='cluster' and variable.resource_id=#{clusterId})
+            </if>
+            <if test="clusterRoleId != null ">
+                and (variable.resource_type='clusterRole' and variable.resource_id=#{clusterRoleId})
+            </if>
+            <if test="cloudServerId != null ">
+                and (variable.resource_type='cloudServer' and variable.resource_id=#{cloudServerId})
+            </if>
+
+            <if test="resourceIds !=null ">
+                and variable.resource_id IN
+                <foreach collection="resourceIds" item="resourceId" separator="," open="(" close=")">
+                    #{resourceId, jdbcType=INTEGER}
+                </foreach>
+            </if>
+            <if test="name !=null ">
+                and variable.name  like #{name}
+            </if>
+        </where>
+        <if test="sort != null">
+            order by ${sort}
+        </if>
+        <if test="sort == null">
+            order BY variable.created_time DESC
+        </if>
+    </select>
+</mapper>

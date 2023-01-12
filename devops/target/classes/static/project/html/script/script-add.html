@@ -1,0 +1,78 @@
+<div ng-controller="ScriptAddController" cg-busy="{promise:loading,minDuration:500}">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>创建脚本</div>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <div layout="column">
+            <form name="ScriptForm" class="md-padding">
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>脚本名称</label>
+                        <input md-maxlength="30" required name="name" ng-model="item.name">
+                        <div ng-messages="ScriptForm.name.$error">
+                            <div ng-message="required">必填.</div>
+                            <div ng-message="md-maxlength">不要超过30个字符</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>操作系统</label>
+                        <md-select ng-model="item.os" ng-change="getOsVersions()" required>
+                            <md-option ng-repeat="os in oslist" value="{{os.key}}">{{os.value}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>系统版本</label>
+                        <md-select ng-model="item.osVersionList"  multiple required>
+                            <md-option ng-repeat="osVersion in osVersions" value="{{osVersion}}">{{osVersion}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>执行路径</label>
+                        <input md-maxlength="100" required name="executePath" ng-model="item.executePath" placeholder="eg: /bin/bash">
+                        <div ng-messages="ScriptForm.executePath.$error">
+                            <div ng-message="required">必填.</div>
+                            <div ng-message="md-maxlength">不要超过100个字符</div>
+                        </div>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>描述</label>
+                        <input md-maxlength="30" name="description" ng-model="item.description">
+                        <div ng-messages="testForm.description.$error">
+                            <div ng-message="required">必填.</div>
+                            <div ng-message="md-maxlength">不要超过30个字符</div>
+                        </div>
+                    </md-input-container>
+                </div>
+
+                <div class="script-code">
+                    <ui-codemirror ui-codemirror-opts="cmOption" ng-model="item.content"></ui-codemirror>
+                </div>
+
+            </form>
+        </div>
+        <div layout="row" layout-align="start center" layout-margin>
+            <md-button class="md-raised" ng-click="toggleForm();">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit();" ng-disabled="ScriptForm.$invalid">
+                保存
+            </md-button>
+        </div>
+    </md-content>
+</div>
+
+

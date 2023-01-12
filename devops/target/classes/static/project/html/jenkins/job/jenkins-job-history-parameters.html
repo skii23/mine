@@ -1,0 +1,29 @@
+<md-dialog aria-label="Mango (Fruit)" style="max-height: 70%">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>构建参数</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="closeDetail()">
+                <md-icon>close</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="width: 900px;" >
+        <div class="script-code">
+            <table dynamic-table >
+                <thead>
+                <tr>
+                    <th>参数名称</th>
+                    <th>参数值</th><!--默认全部转换为字符串-->
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="data in datas" >
+                    <td>{{data.name}}</td>
+                    <td>{{data.value}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </md-dialog-content>
+</md-dialog>

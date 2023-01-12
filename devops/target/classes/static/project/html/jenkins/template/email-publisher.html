@@ -1,0 +1,29 @@
+<div class="f2c-publisher no-margin" layout="column">
+    <close-btn item="emailPublisher" items="publishers"/>
+    <div>{{title}}</div>
+    <md-input-container  flex-gt-sm style="margin-top: 24px">
+        <label>接收者</label>
+        <input name="recipients" ng-model="emailPublisher.recipients" required>
+        <div ng-messages="jenkinsAddForm.repoUrl.$error">
+            <div ng-message="required">必填.</div>
+        </div>
+        <em>当构建失败、变得不稳定或恢复稳定时，将发送电子邮件，如有多个邮箱需要接收，请以逗号","分隔。</em>
+    </md-input-container>
+    <md-input-container  flex-gt-sm>
+        <md-checkbox aria-label="Active" ng-model="emailPublisher.dontNotifyEveryUnstableBuild">
+            每次不稳定的构建都发送邮件通知
+        </md-checkbox>
+    </md-input-container>
+    <md-input-container  flex-gt-sm>
+        <md-checkbox aria-label="Active" ng-model="emailPublisher.sendToIndividuals">
+            单独发送邮件给对构建造成不良影响的责任人
+        </md-checkbox>
+    </md-input-container>
+
+    <md-input-container  flex-gt-sm ng-show="type === 'MAVEN'">
+        <md-checkbox aria-label="Active" ng-model="emailPublisher.perModuleEmail">
+            为每个失败的模块发送电子邮件
+        </md-checkbox>
+    </md-input-container>
+
+</div>

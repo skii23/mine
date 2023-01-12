@@ -1,0 +1,1 @@
+ALTER TABLE devops_jenkins_job ADD `type` varchar(10) default 'UNKNOWN';

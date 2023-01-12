@@ -1,0 +1,17 @@
+<md-dialog style="top:10%;bottom: 20%;height: 70%;width: 80%;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>事件日志</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="closeDetail()">
+                <md-icon>close</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="height: 100%">
+        <div style="overflow: hidden;height: 100%">
+            <ui-codemirror ui-codemirror-opts="cmOptionNoLine"
+                           ng-model="eventLog.stdout"></ui-codemirror>
+        </div>
+    </md-dialog-content>
+</md-dialog>

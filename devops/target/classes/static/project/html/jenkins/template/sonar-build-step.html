@@ -1,0 +1,55 @@
+<div layout="column" class="f2c-publisher no-margin">
+    <close-btn item="sonarBuildStep" items="builders"/>
+    <div style="font-weight: bold">{{title}}</div>
+    <md-input-container flex style="margin-top: 14px;margin-bottom: 10px" ng-if="sonarInstallationNames.length > 1">
+        <label style="font-weight: bold">SonarQube Installation:</label>
+        <md-select name="installationName"
+                   ng-model="sonarBuildStep.installationName">
+            <md-option ng-repeat="installationName in sonarInstallationNames" value="{{installationName}}">
+                {{installationName}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+<!--    <md-input-container flex>
+        <label>要运行的任务</label>
+        <input name="task" ng-model="sonarBuildStep.task"/>
+    </md-input-container>-->
+    <md-input-container flex style="margin-top: 24px;margin-bottom: 10px">
+        <label>JDK to be used for this SonarQube analysis</label>
+        <md-select name="jdkVersion"
+                   ng-model="sonarBuildStep.jdk">
+            <md-option ng-repeat="jdkVersion in jdkVersions" value="{{jdkVersion}}">
+                {{jdkVersion}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+
+    <md-input-container flex style="margin-top: 14px;margin-bottom: 10px" ng-if="sonarRunnerInstallations.length > 1">
+        <label>SonarQube Scanner</label>
+        <md-select name="sonarRunnerInstallation"
+                   ng-model="sonarBuildStep.sonarScannerName">
+            <md-option ng-repeat="sonarRunnerInstallation in sonarRunnerInstallations" value="{{sonarRunnerInstallation}}">
+                {{sonarRunnerInstallation}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+
+<!--    <md-input-container flex>
+        <label>项目属性的路径</label>
+        <input name="project" ng-model="sonarBuildStep.project"/>
+    </md-input-container>-->
+
+    <md-input-container flex>
+        <span style="font-weight: bold">Analysis properties <a href="{{helpForAnalysis}}" target="_blank"><span ng-style="{'color':'inherit'}">(Help for feature:Analysis properties) </span></a></span>
+        <textarea name="properties" ng-model="sonarBuildStep.properties" rows="3"/>
+    </md-input-container>
+
+<!--    <md-input-container flex>
+        <label>其他参数</label>
+        <textarea name="additionalArguments" ng-model="sonarBuildStep.additionalArguments" rows="3"/>
+    </md-input-container>-->
+    <md-input-container flex>
+        <label>JVM Options</label>
+        <textarea name="javaOpts" ng-model="sonarBuildStep.javaOpts" rows="3"/>
+    </md-input-container>
+</div>

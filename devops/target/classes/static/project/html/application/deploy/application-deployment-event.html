@@ -1,0 +1,44 @@
+<div ng-cloak ng-controller="ApplicationDeploymentEventCtrl">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>进度详情</div>
+            <span flex></span>
+            <md-button class="md-primary" ng-click="toggleForm(false)">
+                <div>关闭信息</div>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <div layout="column" layout-padding>
+            <div layout="row" layout-align="start center" style="text-align: center;font-size: 20px;font-weight: bold">
+                <div flex="15">事件</div>
+                <div flex="20">时间</div>
+                <div flex>输出</div>
+            </div>
+            <div ng-repeat="s in steps" layout="row" layout-align="start center" class="deploy-event">
+                <div flex="15">
+                    <md-icon ng-class="{'success' : 'event-success','running' : 'event-running','pending':'event-schedule','fail':'event-fail'}[s.status]"
+                             ng-bind="{'success' : 'check_circle_outline','running' : 'cached','pending':'schedule','fail':'error_outline'}[s.status]">
+                    </md-icon>
+                    <span>{{s.eventName}}</span>
+                </div>
+                <div flex="20" layout="column">
+                    <span>开始:{{s.startTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+                    <span>结束:{{s.endTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+                    <span>耗时:{{s.endTime?(s.endTime - s.startTime)/1000 + '秒':'N/A'}}</span>
+                </div>
+                <div flex>
+                    <ui-codemirror ui-codemirror-opts="cmOption" ng-model="s.stdout"></ui-codemirror>
+                </div>
+                <md-button class="md-primary" ng-click="showEventLog(s)">
+                    <md-icon>assignment</md-icon>
+                    详情
+                </md-button>
+            </div>
+        </div>
+
+    </md-content>
+</div>
+
+
+

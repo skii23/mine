@@ -1,0 +1,11 @@
+<div class="shell-step f2c-publisher" layout="column">
+    <close-btn item="shell" items="builders"/>
+    <label>{{title}}</label>
+    <div style="height: 300px">
+        <ui-codemirror ng-model="shell.command" ui-codemirror-opts="cmOption"></ui-codemirror>
+    </div>
+    <md-input-container flex style="margin: 20px 0">
+        <label>设置为构建不稳定时的退出码</label>
+        <input ng-model="shell.unstableReturn" type="number"/>
+    </md-input-container>
+</div>

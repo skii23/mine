@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.fit2cloud:common-web:2.0.4-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../apache-maven-3.5.2/repository/com/fit2cloud/common-web/2.0.4-SNAPSHOT/common-web-2.0.4-20221222.022603-11.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../apache-maven-3.5.2/repository/com/fit2cloud/common-web/2.0.4-SNAPSHOT/common-web-2.0.4-20221222.022603-11-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../apache-maven-3.5.2/repository/com/fit2cloud/common-web/2.0.4-SNAPSHOT/common-web-2.0.4-20221222.022603-11-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.fit2cloud:commons-plugin-manager:2.0.2-release-xyzq">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../apache-maven-3.5.2/repository/com/fit2cloud/commons-plugin-manager/2.0.2-release-xyzq/commons-plugin-manager-2.0.2-release-xyzq.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../apache-maven-3.5.2/repository/com/fit2cloud/commons-plugin-manager/2.0.2-release-xyzq/commons-plugin-manager-2.0.2-release-xyzq-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../apache-maven-3.5.2/repository/com/fit2cloud/commons-plugin-manager/2.0.2-release-xyzq/commons-plugin-manager-2.0.2-release-xyzq-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

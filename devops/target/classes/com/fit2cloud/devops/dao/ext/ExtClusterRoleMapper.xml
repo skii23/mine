@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtClusterRoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.ClusterRoleDTO"
+               extends="com.fit2cloud.devops.base.mapper.ClusterRoleMapper.BaseResultMap">
+        <result column="countServer" property="countServer" jdbcType="VARCHAR"/>
+        <result column="cluster_name" property="clusterName" jdbcType="VARCHAR"/>
+        <result column="organization_id" property="organizationId" jdbcType="VARCHAR"/>
+        <result column="organization_name" property="organizationName" jdbcType="VARCHAR"/>
+        <result column="workspace_name" property="workspaceName" jdbcType="VARCHAR"/>
+        <result column="workspace_id" property="workspaceId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectClusterRole" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        devops_cluster_role.*,
+        ifnull(countServer, 0)     countServer,
+        devops_cluster.name               cluster_name,
+        organization_id,
+        workspace_id,
+        workspace.name             workspace_name,
+        organization.name          organization_name
+        FROM devops_cluster_role
+        LEFT JOIN (SELECT
+        count(*)        countServer,
+        devops_cluster_role.id cluster_role_id
+        FROM devops_cluster_role
+        JOIN devops_cloud_server_devops ON devops_cluster_role.id = devops_cloud_server_devops.cluster_role_id
+        JOIN devops_cloud_server ON devops_cloud_server.id = devops_cloud_server_devops.id
+        JOIN devops_cluster
+        ON devops_cluster.id = devops_cloud_server_devops.cluster_id AND devops_cluster.workspace_id = devops_cloud_server.workspace_id
+        WHERE devops_cloud_server.instance_status != 'Deleted'
+        GROUP BY devops_cluster_role.id) cc ON cc.cluster_role_id = devops_cluster_role.id
+        LEFT JOIN devops_cluster ON devops_cluster.id = cluster_id
+        LEFT JOIN workspace ON workspace_id = workspace.id
+        LEFT JOIN organization ON organization_id = organization.id
+        <where>
+            <if test="clusterId != null">
+                and devops_cluster_role.cluster_id = #{clusterId}
+            </if>
+            <if test="workspaceId!= null ">
+                and workspace_id =#{workspaceId}
+            </if>
+            <if test="organizationId!= null">
+                and  organization_id = #{organizationId}
+            </if>
+            <if test="id">
+                and devops_cluster_role.id = #{id}
+            </if>
+            <if test="name != null ">
+                and devops_cluster_role.name like #{name}
+            </if>
+        </where>
+        <if test="sort != null">
+            order by ${sort}
+        </if>
+        <if test="sort == null">
+            ORDER BY created_time DESC
+        </if>
+    </select>
+
+</mapper>

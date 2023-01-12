@@ -1,0 +1,304 @@
+<div layout-fill ng-controller="DashboardCtrl" class="content-backdrop dashboard" ng-cloak>
+    <div cg-busy="{promise:loadingLayer,minDuration:500}" layout="column" layout-fill>
+        <md-tabs md-border-bottom layout-fill ng-show="!showDetail">
+            <md-tab label="度量指标">
+                <md-content class="uf-wrap-background dashboard" layout-fill>
+                    <div class="md-padding uf-full-height" layout="row">
+                        <div class="md-padding uf-cont-wrap" flex="30">
+                            <div>
+                                <div>
+                                    <md-input-container class="uf-title1 uf-no-board uf-input-container"
+                                        ng-if="sprint.sprintList.length>0">
+                                        <md-select ng-model="sprint.currentSprintId" ng-change="sprintChange()">
+                                            <md-option ng-repeat="item in sprint.sprintList track by $index"
+                                                ng-value="item.id">
+                                                {{item.name}}</md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                    <div class="uf-title1" ng-if="sprint.sprintList.length === 0">无</div>
+                                </div>
+                                <span class="uf-wrap-background3 uf-status-label"
+                                    ng-if="sprint.currentSprint.status">{{statusBiz[sprint.currentSprint.status]
+                                    ||
+                                    '已完成'}}</span>
+                                <div class="f-detail uf-padding-top2">
+                                    <div class="uf-padding6"><span class="uf-text1">冲刺开始</span><span class="uf-text2">:
+                                            {{sprint.currentSprintDetail.startTime | date: 'yyyy年MM月dd日'}}</span></div>
+                                    <div class="uf-padding6"><span class="uf-text1">冲刺结束</span><span class="uf-text2">:
+                                            {{sprint.currentSprintDetail.endTime | date: 'yyyy年MM月dd日'}}</span></div>
+                                </div>
+                                <div class="uf-wrap uf-chart2 uf-margin-top1">
+                                    <div class="uf-chart-head" layout="row">
+                                        <div class="uf-chart-title">每日需求总数</div>
+                                        <div class="uf-chart-daterange uf-right" layout="row">
+                                            <div class="uf-chart-daterange-item"
+                                                ng-class="{'active': item.value === sprint.selectdailyIssueRange}"
+                                                ng-repeat="item in dateRangeOptions"
+                                                ng-click="changeChartRange('sprint',item.value,'dailyIssue')">
+                                                {{item.label}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="uf-chart-wrap">
+                                        <chart-elem option="dailyIssueSetting" flex="100" style="height: 240px"
+                                            element-id="dailyIssue" />
+                                    </div>
+                                </div>
+                                <div class="uf-margin-top1">
+                                    <div class="uf-wrap"><img src="project/images/icon-coding.png" class="uf-icon"><span
+                                            class="uf-text2 uf-padding-left3 uf-text-lineheight">开发中需求</span>
+                                        <span
+                                            class="uf-row-right uf-text4 uf-text-lineheight">{{sprint.currentSprintDetail.issue.inProcessCount}}</span>
+                                    </div>
+                                    <div class="uf-wrap uf-margin-top2"><img src="project/images/icon-test.png"
+                                            class="uf-icon"><span
+                                            class="uf-text2 uf-padding-left3 uf-text-lineheight">测试需求</span>
+                                        <span
+                                            class="uf-row-right uf-text4 uf-text-lineheight">{{sprint.currentSprintDetail.issue.testCount}}</span>
+                                    </div>
+                                    <div class="uf-wrap uf-margin-top2"><img src="project/images/icon-finish.png"
+                                            class="uf-icon"><span
+                                            class="uf-text2 uf-padding-left3 uf-text-lineheight">已完成需求</span>
+                                        <span
+                                            class="uf-row-right uf-text4 uf-text-lineheight">{{sprint.currentSprintDetail.issue.finishCount}}</span>
+                                    </div>
+                                </div>
+                                <div class="uf-margin-top1">
+                                    <div class="uf-wrap uf-padding4 uf-wrap-background1"><span
+                                            class="uf-text2 uf-text-lineheight">feature类型数量</span>
+                                        <span
+                                            class="uf-row-right uf-text4 uf-text-lineheight">{{sprint.currentSprintDetail.issue.testCount}}</span>
+                                    </div>
+                                    <div class="uf-wrap uf-margin uf-padding4 uf-wrap-background1"><span
+                                            class="uf-text2 uf-text-lineheight">stroy类型数量</span>
+                                        <span
+                                            class="uf-row-right uf-text4 uf-text-lineheight">{{sprint.currentSprintDetail.issue.stroyCount}}</span>
+                                    </div>
+                                    <div class="uf-wrap uf-margin uf-padding4 uf-wrap-background1"><span
+                                            class="uf-text2 uf-text-lineheight">test类型数量</span>
+                                        <span
+                                            class="uf-row-right uf-text4 uf-text-lineheight">{{sprint.currentSprintDetail.issue.testCount}}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="md-padding uf-cont-wrap uf-margin-left uf-wrap" flex="70">
+                            <div class="uf-head-filters">
+                                <div class="uf-wrap">
+                                    <input class="uf-query-input" name="keyword" ng-model="appFilters.keyword"
+                                        placeholder="输入关键词">
+                                    <md-icon style="cursor: pointer;right: 40px;" class="uf-middle uf-icon-button"
+                                        role="button" ng-show="appFilters.keyword" ng-click="clearCnt('keyword')">
+                                        close
+                                    </md-icon>
+                                    <md-icon style="cursor: pointer;right: 18px;" class="uf-middle uf-icon-button"
+                                        role="button">
+                                        search
+                                    </md-icon>
+                                </div>
+                            </div>
+                            <md-tabs md-border-bottom layout-fill>
+                                <md-tab label="自选应用">
+                                    <md-content layout-fill>
+                                        <div class="uf-padding-top3" layout="column" layout-fill>
+                                            <table class="uf-table" dynamic-table columns="appcolumns">
+                                                <tbody>
+                                                    <tr ng-repeat="item in customize.list">
+                                                        <td class="uf-over-ellipsis" ng-attr-title="{{item.name}}">
+                                                            {{item.name}}</td>
+                                                        <td class="uf-text-center">{{item.commitDaily}}</td>
+                                                        <td class="uf-text-center"><span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.buildFailRate>columnsWarnValue['buildFailRate']}">
+                                                                {{item.buildFailRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr uf-over-ellipsis1"
+                                                                ng-class="{'uf-errtr': item.buildAvgPeriod>columnsWarnValue['buildAvgPeriod']}" ng-attr-title="{{item.buildAvgPeriodFormat}}">
+                                                                {{item.buildAvgPeriodFormat}}
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.unitTestCoverageRate<columnsWarnValue['unitTestCoverageRate']}">
+                                                                {{item.unitTestCoverageRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.unitTestSuccessRate<columnsWarnValue['unitTestSuccessRate']}">
+                                                                {{item.unitTestSuccessRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.deploySuccesRate<columnsWarnValue['deploySuccesRate']}">
+                                                                {{item.deploySuccesRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.apiTestSuccesRate<columnsWarnValue['apiTestSuccesRate']}">
+                                                                {{item.apiTestSuccesRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td><span class="uf-operate-btn1"
+                                                                ng-click="jumpDetail(item)">查看详情</span><span
+                                                                class="uf-operate-btn1"
+                                                                ng-click="removeCustomize('customize',item)">
+                                                                移出自选
+                                                            </span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="uf-table-pagination uf-row-reverse uf-margin-top2" layout="row">
+                                                <div class="uf-pagination-wrap">
+                                                    <md-icon style="cursor: pointer;" role="button"
+                                                        ng-click="prevPage('customize')">
+                                                        keyboard_arrow_left
+                                                    </md-icon>
+                                                    <span class="uf-pagination-item"
+                                                        ng-class="{'active': item === customize.currentPage}"
+                                                        ng-repeat="item in customize.pagination"
+                                                        ng-show="(item > customize.showPage) && ( item <= customize.showPage+5)"
+                                                        ng-click="changePage('customize', item)">{{item}}</span>
+                                                    <md-icon style="cursor: pointer;" role="button"
+                                                        ng-click="nextPage('customize')">
+                                                        keyboard_arrow_right
+                                                    </md-icon>
+                                                </div>
+                                                <div class="uf-pagination-item">共 {{customize.listTotal}} 条</div>
+                                            </div>
+                                        </div>
+                                    </md-content>
+                                </md-tab>
+                                <md-tab label="全部应用">
+                                    <md-content layout-fill>
+                                        <div class="uf-padding-top3" layout="column" layout-fill>
+                                            <table class="uf-table" dynamic-table columns="appcolumns">
+                                                <tbody>
+                                                    <tr ng-repeat="item in app.list | filter: appFilters.keyword">
+                                                        <td class="uf-over-ellipsis uf-text-center"
+                                                            ng-attr-title="{{item.name}}">
+                                                            {{item.name}}
+                                                        </td>
+                                                        <td class="uf-text-center">{{item.commitDaily}}</td>
+                                                        <td class="uf-text-center"><span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.buildFailRate>columnsWarnValue['buildFailRate']}">
+                                                                {{item.buildFailRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr uf-over-ellipsis1"
+                                                                ng-class="{'uf-errtr': item.buildAvgPeriod>columnsWarnValue['buildAvgPeriod']}"  ng-attr-title="{{item.buildAvgPeriodFormat}}">
+                                                                {{item.buildAvgPeriodFormat}}
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.unitTestCoverageRate<columnsWarnValue['unitTestCoverageRate']}">
+                                                                {{item.unitTestCoverageRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.unitTestSuccessRate<columnsWarnValue['unitTestSuccessRate']}">
+                                                                {{item.unitTestSuccessRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.deploySuccesRate<columnsWarnValue['deploySuccesRate']}">
+                                                                {{item.deploySuccesRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td class="uf-text-center">
+                                                            <span class="uf-suctr"
+                                                                ng-class="{'uf-errtr': item.apiTestSuccesRate<columnsWarnValue['apiTestSuccesRate']}">
+                                                                {{item.apiTestSuccesRate}}%
+                                                            </span>
+                                                        </td>
+                                                        <td><span class="uf-operate-btn1" ng-click="jumpDetail(item)"
+                                                                mvn>查看详情</span><span class="uf-operate-btn2"
+                                                                ng-show="!item.isCustomized"
+                                                                ng-click="addCustomize('app',item)">
+                                                                <span class="uf-text-weight">+</span> 添加自选
+                                                            </span><span class="uf-operate-btn3"
+                                                                ng-show="item.isCustomized"
+                                                                ng-click="removeCustomize('app',item)">
+                                                                已添加
+                                                            </span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="uf-table-pagination uf-row-reverse uf-margin-top2" layout="row">
+                                                <div class="uf-pagination-wrap">
+                                                    <md-icon style="cursor: pointer;" role="button"
+                                                        ng-click="prevPage('app')">
+                                                        keyboard_arrow_left
+                                                    </md-icon>
+                                                    <span class="uf-pagination-item"
+                                                        ng-class="{'active': item === app.currentPage}"
+                                                        ng-repeat="item in app.pagination"
+                                                        ng-show="(item > app.showPage) && ( item <= app.showPage+5)"
+                                                        ng-click="changePage('app', item)">{{item}}</span>
+                                                    <md-icon style="cursor: pointer;" role="button"
+                                                        ng-click="nextPage('app')">
+                                                        keyboard_arrow_right
+                                                    </md-icon>
+                                                </div>
+                                                <div class="uf-pagination-item">共 {{app.listTotal}} 条</div>
+                                            </div>
+                                        </div>
+                                    </md-content>
+                                </md-tab>
+                            </md-tabs>
+                        </div>
+                    </div>
+                </md-content>
+            </md-tab>
+            <md-tab label="小组概览">
+                <md-content class="md-padding">
+                    <section layout="row" layout-wrap>
+                        <div layout="row">
+                            <date-select select="dateBox" execute="list()" period="groupDatePeriod"
+                                result="groupDateParam">
+                            </date-select>
+                        </div>
+                    </section>
+                    <div>
+                        <filter-tools conditions="conditions" results="filters" search="'true'" execute="list()">
+                            <select-columns columns="columns"></select-columns>
+                            <div class="filter-item">
+                                <md-button class="md-icon-button md-whiteframe-1dp" ng-click="list()">
+                                    <md-tooltip md-delay="300">刷新</md-tooltip>
+                                    <md-icon>refresh</md-icon>
+                                </md-button>
+                            </div>
+                        </filter-tools>
+                        <div flex layout="column" layout-fill>
+                            <table dynamic-table columns="columns" execute="list({sql: sql})">
+                                <tbody>
+                                    <tr ng-repeat="item in items"
+                                        ng-class="{'tr-selected':selected === item.$$hashKey}">
+                                        <td ng-if="currentRole === 'ADMIN'">{{item.organizationName}}</td>
+                                        <td>{{item.workspaceName}}</td>
+                                        <td>{{item.appCount}}</td>
+                                        <td>{{item.deployCount}}</td>
+                                        <td>{{item.successDeployCount}}</td>
+                                        <td>{{item.jobCount}}</td>
+                                        <td>{{item.buildCount}}</td>
+                                        <td>{{item.successBuildCount}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table-pagination pagination="pagination"></table-pagination>
+                        </div>
+                    </div>
+                </md-content>
+            </md-tab>
+        </md-tabs>
+        <detail class="uf-full-height" ng-show="showDetail"></detail>
+    </div>
+</div>

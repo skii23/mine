@@ -1,0 +1,75 @@
+<div layout="column" layout-fill ng-controller="ProxyEditCtrl" cg-busy="{promise:loading,minDuration:500}">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>修改代理</div>
+        </div>
+    </md-toolbar>
+    <md-content flex="auto">
+        <form name="proxForm" class="md-padding">
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Proxy IP</label>
+                    <input md-maxlength="30" required name="ip" ng-model="item.ip" disabled>
+                    <div ng-messages="proxForm.ip.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Proxy 端口</label>
+                    <input md-maxlength="30" required name="port" ng-model="item.port">
+                    <div ng-messages="proxForm.port.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Proxy 用户名</label>
+                    <input md-maxlength="30" required name="username" ng-model="item.username">
+                    <div ng-messages="proxForm.username.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Proxy 密码</label>
+                    <i id="eye" class="fa fa-eye f2c-eye" aria-hidden="true"
+                       ng-click="view('password','eye')"></i>
+                    <input type="password" md-maxlength="30" id="password" required name="password" ng-model="item.password">
+                    <div ng-messages="proxyForm.password.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>用途标签</label>
+                    <input md-maxlength="30" required name="tag" ng-model="item.tag">
+                    <div ng-messages="proxForm.tag.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+        </form>
+        <div layout="row" layout-align="start center" layout-margin>
+
+            <md-button class="md-raised" ng-click="toggleForm();">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit()" ng-disabled="proxForm.$invalid">
+                保存
+            </md-button>
+        </div>
+    </md-content>
+
+
+</div>

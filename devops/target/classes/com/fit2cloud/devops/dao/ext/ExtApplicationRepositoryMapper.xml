@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtApplicationRepositoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.ApplicationRepositoryDTO"
+               extends="com.fit2cloud.devops.base.mapper.ApplicationRepositoryMapper.BaseResultMap">
+        <result column="organization_name" property="organizationName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectApplicationRepository" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        devops_application_repository.*,
+        organization.name organization_name
+        FROM devops_application_repository
+        LEFT JOIN organization ON devops_application_repository.organization_id = organization.id
+        <where>
+            <if test="type!=null ">
+                and devops_application_repository.type = #{type}
+            </if>
+            <if test="organizationId != null">
+                and (organization_id=#{organizationId} OR organization_id='ROOT')
+            </if>
+        </where>
+
+        <if test="sort ==null ">
+            order BY scope DESC ,created_time DESC
+        </if>
+        <if test="sort !=null ">
+            order by ${sort}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtApplicationVersionMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.ApplicationVersionDTO"
+               extends="com.fit2cloud.devops.base.mapper.ApplicationVersionMapper.BaseResultMap">
+        <result column="application_name" property="applicationName" jdbcType="VARCHAR"/>
+        <result column="cluster_id" property="clusterId" jdbcType="VARCHAR"/>
+        <result column="cluster_role_id" property="clusterRoleId" jdbcType="VARCHAR"/>
+        <result column="system_tag_value_alias" property="systemTagValueAlias" jdbcType="VARCHAR"/>
+        <result column="env_tag_value_alias" property="envTagValueAlias" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectApplicationVersions" parameterType="java.util.Map" resultMap="BaseResultMap" >
+        SELECT
+        devops_application_version.*,
+        devops_application.name application_name,devops_application.cluster_id,devops_application.cluster_role_id,
+        system_tag.tag_value_alias system_tag_value_alias,
+        env_tag.tag_value_alias env_tag_value_alias
+        FROM devops_application_version
+        JOIN devops_application ON devops_application_version.application_id = devops_application.id
+        LEFT JOIN (SELECT
+        tm.tag_value_id,
+        tm.resource_id,tv.tag_value_alias
+        FROM tag_mapping tm
+        INNER JOIN tag_value tv ON tm.tag_value_id = tv.id
+        WHERE tm.tag_key = 'business' AND tm.resource_type = 'APPLICATION') system_tag
+        ON system_tag.resource_id = devops_application_version.application_id
+        LEFT JOIN (SELECT
+        tm.tag_value_id,
+        tm.resource_id,tv.tag_value_alias
+        FROM tag_mapping tm
+        INNER JOIN tag_value tv ON tm.tag_value_id = tv.id
+        WHERE tm.tag_key = 'environment' AND tm.resource_type = 'APPLICATION_VERSION') env_tag
+        ON env_tag.resource_id = devops_application_version.id
+        <where>
+            <if test="applicationId!=null">
+                and devops_application.id=#{applicationId}
+            </if>
+            <if test="organizationId!=null ">
+                and (devops_application.organization_id=#{organizationId} OR devops_application.scope='global')
+            </if>
+            <if test="workspaceId != null">
+                and (devops_application.workspace_id = #{workspaceId} OR devops_application.scope='global')
+            </if>
+            <if test="name != null ">
+                and devops_application_version.name like #{name}
+            </if>
+        </where>
+        <if test="sort ==null ">
+            order by created_time DESC
+        </if>
+        <if test="sort !=null ">
+            order by ${sort}
+        </if>
+    </select>
+
+    <select id="getLatestVersion" resultType="com.fit2cloud.devops.base.domain.ApplicationVersion">
+        select app_version.*
+        from
+            devops_application_version app_version
+         join devops_application_deployment app_dep on app_version.id = app_dep.application_version_id
+        where app_version.application_id = #{applicationId} and app_dep.status = 'success'
+        order by app_dep.created_time desc limit 1
+    </select>
+
+</mapper>

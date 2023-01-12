@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtScriptImplementLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.ScriptImplementLogDto"
+               extends="com.fit2cloud.devops.base.mapper.ScriptImplementLogMapper.BaseResultMap">
+        <result column="cluster_id" property="clusterId" jdbcType="VARCHAR"/>
+        <result column="cluster_name" property="clusterName" jdbcType="VARCHAR"/>
+        <result column="cluster_role_id" property="clusterRoleId" jdbcType="VARCHAR"/>
+        <result column="cluster_role_name" property="clusterRoleName" jdbcType="VARCHAR"/>
+        <result column="instance_name" property="cloudServerName" jdbcType="VARCHAR"/>
+        <result column="script_name" property="scriptName" jdbcType="VARCHAR"/>
+        <result column="workspace_name" property="workspaceName" jdbcType="VARCHAR"/>
+        <result column="organization_name" property="organizationName" jdbcType="VARCHAR"/>
+        <result column="organization_id" property="organizationId" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="selectImplementScriptLogs" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        devops_script_implement_log.*,
+        devops_cloud_server.instance_name,
+        devops_cluster.id cluster_id,
+        devops_cluster_role.id cluster_role_id,
+        devops_cluster.name cluster_name,
+        devops_cluster_role.name cluster_role_name,
+        devops_script.name script_name,
+        workspace.id workspace_id,
+        workspace.name workspace_name,
+        organization.id organization_id,
+        organization.name organization_name
+        FROM devops_script_implement_log
+        LEFT JOIN devops_cloud_server ON devops_cloud_server.id = cloud_server_id
+        LEFT JOIN devops_script ON devops_script.id = script_id
+        JOIN devops_cloud_server_devops ON devops_cloud_server_devops.id = cloud_server_id
+        JOIN devops_cluster ON cluster_id = devops_cluster.id
+        JOIN devops_cluster_role ON cluster_role_id = devops_cluster_role.id
+        JOIN workspace ON devops_script_implement_log.workspace_id = workspace.id
+        JOIN organization ON workspace.organization_id = organization.id
+        <where>
+            <if test="organizationId != null ">
+                and organization.id=#{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and workspace.id=#{workspaceId}
+            </if>
+            <if test="scriptName!=null">
+                and devops_script.name like #{scriptName}
+            </if>
+            <if test="scriptId != null ">
+                and devops_script.id = #{scriptId}
+            </if>
+        </where>
+        <if test="sort ==null ">
+            ORDER BY created_time DESC
+        </if>
+        <if test="sort !=null ">
+            order by ${sort}
+        </if>
+    </select>
+
+</mapper>

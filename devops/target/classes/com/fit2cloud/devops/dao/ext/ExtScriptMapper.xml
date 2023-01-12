@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtScriptMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.ScriptDTO"
+               extends="com.fit2cloud.devops.base.mapper.ScriptMapper.BaseResultMap">
+        <result column="workspace_id" property="workspaceId" jdbcType="VARCHAR"/>
+        <result column="workspace_name" property="workspaceName" jdbcType="VARCHAR"/>
+        <result column="organization_id" property="organizationId" jdbcType="VARCHAR"/>
+        <result column="organization_name" property="organizationName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectScripts" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        devops_script.*,
+        workspace_id,
+        workspace.name workspace_name,
+        organization.name organization_name
+        FROM devops_script
+        LEFT JOIN workspace ON devops_script.workspace_id = workspace.id
+        LEFT JOIN organization ON organization.id = devops_script.organization_id
+        <where>
+            <if test="organizationId !=null ">
+                AND (organization.id = #{organizationId} OR scope = 'global')
+            </if>
+            <if test="workspaceId !=null ">
+                AND (workspace.id = #{workspaceId} OR organization.id = #{organizationId} OR scope = 'global')
+            </if>
+        </where>
+        <if test="sort ==null ">
+            order BY scope asc , created_time DESC
+        </if>
+        <if test="sort !=null ">
+            order by ${sort}
+        </if>
+
+    </select>
+
+</mapper>

@@ -1,0 +1,85 @@
+<div ng-controller="JenkinsJobCtrl" ng-cloak flex>
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>参数化构建</div>
+        </div>
+    </md-toolbar>
+
+    <md-content cg-busy="{promise:loadingLayer,minDuration:500}" layout="column" flex class="md-padding">
+        <form name="buildParameterForm" layout="column" class="build-parameter">
+            <div ng-repeat="property in item.properties" class="no-margin">
+                <div ng-if="property.type === 'PARAMETERS_DEFINITION'" layout="column">
+                    <div ng-repeat="parameter in property.parameterDefinitions" class="no-margin">
+                        <div class="build-parameter-label">{{parameter.title}}</div>
+
+                        <md-input-container ng-if="parameter.type === 'STRING_PARAMETER' || parameter.type === 'PASSWORD_PARAMETER'" class="md-block" flex-gt-sm>
+                            <!--sssssssssssssssssssssssssssssssssssssssssssssssssssssssssss-->
+                            <label>{{parameter.name}}</label>
+                            <input name="default" ng-model="parameter.value" required/>
+                            </br>
+                            <em>{{parameter.description}}</em>
+                        </md-input-container>
+
+                        <md-input-container ng-if="parameter.type === 'BOOLEAN_PARAMETER'" class="md-block" flex-gt-sm>
+                            <md-checkbox ng-model="parameter.value">
+                                {{parameter.name}}
+                            </md-checkbox>
+                            </br>
+                            <em>{{parameter.description}}</em>
+                        </md-input-container>
+
+                        <md-input-container ng-if="parameter.type === 'FILE_PARAMETER' " class="md-block" flex-gt-sm>
+                            <label>文件路径</label>
+                            <input name="name" ng-model="parameter.name" required/>
+                            </br>
+                            <em>{{parameter.description}}</em>
+                        </md-input-container>
+
+                        <md-input-container ng-if="parameter.type === 'TEXT_PARAMETER' " class="md-block" flex-gt-sm>
+                            <label>{{parameter.name}}</label>
+                            <textarea name="default" ng-model="parameter.value"></textarea>
+                            </br>
+                            <em>{{parameter.description}}</em>
+                        </md-input-container>
+
+                        <md-input-container ng-if="parameter.type === 'CHOICE_PARAMETER' " class="md-block" flex-gt-sm>
+                            <label>{{parameter.name}}</label>
+                            <!--TODO: jenkins 返回的数组列表 js函数转换choices 为options-->
+                            <md-select name="option" ng-model="parameter.value">
+                                <md-option ng-repeat="option in parameter.choices" value="{{option}}">
+                                    {{option}}
+                                </md-option>
+                            </md-select>
+                            </br>
+                            <em ng-bind-html="parameter.description"> {{parameter.description}} </em>
+                        </md-input-container>
+
+                        <md-input-container ng-if="parameter.type === 'RUN_PARAMETER' " class="md-block" flex-gt-sm>
+                            <label>{{parameter.name}}</label>
+                            <!--列表查询此项目的全部构建清单 过滤状态 带状态查询-->
+                            <md-select name="jobHistory" ng-model="parameter.value">
+                                <md-option ng-repeat="jobHistory in jobHistories" value="{{jobHistory}}">
+                                    {{jobHistory}}
+                                </md-option>
+                            </md-select>
+                            </br>
+                            <em>{{parameter.description}}</em>
+                        </md-input-container>
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        <div>
+            <md-input-container layout="row">
+                <md-button class="md-primary md-raised" ng-click="toggleForm()">
+                    取消
+                </md-button>
+                <md-button class="md-primary md-raised" ng-click="buildWithParametersJob(item)" ng-disabled="paramForm.$invalid">
+                    开始参数化构建
+                </md-button>
+            </md-input-container>
+        </div>
+    </md-content>
+</div>

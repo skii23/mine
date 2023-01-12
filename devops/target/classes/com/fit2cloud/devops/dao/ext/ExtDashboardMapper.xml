@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtDashboardMapper">
+    <resultMap id="BaseResultMap" type="com.fit2cloud.commons.server.model.DashBoardTextDTO">
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="value" property="value" jdbcType="VARCHAR"/>
+        <result column="valueColor" property="valueColor" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="chose_date">
+        <choose>
+            <when test="start > 0 and end == 0">
+                AND build_time &gt; #{start}
+            </when>
+            <when test="start > 0 and end > 0">
+                AND build_time &gt; #{start}
+                AND build_time &lt;= #{end}
+            </when>
+            <when test="end > 0 and start == 0">
+                AND build_time &lt;= #{end}
+            </when>
+        </choose>
+    </sql>
+
+    <sql id="chose_dep_date">
+        <choose>
+            <when test="start > 0 and end == 0">
+                AND start_time &gt; #{start}
+            </when>
+            <when test="start > 0 and end > 0">
+                AND start_time &gt; #{start}
+                AND start_time &lt;= #{end}
+            </when>
+            <when test="end > 0 and start == 0">
+                AND start_time &lt;= #{end}
+            </when>
+        </choose>
+    </sql>
+
+
+    <select id="selectDashboard" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        COUNT(0) AS value,
+        '运行中' AS name,
+        'black' AS valueColor
+        FROM devops_application_deployment
+        LEFT JOIN devops_cluster_role ON devops_cluster_role.id = devops_application_deployment.cluster_role_id
+        LEFT JOIN devops_cloud_server ON devops_cloud_server.id = devops_application_deployment.cloud_server_id
+        JOIN user ON user.id = devops_application_deployment.user_id
+        JOIN devops_application_version ON
+        devops_application_deployment.application_version_id=devops_application_version.id
+        JOIN devops_application ON devops_application.id = devops_application_version.application_id
+        JOIN devops_cluster ON devops_cluster.id = devops_application_deployment.cluster_id
+        JOIN workspace ON workspace.id = devops_application_deployment.workspace_id
+        JOIN organization ON organization.id = workspace.organization_id
+        WHERE devops_application_deployment.status = 'running'
+        <if test="workspaceId != null ">
+            and workspace.id=#{workspaceId}
+        </if>
+        <if test="organizationId != null ">
+            and organization.id=#{organizationId}
+        </if>
+        UNION
+        SELECT
+        count(0) AS value,
+        '已成功' AS name,
+        'green' AS valueColor
+        FROM devops_application_deployment
+        LEFT JOIN devops_cluster_role ON devops_cluster_role.id = devops_application_deployment.cluster_role_id
+        LEFT JOIN devops_cloud_server ON devops_cloud_server.id = devops_application_deployment.cloud_server_id
+        JOIN user ON user.id = devops_application_deployment.user_id
+        JOIN devops_application_version ON
+        devops_application_deployment.application_version_id=devops_application_version.id
+        JOIN devops_application ON devops_application.id = devops_application_version.application_id
+        JOIN devops_cluster ON devops_cluster.id = devops_application_deployment.cluster_id
+        JOIN workspace ON workspace.id = devops_application_deployment.workspace_id
+        JOIN organization ON organization.id = workspace.organization_id
+        WHERE devops_application_deployment.status = 'success'
+        <if test="workspaceId != null ">
+            and workspace.id=#{workspaceId}
+        </if>
+        <if test="organizationId != null ">
+            and organization.id=#{organizationId}
+        </if>
+        UNION
+        SELECT
+        count(0) AS value,
+        '已失败' AS name,
+        'red' AS valueColor
+        FROM devops_application_deployment
+        LEFT JOIN devops_cluster_role ON devops_cluster_role.id = devops_application_deployment.cluster_role_id
+        LEFT JOIN devops_cloud_server ON devops_cloud_server.id = devops_application_deployment.cloud_server_id
+        JOIN user ON user.id = devops_application_deployment.user_id
+        JOIN devops_application_version ON
+        devops_application_deployment.application_version_id=devops_application_version.id
+        JOIN devops_application ON devops_application.id = devops_application_version.application_id
+        JOIN devops_cluster ON devops_cluster.id = devops_application_deployment.cluster_id
+        JOIN workspace ON workspace.id = devops_application_deployment.workspace_id
+        JOIN organization ON organization.id = workspace.organization_id
+        WHERE (devops_application_deployment.status = 'fail' OR devops_application_deployment.status = 'error')
+        <if test="workspaceId!= null ">
+            and workspace.id=#{workspaceId}
+        </if>
+        <if test="organizationId != null ">
+            and organization.id=#{organizationId}
+        </if>
+    </select>
+
+    <select id="getBuildTimeDistribution" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT
+        HOUR(FROM_UNIXTIME(build_time / 1000)) AS xAxis,
+        count(*) AS yAxis
+        FROM devops_jenkins_job_history
+        LEFT JOIN devops_jenkins_job job on devops_jenkins_job_history.job_id = job.id
+        LEFT JOIN workspace w on job.workspace = w.id
+        LEFT JOIN organization o on w.organization_id = o.id
+        <where>
+            <include refid="chose_date"/>
+
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+        </where>
+        GROUP BY xAxis
+        ORDER BY xAxis
+    </select>
+
+    <select id="getBuildSuccessTrend" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT total_t.time_str AS xAxis,
+        IFNULL(TRUNCATE(success_t.amount / total_t.amount * 100, 2), 0) AS yAxis
+        FROM (
+        SELECT DATE(FROM_UNIXTIME(build_time / 1000)) time_str, count(*) amount
+        FROM devops_jenkins_job_history
+        LEFT JOIN devops_jenkins_job job on devops_jenkins_job_history.job_id = job.id
+        LEFT JOIN workspace w on job.workspace = w.id
+        LEFT JOIN organization o on w.organization_id = o.id
+        <where>
+            <include refid="chose_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+        </where>
+        GROUP BY time_str ) total_t
+        LEFT JOIN (
+        SELECT DATE(FROM_UNIXTIME(build_time / 1000)) time_str, count(*) amount
+        FROM devops_jenkins_job_history
+        LEFT JOIN devops_jenkins_job job on devops_jenkins_job_history.job_id = job.id
+        LEFT JOIN workspace w on job.workspace = w.id
+        LEFT JOIN organization o on w.organization_id = o.id
+        <where>
+            <include refid="chose_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+            <if test=" 1 == 1">
+                and devops_jenkins_job_history.build_status = 'SUCCESS'
+            </if>
+        </where>
+        GROUP BY time_str) success_t ON total_t.time_str = success_t.time_str
+        ORDER BY total_t.time_str;
+    </select>
+
+    <select id="getBuildWeekdayDistribution" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT DAYOFWEEK(FROM_UNIXTIME(devops_jenkins_job_history.build_time / 1000)) xAxis, count(*) yAxis
+        from devops_jenkins_job_history
+        LEFT JOIN devops_jenkins_job job on devops_jenkins_job_history.job_id = job.id
+        LEFT JOIN workspace w on job.workspace = w.id
+        LEFT JOIN organization o on w.organization_id = o.id
+        <where>
+            <include refid="chose_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+        </where>
+        GROUP BY xAxis
+        ORDER BY xAxis
+    </select>
+
+    <select id="getBuildJobCountTrend" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT date_str xAxis,
+        count(*) yAxis
+        FROM (SELECT date(FROM_UNIXTIME(build_time / 1000)) date_str
+        FROM devops_jenkins_job_history
+        LEFT JOIN devops_jenkins_job job on devops_jenkins_job_history.job_id = job.id
+        LEFT JOIN workspace w on job.workspace = w.id
+        LEFT JOIN organization o on w.organization_id = o.id
+        <where>
+            <include refid="chose_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+        </where>
+        GROUP BY date_str, job_id
+        ORDER BY date_str) t
+        GROUP BY date_str
+    </select>
+
+    <select id="getBuildJobBuildCountTrend" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT date(FROM_UNIXTIME(build_time / 1000)) xAxis,
+        count(*) yAxis
+        FROM devops_jenkins_job_history
+        LEFT JOIN devops_jenkins_job job on devops_jenkins_job_history.job_id = job.id
+        LEFT JOIN workspace w on job.workspace = w.id
+        LEFT JOIN organization o on w.organization_id = o.id
+        <where>
+            <include refid="chose_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+        </where>
+        GROUP BY xAxis
+        ORDER BY xAxis
+    </select>
+
+    <select id="getDeployTimeDistribution" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT
+        HOUR(FROM_UNIXTIME(dap.start_time / 1000)) xAxis,
+        count(*) yAxis
+        from devops_application_deployment dap
+        left join workspace w on w .id = dap.workspace_id
+        left join organization o on o.id = w.organization_id
+        left join devops_cluster dc on dc.id = dap.cluster_id
+        left join devops_cluster_role dcr on dcr.id = dap.cluster_role_id
+        <where>
+            <include refid="chose_dep_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+            <if test="clusterId != null ">
+                and dc.id = #{clusterId}
+            </if>
+            <if test="clusterRoleId != null ">
+                and dcr.id = #{clusterRoleId}
+            </if>
+        </where>
+        GROUP BY xAxis
+        ORDER BY xAxis
+    </select>
+    <select id="getDeploySuccessTrend" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT total_t.time_str AS xAxis,
+               IFNULL(TRUNCATE(success_t.amount / total_t.amount * 100, 2), 0) AS yAxis
+        FROM
+            (
+            SELECT date(FROM_UNIXTIME(dap.start_time / 1000)) time_str, count(*) amount
+            FROM devops_application_deployment dap
+        left join workspace w on w .id = dap.workspace_id
+        left join organization o on o.id = w.organization_id
+        left join devops_cluster dc on dc.id = dap.cluster_id
+        left join devops_cluster_role dcr on dcr.id = dap.cluster_role_id
+        <where>
+            <include refid="chose_dep_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+            <if test="clusterId != null ">
+                and dc.id = #{clusterId}
+            </if>
+            <if test="clusterRoleId != null ">
+                and dcr.id = #{clusterRoleId}
+            </if>
+        </where>
+            GROUP BY time_str
+            ) total_t
+        LEFT JOIN
+            (
+            SELECT date(FROM_UNIXTIME(dap.start_time / 1000)) time_str,
+           count(*)                                      amount
+        FROM devops_application_deployment dap
+        left join workspace w on w .id = dap.workspace_id
+        left join organization o on o.id = w.organization_id
+        left join devops_cluster dc on dc.id = dap.cluster_id
+        left join devops_cluster_role dcr on dcr.id = dap.cluster_role_id
+        <where>
+            <include refid="chose_dep_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+            <if test="clusterId != null ">
+                and dc.id = #{clusterId}
+            </if>
+            <if test="clusterRoleId != null ">
+                and dcr.id = #{clusterRoleId}
+            </if>
+            and dap.STATUS = 'success'
+        </where>
+            GROUP BY time_str
+        ) success_t ON total_t.time_str = success_t.time_str
+    </select>
+
+    <select id="getDeployWeekdayDistribution" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT
+            DAYOFWEEK(FROM_UNIXTIME( dap.start_time / 1000 )) xAxis,
+            count(*) yAxis
+        FROM
+            devops_application_deployment dap
+        left join workspace w on w .id = dap.workspace_id
+        left join organization o on o.id = w.organization_id
+        left join devops_cluster dc on dc.id = dap.cluster_id
+        left join devops_cluster_role dcr on dcr.id = dap.cluster_role_id
+        <where>
+            <include refid="chose_dep_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+            <if test="clusterId != null ">
+                and dc.id = #{clusterId}
+            </if>
+            <if test="clusterRoleId != null ">
+                and dcr.id = #{clusterRoleId}
+            </if>
+        </where>
+        GROUP BY xAxis
+    </select>
+    <select id="getDeployAppCountTrend" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT time_str AS xAxis,
+        count(*) yAxis
+        FROM (
+        SELECT date(
+        FROM_UNIXTIME(dap.start_time / 1000)) time_str,
+        count(*)
+        FROM devops_application_deployment dap
+        INNER JOIN devops_application_version dav ON dap.application_version_id = dav.id
+        left join workspace w on w .id = dap.workspace_id
+        left join organization o on o.id = w.organization_id
+        left join devops_cluster dc on dc.id = dap.cluster_id
+        left join devops_cluster_role dcr on dcr.id = dap.cluster_role_id
+        <where>
+            <include refid="chose_dep_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+            <if test="clusterId != null ">
+                and dc.id = #{clusterId}
+            </if>
+            <if test="clusterRoleId != null ">
+                and dcr.id = #{clusterRoleId}
+            </if>
+        </where>
+        GROUP BY time_str,
+        dav.application_id
+        ) t
+        GROUP BY time_str
+        ORDER BY time_str
+    </select>
+    <select id="getDeployAppDeployCountTrend" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT DATE(FROM_UNIXTIME(dap.start_time / 1000)) xAxis,
+               count(*)                                      yAxis
+        FROM devops_application_deployment dap
+        left join workspace w on w .id = dap.workspace_id
+        left join organization o on o.id = w.organization_id
+        left join devops_cluster dc on dc.id = dap.cluster_id
+        left join devops_cluster_role dcr on dcr.id = dap.cluster_role_id
+        <where>
+            <include refid="chose_dep_date"/>
+            <if test="organizationId != null ">
+                and o.id = #{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+            <if test="clusterId != null ">
+                and dc.id = #{clusterId}
+            </if>
+            <if test="clusterRoleId != null ">
+                and dcr.id = #{clusterRoleId}
+            </if>
+        </where>
+        GROUP BY xAxis
+        ORDER BY xAxis
+    </select>
+
+    <select id="getJobCountMap" resultType="com.fit2cloud.devops.dto.CountMapDTO">
+        SELECT job.workspace itemKey,count(*) itemValue FROM devops_jenkins_job job
+        left join workspace w on w.id=job.workspace
+        left join organization o on w.organization_id = o.id
+            <where>
+                <if test="organizationId != null ">
+                    and o.id=#{organizationId}
+                </if>
+                <if test="workspaceId != null ">
+                    and w.id = #{workspaceId}
+                </if>
+            </where>
+        GROUP BY itemKey;
+    </select>
+
+    <select id="getJobBuildCountMap" resultType="com.fit2cloud.devops.dto.CountMapDTO">
+        SELECT job.workspace itemKey, count(*) itemValue
+        FROM devops_jenkins_job_history history
+        LEFT JOIN devops_jenkins_job job on history.job_id = job.id
+            left join workspace w on job.workspace = w.id
+            left join organization o on w.organization_id = o.id
+        <where>
+            <include refid="chose_date"/>
+            <if test="organizationId != null ">
+                and o.id=#{organizationId}
+            </if>
+            <if test="success">
+                and history.build_status = 'SUCCESS'
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+        </where>
+        GROUP BY job.workspace
+    </select>
+
+    <select id="getAppCountMap" resultType="com.fit2cloud.devops.dto.CountMapDTO">
+        SELECT app.workspace_id itemKey, count(*) itemValue
+        FROM devops_application app
+        LEFT JOIN workspace w on app.workspace_id = w.id
+        left join organization o on w.organization_id = o.id
+        <where>
+            <if test="organizationId != null ">
+                and o.id=#{organizationId}
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+        </where>
+        GROUP BY itemKey;
+    </select>
+
+    <select id="getAppDeployCountMap" resultType="com.fit2cloud.devops.dto.CountMapDTO">
+        SELECT
+        dap.workspace_id itemKey,
+        count(*) itemValue
+        FROM
+        devops_application_deployment dap
+        LEFT JOIN workspace W ON W.ID = dap.workspace_id
+        LEFT JOIN organization o ON o.id = w.organization_id
+        <where>
+            <include refid="chose_dep_date"/>
+            <if test="organizationId != null ">
+                and o.id=#{organizationId}
+            </if>
+            <if test="success">
+                and dap.status = 'success'
+            </if>
+            <if test="workspaceId != null ">
+                and w.id = #{workspaceId}
+            </if>
+        </where>
+        GROUP BY
+        itemKey
+    </select>
+
+
+</mapper>

@@ -1,0 +1,105 @@
+<div ng-cloak ng-controller="JenkinsJobAddCtrl" class="job-form">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>{{ isEdit ? '编辑构建任务 - '+item.name : '创建构建任务' }}</div>
+            <md-button class="md-primary md-raised" ng-if="isEdit" ng-click="showWorkspace(simpleJobItem)">
+                查看工作空间
+            </md-button>
+        </div>
+    </md-toolbar>
+	<h2-anchor></h2-anchor>
+    <md-content cg-busy="{promise:loadingLayer,minDuration:500}">
+        <form class="md-padding" name="jenkinsAddForm" layout="column">
+
+            <common-properties/>
+
+            <md-divider/>
+            <h2>构建步骤</h2>
+            <div ng-repeat="builder in item.builders">
+                <maven-build-step closeable="true" builders="item.builders" title="调用Maven顶层目标" maven-versions="mavenVersions" maven-build-step="builder" ng-if="builder.type === 'MAVEN'"/>
+                <sonar-build-step closeable="true" builders="item.builders" title="执行SonarQube扫描" sonar-build-step="builder" ng-if="builder.type === 'SONAR'"/>
+                <ant-build-step closeable="true" builders="item.builders" title="执行Ant" ant-names="antVersions" ant-build-step="builder" ng-if="builder.type === 'ANT'"/>
+                <shell-script shell="builder" closeable="true" builders="item.builders" title="执行shell" ng-if="builder.type === 'SHELL'"/>
+            </div>
+            <md-input-container flex="20" layout-align="start center">
+                <md-menu class="menu-button" style="margin: 0" has-permissions="JENKINS_JOB:READ+CREATE">
+                    <md-button aria-label="添加构建步骤" class="md-primary" ng-click="$mdMenu.open($event)">
+                        <md-icon>add_circle_outline</md-icon>
+                        添加构建步骤
+                    </md-button>
+                    <md-menu-content>
+                        <md-menu-item>
+                            <md-button ng-click="addBuildStep('SHELL','builders')">
+                                执行shell
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addBuildStep('ANT','builders')">
+                                执行Ant
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addBuildStep('MAVEN','builders')">
+                                调用顶层Maven目标
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addBuildStep('SONAR','builders')">
+                                执行SonarQube扫描
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </md-input-container>
+
+            <md-divider/>
+            <h2>构建后操作</h2>
+            <div ng-repeat="publisher in item.publishers">
+                <f2c-publisher title="FIT2CLOUD 代码部署V2.0" f2-c-publisher="publisher" publishers="item.publishers" closeable="true" ng-if="publisher.type === 'F2C_PUBLISHER'"/>
+                <deploy-to-maven-repo title="发布到Maven仓库" publishers="item.publishers" redeploy-publisher="publisher" closeable="true" ng-if="publisher.type === 'REDEPLOY_PUBLISHER'"/>
+                <build-trigger style-class="f2c-publisher" threshold="publisher.threshold" other-jobs="publisher.childProjects" builder-trigger="publisher" job-items="jobItems"
+                               thresholds="thresholds" title="构建其他工程" closeable="true" publishers="item.publishers" ng-if="publisher.type === 'BUILDER_TRIGGER'"/>
+                <email-publisher title="电子邮件通知" publishers="item.publishers" email-publisher="publisher" closeable="true" ng-if="publisher.type === 'EMAIL_PUBLISHER'"/>
+            </div>
+            <md-input-container flex="20" layout-align="start center">
+                <md-menu class="menu-button" style="margin: 0" has-permissions="JENKINS_JOB:READ+CREATE">
+                    <md-button aria-label="添加构建后操作步骤" class="md-primary" ng-click="$mdMenu.open($event)">
+                        <md-icon>add_circle_outline</md-icon>
+                        添加构建后操作步骤
+                    </md-button>
+                    <md-menu-content>
+                        <md-menu-item>
+                            <md-button ng-click="addPublisher('F2C_PUBLISHER')" ng-disabled="publishersDict['F2C_PUBLISHER']">
+                                FIT2CLOUD 代码部署V2.0
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addPublisher('BUILDER_TRIGGER')" ng-disabled="publishersDict['BUILDER_TRIGGER']">
+                                构建其他工程
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addPublisher('REDEPLOY_PUBLISHER')" ng-disabled="publishersDict['REDEPLOY_PUBLISHER']">
+                                发布到Maven仓库
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addPublisher('EMAIL_PUBLISHER')" ng-disabled="publishersDict['EMAIL_PUBLISHER']">
+                                电子邮件通知
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </md-input-container>
+        </form>
+    </md-content>
+    <div flex layout-align="start center" layout-margin>
+        <md-button class="md-raised" ng-click="cancel()">
+            取消
+        </md-button>
+        <md-button class="md-raised md-primary" ng-click="submit()" ng-disabled="jenkinsAddForm.$invalid">
+            保存
+        </md-button>
+    </div>
+    <side-form width="400px" style="min-width: 0"></side-form>
+</div>

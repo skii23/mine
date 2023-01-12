@@ -1,0 +1,557 @@
+{
+  "menu": [
+    {
+      "order": 1,
+      "id": "dashboard",
+      "title": "概览",
+      "icon": "dashboard",
+      "url": "/dashboard",
+      "name": "dashboard",
+      "templateUrl": "project/html/dashboard/dashboard.html",
+      "requiredPermissions": [
+        {
+          "role": "ADMIN",
+          "logical": "OR",
+          "permissions": [
+            "DASHBOARD:READ"
+          ]
+        },
+        {
+          "role": "ORGADMIN",
+          "logical": "OR",
+          "permissions": [
+            "DASHBOARD:READ"
+          ]
+        },
+        {
+          "role": "USER",
+          "logical": "OR",
+          "permissions": [
+            "DASHBOARD:READ"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "id": "env",
+      "title": "环境管理",
+      "icon": "view_day",
+      "children": [
+        {
+          "order": 1,
+          "title": "集群",
+          "url": "/cluster",
+          "name": "cluster",
+          "templateUrl": "project/html/cluster/cluster-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "CLUSTER:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "CLUSTER:READ"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "CLUSTER:READ",
+                "CLUSTER:READ+CREATE",
+                "CLUSTER:READ+UPDATE",
+                "CLUSTER:READ+DELETE"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "主机组",
+          "url": "/cluster-role",
+          "name": "clusterRole",
+          "templateUrl": "project/html/cluster-role/cluster-role-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "CLUSTER_ROLE:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "CLUSTER_ROLE:READ"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "CLUSTER_ROLE:READ",
+                "CLUSTER_ROLE:READ+CREATE",
+                "CLUSTER_ROLE:READ+UPDATE",
+                "CLUSTER_ROLE:READ+DELETE"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "主机",
+          "url": "/server",
+          "name": "server",
+          "templateUrl": "project/html/server/server-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "CLOUD_SERVER:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "CLOUD_SERVER:READ"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "CLOUD_SERVER:READ",
+                "CLOUD_SERVER:READ+GROUP",
+                "CLOUD_SERVER:READ+PROXY"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "环境变量",
+          "url": "/variable",
+          "name": "variable",
+          "templateUrl": "project/html/variable/variable-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "VARIABLE:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "VARIABLE:READ"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "VARIABLE:READ",
+                "VARIABLE:READ+CREATE"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 5,
+          "title": "代理",
+          "name": "proxy",
+          "url": "/proxy",
+          "templateUrl": "project/html/proxy/proxy-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "PROXY:READ",
+                "PROXY:READ+CREATE",
+                "PROXY:READ+UPDATE",
+                "PROXY:READ+DELETE"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "PROXY:READ",
+                "PROXY:READ+CREATE",
+                "PROXY:READ+UPDATE",
+                "PROXY:READ+DELETE"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "PROXY:READ"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "id": "ci",
+      "title": "持续集成",
+      "icon": "developer_board",
+      "children": [
+        {
+          "order": 1,
+          "title": "构建任务",
+          "url": "/jenkins-job",
+          "name": "jenkinsJob",
+          "templateUrl": "project/html/jenkins/job/jenkins-job-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "JENKINS_JOB:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "JENKINS_JOB:READ"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "JENKINS_JOB:READ"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "制品库",
+          "name": "repository",
+          "url": "/repository",
+          "templateUrl": "project/html/repository/repository-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_REPOSITORY:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_REPOSITORY:READ"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_REPOSITORY:READ"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "凭据/流水线模板管理",
+          "name": "credential",
+          "url": "/credential",
+          "templateUrl": "project/html/jenkins/credential/jenkins-credential-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "JENKINS_CREDENTIAL:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "JENKINS_CREDENTIAL:READ"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "JENKINS_CREDENTIAL:READ"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "Jenkins配置",
+          "name": "jenkins-params",
+          "url": "/jenkinsParams",
+          "templateUrl": "project/html/jenkins/jenkins-params.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "JENKINS_PARAMS:READ",
+                "JENKINS_PARAMS:READ+CREATE",
+                "JENKINS_PARAMS:READ+UPDATE",
+                "JENKINS_PARAMS:READ+DELETE"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": 4,
+      "id": "app",
+      "title": "应用管理",
+      "icon": "apps",
+      "children": [
+        {
+          "order": 1,
+          "title": "应用",
+          "name": "application",
+          "url": "/application",
+          "templateUrl": "project/html/application/application-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION:READ"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION:READ"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "应用版本",
+          "name": "application_version",
+          "url": "/application/version",
+          "templateUrl": "project/html/application/version/application-version-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_VERSION:READ",
+                "APPLICATION_VERSION:READ+CREATE",
+                "APPLICATION_VERSION:READ+DELETE"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_VERSION:READ",
+                "APPLICATION_VERSION:READ+CREATE",
+                "APPLICATION_VERSION:READ+DELETE"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_VERSION:READ",
+                "APPLICATION_VERSION:READ+CREATE",
+                "APPLICATION_VERSION:READ+DELETE"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "应用部署记录",
+          "name": "application_deploy",
+          "url": "/application/deploy",
+          "templateUrl": "project/html/application/deploy/application-deployment-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_DEPLOY:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_DEPLOY:READ"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_DEPLOY:READ",
+                "APPLICATION_DEPLOY:READ+CREATE"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "应用部署设置",
+          "name": "application_deploy_settings",
+          "url": "/deploy/settings",
+          "templateUrl": "project/html/application/application-deploy-settings.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "APPLICATION_DEPLOY_SETTINGS:READ"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "id": "script",
+      "title": "脚本管理",
+      "icon": "list_alt",
+      "children": [
+        {
+          "order": 1,
+          "title": "脚本库",
+          "name": "script",
+          "url": "/script",
+          "templateUrl": "project/html/script/script-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "SCRIPT:READ",
+                "SCRIPT:READ+CREATE",
+                "SCRIPT:READ+UPDATE",
+                "SCRIPT:READ+DELETE"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "SCRIPT:READ",
+                "SCRIPT:READ+CREATE",
+                "SCRIPT:READ+UPDATE",
+                "SCRIPT:READ+DELETE"
+              ]
+            },
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "SCRIPT:READ",
+                "SCRIPT:READ+CREATE",
+                "SCRIPT:READ+UPDATE",
+                "SCRIPT:READ+DELETE",
+                "SCRIPT:READ+IMPLEMENT"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "执行脚本",
+          "name": "script_implement",
+          "url": "/script_implement",
+          "templateUrl": "project/html/script/script_implement_public.html",
+          "requiredPermissions": [
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "SCRIPT:READ+IMPLEMENT"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "执行记录",
+          "name": "script_implement_log",
+          "url": "/script_implement_log",
+          "templateUrl": "project/html/script/script-implement-log-list.html",
+          "requiredPermissions": [
+            {
+              "role": "USER",
+              "logical": "OR",
+              "permissions": [
+                "SCRIPT_IMPLEMENT_LOG:READ"
+              ]
+            },
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "SCRIPT_IMPLEMENT_LOG:READ"
+              ]
+            },
+            {
+              "role": "ORGADMIN",
+              "logical": "OR",
+              "permissions": [
+                "SCRIPT_IMPLEMENT_LOG:READ"
+              ]
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "脚本过滤设置",
+          "name": "script_filter",
+          "url": "/script_filter",
+          "templateUrl": "project/html/script/script-filter-list.html",
+          "requiredPermissions": [
+            {
+              "role": "ADMIN",
+              "logical": "OR",
+              "permissions": [
+                "SCRIPT_FILTER:READ"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

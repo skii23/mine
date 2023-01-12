@@ -1,0 +1,1 @@
+ALTER TABLE devops_application ADD workspace_id VARCHAR(50) NULL;

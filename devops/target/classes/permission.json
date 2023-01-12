@@ -1,0 +1,724 @@
+{
+  "version": "2.0",
+  "permissions": [
+    {
+      "id": "CLUSTER:READ",
+      "name": "查看集群",
+      "resourceId": "CLUSTER",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "CLUSTER:READ+CREATE",
+      "name": "创建集群",
+      "resourceId": "CLUSTER",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "CLUSTER:READ+DELETE",
+      "name": "删除集群",
+      "resourceId": "CLUSTER",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "CLUSTER:READ+UPDATE",
+      "name": "修改集群",
+      "resourceId": "CLUSTER",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "CLUSTER_ROLE:READ",
+      "name": "查看主机组",
+      "resourceId": "CLUSTER_ROLE",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "CLUSTER_ROLE:READ+CREATE",
+      "name": "创建主机组",
+      "resourceId": "CLUSTER_ROLE",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "CLUSTER_ROLE:READ+UPDATE",
+      "name": "修改主机组",
+      "resourceId": "CLUSTER_ROLE",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "CLUSTER_ROLE:READ+DELETE",
+      "name": "删除主机组",
+      "resourceId": "CLUSTER_ROLE",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "VARIABLE:READ",
+      "name": "查看环境变量",
+      "resourceId": "VARIABLE",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "VARIABLE:READ+CREATE",
+      "name": "创建环境变量",
+      "resourceId": "VARIABLE",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "VARIABLE:READ+DELETE",
+      "name": "删除环境变量",
+      "resourceId": "VARIABLE",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "VARIABLE:READ+UPDATE",
+      "name": "修改环境变量",
+      "resourceId": "VARIABLE",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "CLOUD_SERVER:READ",
+      "name": "查看云主机",
+      "resourceId": "CLOUD_SERVER",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "CLOUD_SERVER:READ+GROUP",
+      "name": "分组云主机",
+      "resourceId": "CLOUD_SERVER",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "CLOUD_SERVER:READ+PROXY",
+      "name": "设置代理",
+      "resourceId": "CLOUD_SERVER",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION:READ",
+      "name": "查看应用",
+      "resourceId": "APPLICATION",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION:READ+CREATE",
+      "name": "创建应用",
+      "resourceId": "APPLICATION",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION:READ+DELETE",
+      "name": "删除应用",
+      "resourceId": "APPLICATION",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION:READ+UPDATE",
+      "name": "修改应用",
+      "resourceId": "APPLICATION",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION:READ+SETTING",
+      "name": "设置应用",
+      "resourceId": "APPLICATION",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION_VERSION:READ",
+      "name": "查看应用版本",
+      "resourceId": "APPLICATION_VERSION",
+      "parentRoles": [
+        "ADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION_VERSION:READ+CREATE",
+      "name": "创建应用版本",
+      "resourceId": "APPLICATION_VERSION",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION_VERSION:READ+DELETE",
+      "name": "删除应用版本",
+      "resourceId": "APPLICATION_VERSION",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION_DEPLOY:READ",
+      "name": "查看应用部署",
+      "resourceId": "APPLICATION_DEPLOY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION_DEPLOY:READ+CREATE",
+      "name": "创建应用部署",
+      "resourceId": "APPLICATION_DEPLOY",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION_REPOSITORY:READ",
+      "name": "查看制品库",
+      "resourceId": "APPLICATION_REPOSITORY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION_REPOSITORY:READ+CREATE",
+      "name": "创建制品库",
+      "resourceId": "APPLICATION_REPOSITORY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN"
+      ]
+    },
+    {
+      "id": "APPLICATION_REPOSITORY:READ+DELETE",
+      "name": "删除制品库",
+      "resourceId": "APPLICATION_REPOSITORY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN"
+      ]
+    },
+    {
+      "id": "APPLICATION_REPOSITORY:READ+UPDATE",
+      "name": "修改制品库",
+      "resourceId": "APPLICATION_REPOSITORY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN"
+      ]
+    },
+    {
+      "id": "PROXY:READ",
+      "name": "查看代理",
+      "resourceId": "PROXY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "PROXY:READ+CREATE",
+      "name": "创建代理",
+      "resourceId": "PROXY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN"
+      ]
+    },
+    {
+      "id": "PROXY:READ+DELETE",
+      "name": "删除代理",
+      "resourceId": "PROXY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN"
+      ]
+    },
+    {
+      "id": "PROXY:READ+UPDATE",
+      "name": "修改代理",
+      "resourceId": "PROXY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN"
+      ]
+    },
+    {
+      "id": "SCRIPT:READ",
+      "name": "查看脚本",
+      "resourceId": "SCRIPT",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "SCRIPT:READ+CREATE",
+      "name": "创建脚本",
+      "resourceId": "SCRIPT",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "SCRIPT:READ+DELETE",
+      "name": "删除脚本",
+      "resourceId": "SCRIPT",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "SCRIPT:READ+UPDATE",
+      "name": "修改脚本",
+      "resourceId": "SCRIPT",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "SCRIPT:READ+IMPLEMENT",
+      "name": "执行脚本",
+      "resourceId": "SCRIPT",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "SCRIPT_IMPLEMENT_LOG:READ",
+      "name": "查看脚本执行记录",
+      "resourceId": "SCRIPT_IMPLEMENT_LOG",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "DASHBOARD:READ",
+      "name": "查看DevOps概览",
+      "resourceId": "DASHBOARD",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "DASHBOARD_GROUP_ANALYSIS:READ",
+      "name": "查看DevOps小组概览",
+      "resourceId": "DASHBOARD_GROUP_ANALYSIS",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN"
+      ]
+    },
+    {
+      "id": "JENKINS_JOB:READ",
+      "name": "查看构建任务",
+      "resourceId": "JENKINS_JOB",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_JOB:READ+CREATE",
+      "name": "创建构建任务",
+      "resourceId": "JENKINS_JOB",
+      "parentRoles": [
+        "ADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_JOB:READ+UPDATE",
+      "name": "修改构建任务",
+      "resourceId": "JENKINS_JOB",
+      "parentRoles": [
+        "ADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_JOB:READ+BUILD",
+      "name": "触发构建任务",
+      "resourceId": "JENKINS_JOB",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_JOB:READ+DELETE",
+      "name": "删除构建任务",
+      "resourceId": "JENKINS_JOB",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_JOB:READ+GRANT",
+      "name": "授权构建任务",
+      "resourceId": "JENKINS_JOB",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN"
+      ]
+    },
+    {
+      "id": "JENKINS_JOB_HISTORY:READ",
+      "name": "查看构建历史",
+      "resourceId": "JENKINS_JOB_HISTORY",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_JOB_HISTORY:READ+UPDATE",
+      "name": "编辑构建历史",
+      "resourceId": "JENKINS_JOB_HISTORY",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_JOB_HISTORY:READ+DELETE",
+      "name": "删除构建历史",
+      "resourceId": "JENKINS_JOB_HISTORY",
+      "parentRoles": [
+        "USER",
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "JENKINS_PARAMS:READ",
+      "name": "查看Jenkins配置参数",
+      "resourceId": "JENKINS_PARAMS",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "JENKINS_PARAMS:READ+UPDATE",
+      "name": "修改Jenkins配置参数",
+      "resourceId": "JENKINS_PARAMS",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "JENKINS_PARAMS:READ+CREATE",
+      "name": "新增Jenkins配置参数",
+      "resourceId": "JENKINS_PARAMS",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "JENKINS_PARAMS:READ+DELETE",
+      "name": "删除Jenkins配置参数",
+      "resourceId": "JENKINS_PARAMS",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "JENKINS_CREDENTIAL:READ",
+      "name": "查看凭据",
+      "resourceId": "JENKINS_CREDENTIAL",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_CREDENTIAL:READ+CREATE",
+      "name": "新增凭据",
+      "resourceId": "JENKINS_CREDENTIAL",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_CREDENTIAL:READ+DELETE",
+      "name": "删除凭据",
+      "resourceId": "JENKINS_CREDENTIAL",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "JENKINS_CREDENTIAL:READ+UPDATE",
+      "name": "新增凭据",
+      "resourceId": "JENKINS_CREDENTIAL",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_CREDENTIAL:READ+GRANT",
+      "name": "凭据授权",
+      "resourceId": "JENKINS_CREDENTIAL",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN"
+      ]
+    },
+    {
+      "id": "JENKINS_VIEW:READ",
+      "name": "查看视图",
+      "resourceId": "JENKINS_VIEW",
+      "parentRoles": [
+        "ADMIN",
+        "ORGADMIN",
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_VIEW:READ+CREATE",
+      "name": "新增视图",
+      "resourceId": "JENKINS_VIEW",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_VIEW:READ+UPDATE",
+      "name": "编辑视图",
+      "resourceId": "JENKINS_VIEW",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "JENKINS_VIEW:READ+DELETE",
+      "name": "删除视图",
+      "resourceId": "JENKINS_VIEW",
+      "parentRoles": [
+        "USER"
+      ]
+    },
+    {
+      "id": "APPLICATION_DEPLOY_SETTINGS:READ",
+      "name": "查看应用部署设置",
+      "resourceId": "APPLICATION_DEPLOY_SETTINGS",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "APPLICATION_DEPLOY_SETTINGS:READ+UPDATE",
+      "name": "更改应用部署设置",
+      "resourceId": "APPLICATION_DEPLOY_SETTINGS",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "APPLICATION_DEPLOY_SETTINGS:READ+DELETE",
+      "name": "删除应用部署设置",
+      "resourceId": "APPLICATION_DEPLOY_SETTINGS",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "APPLICATION_DEPLOY_SETTINGS:READ+CREATE",
+      "name": "新增应用部署设置",
+      "resourceId": "APPLICATION_DEPLOY_SETTINGS",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "SCRIPT_FILTER:READ",
+      "name": "查看脚本过滤规则",
+      "resourceId": "SCRIPT_FILTER",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "SCRIPT_FILTER:READ+CREATE",
+      "name": "新增脚本过滤规则",
+      "resourceId": "SCRIPT_FILTER",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "SCRIPT_FILTER:READ+UPDATE",
+      "name": "修改脚本过滤规则",
+      "resourceId": "SCRIPT_FILTER",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "SCRIPT_FILTER:READ+DELETE",
+      "name": "删除脚本过滤规则",
+      "resourceId": "SCRIPT_FILTER",
+      "parentRoles": [
+        "ADMIN"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "CLUSTER",
+      "name": "集群"
+    },
+    {
+      "id": "CLUSTER_ROLE",
+      "name": "主机组"
+    },
+    {
+      "id": "CLOUD_SERVER",
+      "name": "云主机"
+    },
+    {
+      "id": "APPLICATION",
+      "name": "应用"
+    },
+    {
+      "id": "APPLICATION_VERSION",
+      "name": "应用版本"
+    },
+    {
+      "id": "APPLICATION_DEPLOY",
+      "name": "应用部署"
+    },
+    {
+      "id": "APPLICATION_REPOSITORY",
+      "name": "制品库"
+    },
+    {
+      "id": "SCRIPT",
+      "name": "脚本"
+    },
+    {
+      "id": "SCRIPT_IMPLEMENT_LOG",
+      "name": "脚本执行记录"
+    },
+    {
+      "id": "DASHBOARD",
+      "name": "概览"
+    },
+    {
+      "id": "VARIABLE",
+      "name": "环境变量"
+    },
+    {
+      "id": "PROXY",
+      "name": "代理"
+    },
+    {
+      "id": "JENKINS_JOB",
+      "name": "构建任务"
+    },
+    {
+      "id": "JENKINS_JOB_HISTORY",
+      "name": "构建历史"
+    },
+    {
+      "id": "JENKINS_PARAMS",
+      "name": "Jenkins参数设置"
+    },
+    {
+      "id": "JENKINS_CREDENTIAL",
+      "name": "凭据管理"
+    },
+    {
+      "id": "JENKINS_VIEW",
+      "name": "视图管理"
+    },
+    {
+      "id":"APPLICATION_DEPLOY_SETTINGS",
+      "name": "应用部署设置"
+    },
+    {
+      "id": "SCRIPT_FILTER",
+      "name":"命令过滤设置"
+    },
+    {
+      "id": "DASHBOARD_GROUP_ANALYSIS",
+      "name":"DevOps小组概览"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+<div layout="column" class="build-parameter">
+    <close-btn item="parameter" items="parameters"/>
+    <div class="build-parameter-label">{{title}}</div>
+    <md-input-container flex>
+        <label>名称</label>
+        <input name="name" ng-model="parameter.name" require/>
+    </md-input-container>
+    <md-input-container flex>
+        <label>默认值</label>
+        <input name="defaultValue" ng-model="parameter.defaultValue"/>
+    </md-input-container>
+    <md-input-container flex>
+        <label>描述</label>
+        <textarea name="description" ng-model="parameter.description"></textarea>
+    </md-input-container>
+    <md-input-container flex-gt-sm>
+        <md-checkbox ng-model="parameter.trim">
+            清除空白字符
+        </md-checkbox>
+    </md-input-container>
+</div>

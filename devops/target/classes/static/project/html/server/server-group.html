@@ -1,0 +1,39 @@
+<div ng-controller="GroupServerCtrl" ng-cloak>
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>加入主机组</div>
+        </div>
+    </md-toolbar>
+    <div class="md-padding" layout="column">
+        <form name="GroupServerForm" class="md-padding">
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>集群</label>
+                    <md-select ng-model="clusterId" ng-change="clusterChange()" required>
+                        <md-option ng-repeat="cluster in clusters" value="{{cluster.id}}">{{cluster.name}}</md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>主机组</label>
+                    <md-select ng-model="currentClusterRole" required>
+                        <!--  <md-select multiple ng-model="currentClusterRole" required>-->
+                        <md-option ng-repeat="clusterRole in clusterRoles" value="{{clusterRole.id}}">
+                            {{clusterRole.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+        </form>
+        <div layout="row" layout-align="start center" layout-margin>
+            <md-button class="md-raised" ng-click="toggleForm();">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit();" ng-disabled="GroupServerForm.$invalid">
+                保存
+            </md-button>
+        </div>
+    </div>
+</div>
+

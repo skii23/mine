@@ -1,0 +1,100 @@
+<div ng-cloak ng-controller="ApplicationEditCtrl">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>修改应用</div>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <div layout="column">
+            <form name="ApplicationForm" class="md-padding">
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>名称</label>
+                        <input md-maxlength="50" required name="name" ng-model="item.name">
+                        <div ng-messages="ApplicationForm.name.$error">
+                            <div ng-message="required">必填.</div>
+                            <div ng-message="md-maxlength">不要超过50个字符</div>
+                        </div>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>描述</label>
+                        <input md-maxlength="30"  name="description" ng-model="item.description">
+                        <div ng-messages="ApplicationForm.description.$error">
+                            <div ng-message="md-maxlength">不要超过30个字符</div>
+                        </div>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>默认集群</label>
+                        <md-select name="clusterId" ng-change="clusterChange()" ng-model="item.clusterId">
+                            <md-option ng-repeat="cluster in clusters" value="{{cluster.id}}">{{cluster.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>默认主机组</label>
+                        <md-select name="clusterRoleId" ng-model="item.clusterRoleId">
+                            <md-option ng-repeat="clusterRole in clusterRoles" value="{{clusterRole.id}}">
+                                {{clusterRole.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div class="application-setting">
+                    <h4>环境设置:</h4>
+
+                    <div layout-gt-sm="row"
+                         ng-repeat="setting in item.applicationRepositorySettings">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>环境</label>
+                            <md-select ng-model="setting.envId" required>
+                                <md-option
+                                        ng-repeat="env in envs | EnvFilter:item.applicationRepositorySettings:setting"
+                                        value="{{env.id}}">{{env.tagValueAlias}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>仓库</label>
+                            <md-select ng-model="setting.repositoryId" required>
+                                <md-option ng-repeat="rep in repositories" value="{{rep.id}}">{{rep.name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-icon style="cursor: pointer;"
+                                 class="ng-scope material-icons" role="button"
+                                 tabindex="0" aria-label="clear" ng-click="deleteSetting($index)">clear
+                        </md-icon>
+                    </div>
+
+                    <button class="md-raised md-success md-button" style="width: 100%"
+                            ng-disabled="(ApplicationForm.$invalid) || !disable()"
+                            ng-click="addSetting()">添加
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+
+
+        <div layout="row" layout-align="start center" layout-margin>
+            <md-button class="md-raised" ng-click="toggleForm();">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit();"
+                       ng-disabled="ApplicationForm.$invalid || item.applicationRepositorySettings.length < 1">
+                保存
+            </md-button>
+        </div>
+    </md-content>
+</div>

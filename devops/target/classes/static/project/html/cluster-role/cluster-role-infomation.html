@@ -1,0 +1,23 @@
+<div layout-fill ng-cloak>
+    <div layout-fill class="cloud-server-info">
+        <md-tabs layout-fill md-dynamic-height md-border-bottom>
+            <md-button layout-fill class="md-primary" ng-click="toggleInfoForm(false)">
+                <div>关闭信息</div>
+            </md-button>
+            <md-tab label="详情">
+                <md-content ng-controller="ClusterRoleInfoController" class="cloud-server-info-content">
+                    <div class="cloud-server-info-md-content">
+                        <md-list flex="">
+                            <md-list-item ng-repeat="item in info" class="md-2-line">
+                                <div class="md-list-item-text">
+                                    <h6>{{item.label}}</h6>
+                                    <div><span>{{getValueOrDefault(detail, item, '无')}}</span></div>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </div>
+                </md-content>
+            </md-tab>
+        </md-tabs>
+    </div>
+</div>

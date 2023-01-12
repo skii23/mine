@@ -1,0 +1,411 @@
+<div layout-fill class="content-backdrop measure-detail" ng-cloak>
+    <div class="md-padding" cg-busy="{promise:loadingLayer,minDuration:500}" layout="column" layout-fill>
+        <div class="uf-navigation uf-text1" ng-show="showDetail"><span class="uf-navigation-item uf-link"
+                ng-click="toggleCnt()">首页&nbsp;/&nbsp;</span><span class="uf-navigation-item">{{currentApp.name}}</span>
+        </div>
+        <div class="md-padding uf-cont-wrap uf-overall uf-nopadding-bottom" layout="row">
+            <div flex="70">
+                <div class="uf-title1 uf-link" ng-click="jumpToApp()">{{overall.name}}</div>
+                <div class="uf-padding1 uf-text1">{{overall.description}}</div>
+                <div class="" layout="row">
+                    <div flex="30"><span class="uf-text2 uf-padding1">环境：</span><span
+                            class="uf-text1 uf-padding2">{{overall.env}}</span></div>
+                    <div flex="30"><span class="uf-text2 uf-padding1">制品库：</span><span
+                            class="uf-text1 uf-padding2">{{overall.repo}}</span></div>
+                    <div flex="30"><span class="uf-text2 uf-padding1">流水线数：</span><span
+                            class="uf-text1 uf-padding2">{{overall.jobs}}</span></div>
+                </div>
+                <div class="" layout="row">
+                    <div flex="30"><span class="uf-text2 uf-padding1">版本数：</span><span
+                            class="uf-text1 uf-padding2">{{overall.versions}}</span></div>
+                    <div flex="30"><span class="uf-text2 uf-padding1">最新版本：</span><span
+                            class="uf-text1 uf-padding2 uf-link"
+                            ng-click="jumpToVersion(overall.latestVersion)">{{overall.latestVersion}}</span></div>
+                    <div flex="30"><span class="uf-text2 uf-padding1">当前部署：</span><span
+                            class="uf-text1 uf-padding2">{{overall.deployVersion}}</span></div>
+                </div>
+            </div>
+            <div class="uf-wrap" flex="30">
+                <div class="uf-center">
+                    <div class="uf-text-center">项目总评分</div>
+                    <div class="uf-padding-top1 uf-text-center"><img ng-attr-src="{{item.src}}"
+                            ng-repeat="item in overallScoreImages"><span class="uf-score1">{{overall.score}}分</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="uf-detail" flex="100" layout="row">
+            <div class="md-padding uf-cont-wrap" flex="25">
+                <div class="uf-head-wrap">
+                    <div class="uf-text3 uf-text-right">仓库数:&nbsp;{{code.repoCount}}</div>
+                    <div layout="row" class="uf-wrap">
+                        <span class="uf-title2">代码</span>
+                        <md-input-container class="uf-input-container">
+                            <md-select ng-model="code.selectid" ng-change="repoChange()">
+                                <md-option ng-repeat="item in code.repos track by $index" ng-value="item.id">
+                                    {{item.name}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <div class="uf-right uf-middle">
+                            <img ng-attr-src="{{item.src}}" ng-repeat="item in codeScoreImages"><span
+                                class="uf-score2">{{code.score}}分</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-padding uf-wrap-background1">
+                    <div layout="row">
+                        <div flex="30">
+                            <div class="uf-text2">分支数</div>
+                            <div class="uf-text4">{{selectRepo.branchCount}}</div>
+                        </div>
+                        <div flex="30">
+                            <div class="uf-text2">tag数</div>
+                            <div class="uf-text4">{{selectRepo.tagCount}}</div>
+                        </div>
+                        <div flex="30">
+                            <div class="uf-text2">MR数</div>
+                            <div class="uf-text4">{{selectRepo.mrCount}}</div>
+                        </div>
+                    </div>
+                    <div class="uf-padding-top2" layout="row">
+                        <div flex="30">
+                            <div class="uf-text2">代码提交次数</div>
+                            <div class="uf-text4">{{selectRepo.commitCount}}</div>
+                        </div>
+                        <div flex="30">
+                            <div class="uf-text2">代码贡献人数</div>
+                            <div class="uf-text4">{{selectRepo.committerCount}}</div>
+                        </div>
+                        <div flex="30">
+                        </div>
+                    </div>
+                </div>
+                <div class="uf-wrap uf-chart">
+                    <div class="uf-chart-head uf-padding-top3" layout="row">
+                        <div class="uf-chart-title">每日代码提交次数</div>
+                        <div class="uf-chart-daterange uf-right" layout="row">
+                            <div class="uf-chart-daterange-item"
+                                ng-class="{'active': item.value === code.selectdailyCommitRange}"
+                                ng-repeat="item in dateRangeOptions"
+                                ng-click="changeChartRange('code',item.value,'dailyCommit')">{{item.label}}</div>
+                        </div>
+                    </div>
+                    <div class="uf-chart-wrap ">
+                        <chart-elem option="dailyCommitSetting" flex="100" style="height: 240px"
+                            element-id="dailyCommit" />
+                    </div>
+                </div>
+                <div class="uf-table-wrap uf-padding-top3">
+                    <div class="uf-thead uf-wrap-background1" layout="row">
+                        <div class="uf-text1" flex="30">时间</div>
+                        <div class="uf-text1" flex="30">代码提交次数</div>
+                        <div class="uf-text1" flex="30">代码贡献者</div>
+                    </div>
+                    <div class="uf-tr" layout="row">
+                        <div class="uf-text1" flex="30">今天</div>
+                        <div class="uf-text2" flex="30">{{getDailyCommitCnt()}}</div>
+                        <div class="uf-text2" flex="30">{{getDailyCommitterCnt()}}</div>
+                    </div>
+                    <div class="uf-tr" layout="row">
+                        <div class="uf-text1" flex="30">近7天</div>
+                        <div class="uf-text2" flex="30">{{getDailyCommitCnt(7)}}</div>
+                        <div class="uf-text2" flex="30">{{getDailyCommitterCnt(7)}}</div>
+                    </div>
+                    <div class="uf-tr" layout="row">
+                        <div class="uf-text1" flex="30">近14天</div>
+                        <div class="uf-text2" flex="30">{{getDailyCommitCnt(14)}}</div>
+                        <div class="uf-text2" flex="30">{{getDailyCommitterCnt(14)}}</div>
+                    </div>
+                </div>
+            </div>
+            <div flex="50" class="uf-child-margin" layout="column">
+                <div class="uf-build uf-cont-wrap">
+                    <div class="uf-head-wrap">
+                        <div class="uf-text3 uf-text-right">构建任务数:&nbsp;{{build.jobCount}}</div>
+                        <div layout="row" class="uf-wrap">
+                            <span class="uf-title2">构建</span>
+                            <md-input-container class="uf-input-container">
+                                <md-select ng-model="build.selectid" ng-change="jobChange()">
+                                    <md-option ng-repeat="item in build.jobs track by $index" ng-value="item.id">
+                                        {{item.name}}</md-option>
+                                </md-select>
+                            </md-input-container>
+                            <div class="uf-right uf-middle">
+                                <img ng-attr-src="{{item.src}}" ng-repeat="item in buildScoreImages"><span
+                                    class="uf-score2">{{build.score}}分</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div layout="row">
+                        <div flex="75">
+                            <div class="uf-wrap uf-chart2">
+                                <div class="uf-chart-head" layout="row">
+                                    <div class="uf-chart-title">每日构建次数</div>
+                                    <div class="uf-chart-daterange uf-right" layout="row">
+                                        <div class="uf-chart-daterange-item"
+                                            ng-class="{'active': item.value === build.selectdailyBuildRange}"
+                                            ng-repeat="item in dateRangeOptions"
+                                            ng-click="changeChartRange('build',item.value,'dailyBuild')">{{item.label}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="uf-chart-wrap">
+                                    <chart-elem option="dailyBuildSetting" flex="100" style="height: 240px"
+                                        element-id="dailyBuild" />
+                                </div>
+                            </div>
+                            <div class="uf-wrap uf-chart2">
+                                <div class="uf-chart-head uf-padding-top2" layout="row">
+                                    <div class="uf-chart-title">平均构建时长</div>
+                                    <div class="uf-chart-daterange uf-right" layout="row">
+                                        <div class="uf-chart-daterange-item"
+                                            ng-class="{'active': item.value === build.selectbuildTimeRange}"
+                                            ng-repeat="item in dateRangeOptions"
+                                            ng-click="changeChartRange('build',item.value,'buildTime')">{{item.label}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="uf-chart-wrap">
+                                    <chart-elem option="buildTimeSetting" flex="100" style="height: 240px"
+                                        element-id="buildTime" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uf-build-right uf-padding-left1 space-around" flex="25" layout="column">
+                            <div class="uf-wrap uf-wrap-background2 uf-text5 uf-padding3"
+                                ng-class="{'uf-warning': selectJob.buildFailRate>columnsWarnValue['build_buildFailRate']}"
+                                flex="10">
+                                平均失败率
+                                <span class="uf-row-right uf-text-weight2"
+                                    ng-show="selectJob">{{selectJob.buildFailRate}}%</span>
+                            </div>
+
+                            <div class="" flex="45">
+                                <div class="uf-text1 uf-padding3 uf-text-center">最新构建</div>
+                                <div class="uf-table-wrap">
+                                    <div class="uf-thead uf-wrap-background1" layout="row">
+                                        <div class="uf-text-center uf-text1" flex="30">任务</div>
+                                        <div class="uf-text-center uf-text1" flex="30">最新构建</div>
+                                        <div class="uf-text-center uf-text1" flex="30">时长</div>
+                                    </div>
+                                    <div class="uf-tbody1">
+                                        <div class="uf-tr" layout="row" ng-repeat="item in getLastBuildList()">
+                                            <div class="uf-padding2 uf-text2 uf-over-ellipsis uf-link" flex="30"
+                                                ng-click="jumpToBuild(item)" ng-attr-title="{{item.name}}">{{item.name}}
+                                            </div>
+                                            <div class="uf-text-center uf-padding2 uf-text2" flex="30">
+                                                {{formatDate(item.latesBuildTime, false, '前')}}</div>
+                                            <div class="uf-text-center uf-padding2 uf-text2" flex="30">
+                                                {{formatDate(item.buildTime)}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="" flex="45">
+                                <div class="uf-wrap uf-text-center uf-padding-top1"><span class="uf-text1">构建次数</span>
+                                </div>
+                                <div class="uf-table-wrap">
+                                    <div class="uf-thead uf-wrap-background1" layout="row">
+                                        <div class="uf-text-center uf-text1" flex="30">任务</div>
+                                        <div class="uf-text-center uf-text1" flex="30">构建次数</div>
+                                        <div class="uf-text-center uf-text1" flex="30">失败率</div>
+                                    </div>
+                                    <div class="uf-tbody1">
+                                        <div class="uf-tr" layout="row" ng-repeat="item in getBuildCntList()">
+                                            <div class="uf-padding2 uf-text2 uf-over-ellipsis uf-link" flex="30"
+                                                ng-click="jumpToBuild(item)" ng-attr-title="{{item.name}}">{{item.name}}
+                                            </div>
+                                            <div class="uf-text-center uf-padding2 uf-text2" flex="30">
+                                                {{item.buildCount}}</div>
+                                            <div class="uf-text-center uf-padding2 uf-text2" flex="30">
+                                                {{item.buildFailRate}}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="uf-quality uf-cont-wrap" flex="100">
+                    <div class="uf-head-wrap">
+                        <div layout="row" class="uf-wrap">
+                            <span class="uf-title2">质量</span>
+                            <md-input-container class="uf-input-container">
+                                <md-select ng-model="quality.selectid" ng-change="qualityChange()">
+                                    <md-option ng-repeat="item in quality.metrics track by $index" ng-value="item.id">
+                                        {{item.name}}</md-option>
+                                </md-select>
+                            </md-input-container>
+                            <div class="uf-right uf-middle">
+                                <img ng-attr-src="{{item.src}}" ng-repeat="item in qualityScoreImages"><span
+                                    class="uf-score2">{{quality.score}}分</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uf-quality-cont" layout="row">
+                        <div layout="column" flex="20">
+                            <div class="uf-wrap-background1">
+                                <div class="uf-wrap uf-padding4 uf-margin"><span class="uf-text7">重复率</span><span
+                                        class="uf-row-right uf-text4">{{selectMetrics.duplicatedRate}}%</span></div>
+                                <div class="uf-wrap uf-padding4 uf-margin"><span class="uf-text7">技术债</span><span
+                                        class="uf-row-right uf-text4">{{selectMetrics.debtFormat}}</span>
+                                </div>
+                            </div>
+                            <div class="uf-text1 uf-padding5">单元测试数值</div>
+                            <div class="uf-wrap-background1">
+                                <div class="uf-wrap uf-padding4 uf-margin"><span class="uf-text7">失败数量</span><span
+                                        class="uf-row-right uf-text4">{{selectMetrics.uniTestFailCount}}</span></div>
+                                <div class="uf-wrap uf-padding4 uf-margin"><span class="uf-text7">用例数</span><span
+                                        class="uf-row-right uf-text4">{{selectMetrics.uniTestCaseCount}}</span></div>
+                            </div>
+                        </div>
+                        <div flex="30">
+                            <div class="uf-wrap-background1 uf-margin1">
+                                <div class="uf-text1 uf-padding4 uf-text-center uf-padding-top1 uf-text-weight">
+                                    问题（总数：{{selectMetrics.issue}}）</div>
+                                <div class="md-padding">
+                                    <div layout="row">
+                                        <div class="uf-text-center" flex="30">
+                                            <div class="uf-text2">开启</div>
+                                            <div class="uf-text4">{{selectMetrics.openIssue}}</div>
+                                        </div>
+                                        <div class="uf-text-center" flex="30">
+                                            <div class="uf-text2">确认</div>
+                                            <div class="uf-text4">{{selectMetrics.confiredIssue}}</div>
+                                        </div>
+                                        <div class="uf-text-center" flex="30">
+                                            <div class="uf-text2">误判</div>
+                                            <div class="uf-text4">{{selectMetrics.falsePositionIssue}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="uf-chart4">
+                                <div class="uf-chart-wrap ">
+                                    <chart-elem option="uniTestSuccessRateSetting" flex="100" style="height: 140px"
+                                        element-id="uniTestSuccessRate" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uf-wrap-background1" flex="50">
+                            <div class="uf-text1 uf-padding4 uf-text-center uf-padding-top1 uf-text-weight">
+                                单元测试覆盖率</div>
+                            <div layout="row">
+                                <div flex="50">
+                                    <div class="uf-chart3">
+                                        <div class="uf-chart-wrap uf-padding-top2">
+                                            <chart-elem option="newUniTestCoverageSetting" flex="100"
+                                                style="height: 140px" element-id="newUniTestCoverage" />
+                                        </div>
+                                    </div>
+                                    <div class="uf-text-center uf-text4 uf-margin">{{selectMetrics.newCoverageCodeLine}}
+                                    </div>
+                                    <div class="uf-text-center uf-text2 uf-margin">最新代码可覆盖行数</div>
+                                </div>
+                                <div flex="50">
+                                    <div class="uf-chart3">
+                                        <div class="uf-chart-wrap uf-padding-top2">
+                                            <chart-elem option="uniTestCoverageSetting" flex="100" style="height: 140px"
+                                                element-id="uniTestCoverage" />
+                                        </div>
+                                    </div>
+                                    <div class="uf-text-center uf-text4 uf-margin">{{selectMetrics.coverageCodeLine}}
+                                    </div>
+                                    <div class="uf-text-center uf-text2 uf-margin">总可覆盖行数</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="uf-child-margin" flex="25" layout="column">
+                <div class="uf-deploy uf-cont-wrap">
+                    <div class="uf-head-wrap">
+                        <div layout="row" class="uf-wrap">
+                            <span class="uf-title2">部署</span>
+                            <div class="uf-right uf-middle">
+                                <img ng-attr-src="{{item.src}}" ng-repeat="item in deployScoreImages"><span
+                                    class="uf-score2">{{deploy.score}}分</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uf-deploy-cont">
+                        <div class="uf-text1">当前部署版本</div>
+                        <div class="uf-padding-top1" layout="row">
+                            <div class="uf-wrap-background1 uf-padding3" flex="50">
+                                <div class="uf-text1">部署总次数</div>
+                                <div class="uf-text4">{{deploy.deployCount}}</div>
+                            </div>
+                            <div class="uf-wrap-background1 uf-padding3 uf-margin-left" flex="50">
+                                <div class="uf-text1">部署成功率</div>
+                                <div class="uf-text4 uf-watch"
+                                    ng-class="{'uf-warning': deploy.deploySuccessRate<columnsWarnValue['deploy_deploySuccessRate']}">
+                                    {{deploy.deploySuccessRate}}%</div>
+                            </div>
+                        </div>
+                        <div class="uf-table-wrap uf-padding-top3">
+                            <div class="uf-thead uf-wrap-background1" layout="row">
+                                <div class="uf-text1" flex="20">版本名称</div>
+                                <div class="uf-text1" flex="20">平均时长</div>
+                                <div class="uf-text1" flex="20">部署次数</div>
+                                <div class="uf-text1" flex="20">成功次数</div>
+                                <div class="uf-text1" flex="20">回滚次数</div>
+                            </div>
+                            <div class="uf-tbody">
+                                <div class="uf-tr" layout="row" ng-repeat="item in deploy.version">
+                                    <div class="uf-padding2 uf-text2 uf-over-ellipsis uf-link" flex="20"
+                                        ng-click="jumpToVersion(item.name)" ng-attr-title="{{item.name}}">{{item.name}}
+                                    </div>
+                                    <div class="uf-padding2 uf-text2" flex="20">{{formatDate(item.deployAvgTime)}}</div>
+                                    <div class="uf-padding2 uf-text2" flex="20">{{item.deployCount}}</div>
+                                    <div class="uf-padding2 uf-text2" flex="20">{{item.deploySuccessCount}}</div>
+                                    <div class="uf-padding2 uf-text2" flex="20">{{item.deployRollbackCount}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="uf-apiTest uf-cont-wrap" flex="100">
+                    <div class="uf-head-wrap">
+                        <div layout="row" class="uf-wrap">
+                            <span class="uf-title2">API测试</span>
+                            <div class="uf-right uf-middle">
+                                <img ng-attr-src="{{item.src}}" ng-repeat="item in apiTestScoreImages"><span
+                                    class="uf-score2">{{apiTest.score}}分</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uf-apiTest-cont">
+                        <div class="uf-chart5">
+                            <div class="uf-chart-wrap">
+                                <chart-elem option="apiTestSetting" flex="100" style="height: 200px"
+                                    element-id="apiTest" />
+                            </div>
+                        </div>
+                        <div class="uf-text-center uf-text4">{{apiTest.testCount}}</div>
+                        <div class="uf-text-center uf-text2">自动化API测试次数</div>
+                        <div class="uf-table-wrap uf-padding6">
+                            <div class="uf-thead uf-wrap-background1" layout="row">
+                                <div class="uf-text1" flex="30">版本名称</div>
+                                <div class="uf-text1" flex="30">测试用例数</div>
+                                <div class="uf-text1" flex="30">成功率</div>
+                            </div>
+                            <div class="uf-tbody1">
+                                <div class="uf-tr" layout="row" ng-repeat="item in apiTest.version">
+                                    <div class="uf-padding2 uf-text2 uf-over-ellipsis uf-link" flex="30"
+                                        ng-click="jumpToVersion(item.name)" ng-attr-title="{{item.name}}">{{item.name}}
+                                    </div>
+                                    <div class="uf-padding2 uf-text2" flex="30">{{item.testCount}}</div>
+                                    <div class="uf-padding2 uf-text2" flex="30">{{item.testSuccessRate}}%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

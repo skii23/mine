@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{'web-public/fit2cloud/img/fit2cloud/favicon.bmp'}">
+    <title>Demo</title>
+    <!--必要CSS-->
+    <link rel="stylesheet" th:href="@{'web-public/external/angular-material/angular-material.min.css?t='+${timestamp}}">
+    <link rel="stylesheet" th:href="@{'web-public/external/angular-busy/angular-busy.min.css?t='+${timestamp}}">
+    <link rel="stylesheet" th:href="@{'web-public/external/font-awesome/web-fonts-with-css/css/fontawesome-all.css?t='+${timestamp}}">
+    <link rel="stylesheet" th:href="@{'web-public/external/material-icons/material-icons.css?t='+${timestamp}}">
+    <link rel="stylesheet" th:href="@{'web-public/fit2cloud/css/fit2cloud-style.css?t='+${timestamp}}">
+
+    <!--可选CSS-->
+
+    <!--项目CSS-->
+    <link rel="stylesheet" th:href="@{'project/css/codemirror.css?t='+${timestamp}}">
+    <link rel="stylesheet" th:href="@{'project/css/project-style.css?t='+${timestamp}}">
+    <link rel="stylesheet" th:href="@{'project/css/dashboard.css?t='+${timestamp}}">
+    <link rel="stylesheet" th:href="@{'project/css/theme/bespin.css?t='+${timestamp}}">
+    <link rel="stylesheet" th:href="@{'project/css/theme/3024-day.css?t='+${timestamp}}">
+
+
+
+
+
+
+
+
+
+</head>
+
+<body ng-app="ProjectApp" ng-cloak>
+<div layout="column" layout-fill ng-controller="IndexCtrl">
+    <section layout="row" flex>
+        <!--test="menus" -->
+        <module layout="row" states="menus"></module>
+        <md-content layout="column" flex ui-view=""></md-content>
+    </section>
+</div>
+
+<!--必要JS-->
+<script th:src="@{'web-public/external/external.min.js?t='+${timestamp}}"></script>
+<script th:src="@{'web-public/fit2cloud/js/fit2cloud-common.min.js?t='+${timestamp}}"></script>
+
+<script th:inline="javascript" type="text/javascript">
+    /*<![CDATA[*/
+    window.appversion = [[${timestamp}]];
+    /*]]>*/
+</script>
+
+<!--可选JS-->
+<script th:src="@{'web-public/external/echarts/echarts.min.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/common/ngDraggable.js?t='+${timestamp}}"></script>
+<script th:src="@{'web-public/external/echarts/fit2cloud-echarts-theme.js?t='+${timestamp}}"></script>
+<script th:src="@{'web-public/external/angular/angular-sanitize.min.js?t='+${timestamp}}"></script>
+<script th:src="@{'web-public/external/clipboard/clipboard.min.js?t='+${timestamp}}"></script>
+<!--项目JS-->
+<script th:src="@{'project/js/support/codemirror.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/support/ui-codemirror.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/support/mode/python/python.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/support/mode/shell/shell.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/support/mode/powershell/powershell.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/support/mode/ruby/ruby.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/support/mode/javascript/javascript.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/support/mode/perl/perl.js?t='+${timestamp}}"></script>
+
+
+
+
+
+<script th:src="@{'project/js/app.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/common/service.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/common/filter.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/common/directive.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/common/filter.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/cluster/cluster.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/cluster-role/cluster-role.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/server/server.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/application/application-version.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/application/application.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/application/application-deployment.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/dashboard/dashboard.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/application/application-deployment-log.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/repository/repository.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/script/script.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/script/script-implement-log.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/role/ansible-role.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/variable/variable.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/proxy/proxy.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/jenkins/jenkins.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/application/application-deploy-settings.js?t='+${timestamp}}"></script>
+<script th:src="@{'project/js/script/script-filter.js?t='+${timestamp}}"></script>
+
+</body>
+</html>

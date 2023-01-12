@@ -1,0 +1,35 @@
+<div layout="column" class="f2c-publisher no-margin">
+    <close-btn item="antBuildStep" items="builders"/>
+    <div style="font-weight: bold">{{title}}</div>
+    <md-input-container flex style="margin-top: 14px;margin-bottom: 10px">
+        <label style="font-weight: bold">Ant Version</label>
+        <md-select name="antName" ng-model="antBuildStep.antName">
+            <md-option ng-repeat="ant in antNames" value="{{ant.paramValue}}">
+                {{ant.paramValue}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+
+    <md-input-container flex>
+        <label>Targets</label>
+        <textarea name="targets" ng-model="antBuildStep.targets" rows="1"/>
+    </md-input-container>
+
+    <div id="{{antBuildStep.$$hashKey.replace(':','-')}}" style="display: none" layout="column">
+        <md-input-container flex>
+            <label>Build File</label>
+            <textarea name="buildFile" ng-model="antBuildStep.buildFile" rows="1"/>
+        </md-input-container>
+
+        <md-input-container flex>
+            <label>Properties</label>
+            <textarea name="properties" ng-model="antBuildStep.properties" rows="1"/>
+        </md-input-container>
+
+        <md-input-container flex>
+            <label>Java Options</label>
+            <textarea name="antOpts" ng-model="antBuildStep.antOpts" rows="1"/>
+        </md-input-container>
+    </div>
+    <show-more-button show-btn-name="高级..." init-status="false" selector="{{'#' + antBuildStep.$$hashKey.replace(':','-')}}"/>
+</div>

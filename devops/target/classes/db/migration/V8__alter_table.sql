@@ -1,0 +1,2 @@
+ALTER TABLE devops_application_deployment_event_log MODIFY stdout MEDIUMTEXT;
+ALTER TABLE devops_application_deployment_log MODIFY stdout MEDIUMTEXT;

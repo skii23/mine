@@ -1,0 +1,62 @@
+<md-dialog ng-controller="CloudServerImportController" aria-label="cloud_server_import" style="top:10%;bottom: 5%;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>云主机导入</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="closeDetail()">
+                <md-icon>close</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="width: 1000px;height: 100%" cg-busy="{promise:detailLoding,minDuration:500}">
+        <div layout="row" flex>
+            <div class="md-padding" layout="column" flex="100">
+                <filter-tools conditions="conditions" results="filters" search="'true'" execute="list()">
+                    <select-columns columns="columns"></select-columns>
+                    <div class="filter-item">
+                        <md-button class="md-icon-button md-whiteframe-1dp" ng-click="list()">
+                            <md-tooltip md-delay="300">刷新</md-tooltip>
+                            <md-icon>refresh</md-icon>
+                        </md-button>
+                    </div>
+                </filter-tools>
+                <div flex layout="column" layout-fill>
+                    <table dynamic-table columns="columns" execute="list({sql: sql})">
+                        <tbody>
+                        <tr ng-repeat="item in items" ng-class="{'tr-selected':selected === item.$$hashKey}">
+                            <td>
+                                <md-checkbox md-no-ink aria-label="是否启用"
+                                             ng-model="item.enable"
+                                             class="md-primary">
+                                </md-checkbox>
+                            </td>
+                            <td>
+                                {{item.instanceName}}
+                            </td>
+                            <td>{{item.workspaceName | StrEmptyFilter}}</td>
+                            <td>{{item.osInfo | StrEmptyFilter}}</td>
+                            <td>{{item.instanceStatus | ServerStatusFilter | StrEmptyFilter}}</td>
+                            <td>{{item.instanceType | StrEmptyFilter}}</td>
+                            <td>{{item.disk | StrEmptyFilter}}</td>
+                            <td>{{item.managementIp | StrEmptyFilter}}</td>
+                            <td>{{item.applyUser | StrEmptyFilter}}</td>
+                            <td>{{item.createTime | date:'yyyy-MM-dd HH:mm'}}</td>
+                            <td>{{item.expiredTime | date:'yyyy-MM-dd HH:mm'}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table-pagination pagination="pagination"></table-pagination>
+                </div>
+            </div>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <md-button ng-click="closeDetail()">
+            取消
+        </md-button>
+        <md-button class="md-primary md-raised" ng-click="next()" style="margin-right:20px;">
+            下一步
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>

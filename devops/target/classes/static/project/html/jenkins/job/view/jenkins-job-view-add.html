@@ -1,0 +1,44 @@
+<div ng-controller="JenkinsJobViewAddCtrl" ng-cloak layout-fill>
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>{{isEdit?'编辑视图':'创建视图'}}</div>
+        </div>
+    </md-toolbar>
+    <md-content cg-busy="{promise:loadingLayer,minDuration:500}" flex>
+        <form layout="column" name="jobViewForm" class="md-padding">
+            <md-input-container flex>
+                <label>视图名称</label>
+                <input name="name" ng-model="item.name" required/>
+                <div ng-messages="jobViewForm.name.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-input-container flex-gt-sm>
+                <md-chips md-removable="true" md-require-match="true" md-transform-chip="$chip" ng-model="jobNameSet">
+                    <md-autocomplete
+                            md-item-text="query"
+                            md-items="query in querySearch(searchText)"
+                            md-no-cache="true"
+                            md-search-text="searchText"
+                            md-selected-item="selectedItem"
+                            placeholder="选择任务">
+                        <span md-highlight-text="searchText">{{query}}</span>
+                    </md-autocomplete>
+                    <md-chip-template>
+                            <span>
+                                <em>{{$chip}}</em>
+                            </span>
+                    </md-chip-template>
+                </md-chips>
+            </md-input-container>
+        </form>
+        <div layout="row" layout-align="start center" flex layout-margin>
+            <md-button class="md-raised" ng-click="toggleForm()">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit()" ng-disabled="jobViewForm.$invalid">
+                保存
+            </md-button>
+        </div>
+    </md-content>
+</div>

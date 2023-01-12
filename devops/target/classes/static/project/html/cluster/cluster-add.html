@@ -1,0 +1,105 @@
+<div ng-cloak ng-controller="ClusterAddController" cg-busy="{promise:loading,minDuration:500}">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>创建集群</div>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <form name="clusterForm" class="md-padding">
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>名称</label>
+                    <input md-maxlength="30" required name="name" ng-model="item.name">
+                    <div ng-messages="clusterForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+
+            <div layout-gt-sm="row" ng-if="currentRole === 'ADMIN'">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>组织</label>
+                    <md-select ng-model="item.organizationId" ng-change="orgChange()" required>
+                        <md-option ng-repeat="organization in organizations" value="{{organization.id}}">{{organization.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+
+
+            <div layout-gt-sm="row" ng-if="currentRole === 'ADMIN' || currentRole === 'ORGADMIN'">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>工作空间</label>
+                    <md-select ng-model="item.workspaceId" required>
+                        <md-option ng-repeat="workspace in workspaces" value="{{workspace.id}}">{{workspace.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>描述</label>
+                    <input md-maxlength="30"  name="description" ng-model="item.description">
+                    <div ng-messages="clusterForm.description.$error">
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <div ng-repeat="tag in tags" layout="column">
+                <div ng-if="tag.tagKey === 'environment'" ng-init="item.tagMappings[0].tagKey = 'environment'" class="application-setting">
+                    <h4>环境设置:</h4>
+                    <div layout="row">
+                        <md-input-container flex>
+                            <md-select class="reset-cursor" ng-model="item.tagMappings[0].tagKey" disabled>
+                                <md-option ng-value="tag.tagKey">
+                                    {{tag.tagAlias}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container flex>
+                            <md-select ng-model="item.tagMappings[0].tagValueId" required>
+                                <md-option ng-repeat="tagValue in tag.tagValues" ng-value="tagValue.id">
+                                    {{tagValue.tagValueAlias}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>
+                <!--<div ng-if="tag.tagKey === 'business'" ng-init="item.tagMappings[1].tagKey = 'business'" class="application-setting">
+                    <h4>业务设置:</h4>
+                    <div layout="row">
+                        <md-input-container flex>
+                            <md-select ng-model="item.tagMappings[1].tagKey" disabled>
+                                <md-option ng-value="tag.tagKey">
+                                    {{tag.tagAlias}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container flex>
+                            <md-select ng-model="item.tagMappings[1].tagValueId">
+                                <md-option ng-repeat="tagValue in tag.tagValues" ng-value="tagValue.id">
+                                    {{tagValue.tagValueAlias}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>-->
+            </div>
+        </form>
+
+
+        <div layout="row" layout-align="start center" layout-margin>
+
+            <md-button class="md-raised" ng-click="toggleForm();">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit();" ng-disabled="clusterForm.$invalid || tagForm.$invalid || duplicate">
+                保存
+            </md-button>
+        </div>
+    </md-content>
+</div>

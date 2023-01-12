@@ -1,0 +1,138 @@
+<div layout="column">
+    <h2>General</h2>
+    <div layout="column" class="no-margin" flex>
+        <md-input-container class="no-margin"  flex-gt-sm>
+            <label>构建任务名称(英文、数字、-、下划线组合，不支持中文和特殊字符！)</label>
+            <!--<input name="jobName" ng-model="item.name" required ng-disabled="isEdit">-->
+            <input name="jobName" ng-model="item.name" required ng-disabled="{{isEdit}}">
+        </md-input-container>
+
+        <md-input-container  flex-gt-sm>
+            <label>任务描述</label>
+            <textarea name="description" ng-model="item.description" rows="1"></textarea>
+        </md-input-container>
+    </div>
+
+    <h2>Git源</h2>
+    <div layout-gt-sm="row">
+        <md-input-container  flex-gt-sm>
+            <label>选择Git源码平台类型</label>
+            <md-select name="scmType" ng-model="item.scm.type" ng-change="changeMultibranchScm()" required>
+                <md-option value="gitea">Gitea</md-option>
+                <md-option value="gitlab">Gitlab</md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+    <div class="jenkins-svn" layout="column" ng-if="item.scm.type === 'gitea'">
+        <div class="jenkins-svn no-margin" ng-repeat="source in item.sources" layout="column">
+            <md-input-container  flex-gt-sm style="margin-top: 14px">
+                <label>选择Gitea地址URL</label>
+                <md-select name="url" ng-model="source.serverUrl" required>
+                    <md-option ng-repeat="giteaServer in giteaServers" value="{{giteaServer.paramKey}}@{{giteaServer.serverUrl}}">
+                        {{giteaServer.displayName}}({{giteaServer.serverUrl}})
+                    </md-option>
+                </md-select>
+                <div ng-messages="jenkinsAddForm.url.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-input-container  flex style="margin-top: 14px">
+                <label>选择git凭据</label>
+                <md-select name="credentialsId" ng-model="source.credentialsId" required>
+                    <md-option ng-repeat="credential in credentials" value="{{credential.id}}">
+                        {{credential.displayName}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+            <div layout="row" style="margin-top: 14px">
+                <md-input-container  flex>
+                    <label>填写组织名称</label>
+                    <input name="repoOwner" required ng-model="source.repoOwner" ng-blur="changeMultibranchRepoOwner(source)">
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>仓库列表</label>
+                    <md-select name="repository" ng-model="source.repository" required>
+                        <md-option ng-repeat="repository in repositorys" value="{{repository.value}}">
+                            {{repository.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-button class="md-primary" flex="20"
+                           ng-click="deleteItem(item.sources,source)"
+                           ng-disabled="item.sources.length === 1">
+                    <aria-label>删除仓库</aria-label>
+                    <md-icon>
+                        delete
+                    </md-icon>
+                </md-button>
+            </div>
+        </div>
+        <div layout="row" layout-align="end center">
+            <md-button class="md-primary md-raised" flex="10" ng-click="addMultibranchRepo()">
+                新增仓库
+            </md-button>
+        </div>
+    </div>
+    <div class="jenkins-svn" layout="column" ng-if="item.scm.type === 'gitlab'">
+        <div class="jenkins-svn no-margin" ng-repeat="source in item.sources" layout="column">
+            <md-input-container  flex-gt-sm style="margin-top: 14px">
+                <label>选择Gitlab地址URL</label>
+                <md-select name="url" ng-model="source.serverName" required="">
+                    <md-option ng-repeat="gitlabserver in gitlabServers" value="{{gitlabserver.name}}">
+                        {{gitlabserver.name}}({{gitlabserver.serverUrl}})
+                    </md-option>
+                </md-select>
+                <div ng-messages="jenkinsAddForm.url.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-input-container  flex style="margin-top: 14px">
+                <label>选择Gitlab凭据</label>
+                <md-select name="credentialsId" ng-model="source.credentialsId" required>
+                    <md-option ng-repeat="credential in credentials" value="{{credential.id}}">
+                        {{credential.displayName}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+            <div layout="row" style="margin-top: 14px">
+                <md-input-container  flex>
+                    <label>填写项目名称(group/project name)</label>
+                    <input name="projectOwner" required ng-model="source.projectOwner" ng-blur="changeMultibranchRepoOwner(source)">
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>选择仓库列表</label>
+                    <md-select name="repository" ng-model="source.projectPath" required>
+                        <md-option ng-repeat="repository in repositorys" value="{{repository.value}}">
+                            {{repository.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-button class="md-primary" flex="20"
+                           ng-click="deleteItem(item.sources,source)"
+                           ng-disabled="item.sources.length === 1">
+                    <aria-label>删除仓库</aria-label>
+                    <md-icon>
+                        delete
+                    </md-icon>
+                </md-button>
+            </div>
+        </div>
+        <div layout="row" layout-align="end center">
+            <md-button class="md-primary md-raised" flex="10" ng-click="addMultibranchRepo()">
+                新增仓库
+            </md-button>
+        </div>
+    </div>
+    <md-input-container  flex-gt-sm style="margin-top: 14px">
+        <label>Pipeline脚本路径和名称(默认源码根目录下的Jenkinsfile文件)</label>
+        <input name="path" ng-model="item.scriptPath" required>
+        <div ng-messages="jenkinsAddForm.url.$error">
+            <div ng-message="required">必填.</div>
+        </div>
+    </md-input-container>
+
+    <h2>绑定应用</h2>
+    <multibranch-f2c-publisher title="FIT2CLOUD 代码部署V2.0" f2-c-publisher="item.f2CPublisher"/>
+    <div layout="row" layout-align="end center" style="margin-top: 50px">
+    </div>
+</div>

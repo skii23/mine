@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtApplicationMapper">
+
+    <!--<resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.ApplicationDTO">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="created_time" jdbcType="BIGINT" property="createdTime" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="organization_id" jdbcType="VARCHAR" property="organizationId" />
+        <result column="scope" jdbcType="VARCHAR" property="scope" />
+        <result column="workspace_id" jdbcType="VARCHAR" property="workspaceId" />
+        <result column="cluster_id" jdbcType="VARCHAR" property="clusterId" />
+        <result column="cluster_role_id" jdbcType="VARCHAR" property="clusterRoleId" />
+        <result column="business_value_id" property="businessValueId" jdbcType="VARCHAR"/>
+        <result column="versionCount" property="versionCount" jdbcType="INTEGER"/>
+        <result column="organization_name" property="organizationName" jdbcType="VARCHAR"/>
+        <result column="workspace_name" property="workspaceName" jdbcType="VARCHAR"/>
+        <result column="deployCount" property="deployCount" jdbcType="INTEGER"/>
+        <result column="systemTagValueAlias" property="systemTagValueAlias" jdbcType="VARCHAR"/>
+    </resultMap>-->
+
+
+    <resultMap id="RepositorySettingMap" type="com.fit2cloud.devops.dto.ApplicationRepositorySettingDTO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="env_id" property="envId" jdbcType="VARCHAR"/>
+        <result column="application_id" property="applicationId" jdbcType="VARCHAR"/>
+        <result column="repository_id" property="repositoryId" jdbcType="VARCHAR"/>
+        <result column="tag_value_alias" property="envName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectApplications" parameterType="java.util.Map" resultType="com.fit2cloud.devops.dto.ApplicationDTO">
+        SELECT
+        devops_application.*,
+        workspace.name workspace_name,
+        organization.name organization_name,
+        created_time createdTime,
+        ifnull(versionCount, 0) versionCount,
+        ifnull(deployCount, 0) deployCount,
+        tag_mapping.tag_value_id business_value_id,
+        tv.tag_value_alias systemTagValueAlias
+        FROM devops_application
+        LEFT JOIN (SELECT
+        count(*) versionCount,
+        application_id
+        FROM devops_application_version
+        GROUP BY application_id) ac ON ac.application_id = devops_application.id
+        LEFT JOIN (SELECT
+        app.id app_id,
+        COUNT(*) deployCount
+        FROM
+        devops_application app
+        LEFT JOIN devops_application_version ver ON app.id=ver.application_id
+        LEFT JOIN devops_application_deployment dep ON dep.application_version_id = ver.id
+        WHERE
+        app.id = ver.application_id
+        AND ver.id = dep.application_version_id
+        GROUP BY
+        app_id) dep_count ON devops_application.id = dep_count.app_id
+        LEFT JOIN organization ON organization.id = devops_application.organization_id
+        LEFT JOIN workspace ON workspace.id = devops_application.workspace_id
+        LEFT JOIN tag_mapping ON tag_mapping.resource_id = devops_application.id AND tag_key = 'business' AND resource_type = 'APPLICATION'
+        LEFT JOIN tag_value tv on tag_mapping.tag_value_id = tv.id
+        <where>
+            <if test="organizationId != null and workspaceId == null ">
+                and (devops_application.organization_id=#{organizationId} OR devops_application.organization_id='ROOT')
+            </if>
+            <if test="organizationId == null and workspaceId != null ">
+                and (devops_application.workspace_id=#{workspaceId} OR devops_application.organization_id='ROOT')
+            </if>
+            <if test="workspaceId != null and organizationId != null ">
+                and (devops_application.workspace_id = #{workspaceId}
+                OR (devops_application.organization_id=#{organizationId} and devops_application.workspace_id='ROOT')
+                OR devops_application.organization_id='ROOT')
+            </if>
+            <if test="name != null ">
+                and devops_application.name like #{name}
+            </if>
+        </where>
+        <if test="sort ==null ">
+            order by created_time DESC
+        </if>
+        <if test="sort !=null ">
+            order by ${sort}
+        </if>
+    </select>
+    <select id="selectRepositorySettings"
+            resultMap="RepositorySettingMap">
+        select
+                dars.*,
+            tv.tag_value_alias
+        from devops_application_repository_setting dars
+            left join tag_value tv on dars.env_id = tv.id
+        where application_id = #{applicationId}
+    </select>
+
+
+</mapper>

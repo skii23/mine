@@ -1,0 +1,291 @@
+<div class="job-form" ng-cloak ng-controller="JenkinsJobAddCtrl" flex="100">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>{{ isEdit ? '编辑构建任务 - '+item.name : '创建构建任务' }}</div>
+            <md-button class="md-primary md-raised" ng-if="isEdit" ng-click="showWorkspace(simpleJobItem)">
+                查看工作空间
+            </md-button>
+        </div>
+    </md-toolbar>
+    <h2-anchor></h2-anchor>
+    <md-content cg-busy="{promise:loadingLayer,minDuration:500}">
+        <form class="md-padding" name="jenkinsAddForm" layout="column">
+            <common-properties/>
+
+            <md-divider/>
+            <h2>构建前步骤</h2>
+            <div ng-repeat="builder in item.preBuilders">
+                <maven-build-step closeable="true" builders="item.preBuilders" title="调用Maven顶层目标" maven-versions="mavenVersions" maven-build-step="builder" ng-if="builder.type === 'MAVEN'"/>
+                <shell-script shell="builder" closeable="true" builders="item.preBuilders" title="执行shell" ng-if="builder.type === 'SHELL'"/>
+            </div>
+            <md-input-container flex="20" layout-align="start center">
+                <md-menu class="menu-button" style="margin: 0" has-permissions="JENKINS_JOB:READ+CREATE">
+                    <md-button aria-label="添加构建步骤" class="md-primary" ng-click="$mdMenu.open($event)">
+                        <md-icon>add_circle_outline</md-icon>
+                        添加构建前步骤
+                    </md-button>
+                    <md-menu-content>
+                        <md-menu-item>
+                            <md-button ng-click="addBuildStep('SHELL','preBuilders')">
+                                执行shell
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addBuildStep('MAVEN','preBuilders')">
+                                调用顶层Maven目标
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </md-input-container>
+            <md-divider/>
+            <h2>构建</h2>
+            <div class="f2c-publisher" layout="column" flex>
+                <md-input-container  flex>
+                    <label>Maven Version</label>
+                    <md-select name="mavenName" ng-model="item.mavenName">
+                        <md-option ng-repeat="mavenOption in mavenVersions" value="{{mavenOption.paramValue}}">
+                            {{mavenOption.alias}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>Root POM</label>
+                    <input name="rootPOM" ng-model="item.rootPOM" required>
+                    <div ng-messages="jenkinsAddForm.rootPOM.$error">
+                        <div ng-message="required">必填.</div>
+                    </div>
+                </md-input-container>
+                <md-input-container  flex>
+                    <label>Goals and options</label>
+                    <input name="goals" ng-model="item.goals">
+                    <div ng-messages="jenkinsAddForm.goals.$error">
+                        <div ng-message="required">必填.</div>
+                    </div>
+                </md-input-container>
+                <div id="mavenElem" flex layout="column">
+                    <md-input-container  flex>
+                        <label>MAVEN_OPTS</label>
+                        <input name="mavenOpts" ng-model="item.mavenOpts">
+                    </md-input-container>
+                    <md-input-container flex>
+                        <md-switch aria-label="Active"  ng-model="item.incrementalBuild">
+                            Incremental build - only build changed modules
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container flex>
+                        <md-switch aria-label="Active"  ng-model="item.archivingDisabled">
+                            Disable automatic artifact archiving
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container flex>
+                        <md-switch aria-label="Active"  ng-model="item.siteArchivingDisabled">
+                            Disable automatic site documentation artifact archiving
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container flex>
+                        <md-switch aria-label="Active"  ng-model="item.fingerprintingDisabled">
+                            Disable automatic fingerprinting of consumed and produced artifacts
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container flex>
+                        <md-switch aria-label="Active"  ng-model="item.disableTriggerDownstreamProjects">
+                            Disable triggering of downstream projects
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container ng-if="!item.disableTriggerDownstreamProjects" flex >
+                        <md-switch aria-label="Active"  ng-model="item.blockTriggerWhenBuilding">
+                            Block downstream trigger when building
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container flex >
+                        <md-switch aria-label="Active"  ng-model="item.aggregatorStyleBuild">
+                            Build modules in parallel
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container flex >
+                        <md-switch aria-label="Active"  ng-model="item.usePrivateMavenRepo">
+                            Use private Maven repository
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container  flex ng-if="item.usePrivateMavenRepo">
+                        <label>Strategy</label>
+                        <md-select name="localRepository" ng-model="item.localRepository.classStr">
+                            <md-option ng-repeat="localRepositoryClassStr in localRepositoryClassStrs"
+                                       value="{{localRepositoryClassStr.value}}">
+                                {{localRepositoryClassStr.key}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container flex >
+                        <md-switch aria-label="Active"  ng-model="item.resolveDependencies">
+                            Resolve Dependencies during Pom parsing
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container flex >
+                        <md-switch aria-label="Active"  ng-model="item.runHeadless">
+                            Run Headless
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container flex >
+                        <md-switch aria-label="Active"  ng-model="item.processPlugins">
+                            Process Plugins during Pom parsing
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container flex >
+                        <md-switch aria-label="Active"  ng-model="useCustomWorkspace">
+                            使用自定义工作空间
+                        </md-switch>
+                    </md-input-container>
+                    <md-input-container ng-if="useCustomWorkspace" flex>
+                        <label>路径</label>
+                        <input name="customWorkspace" ng-model="item.customWorkspace" required>
+                        <div ng-messages="jenkinsAddForm.customWorkspace.$error">
+                            <div ng-message="required">必填.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container  flex>
+                        <label>Maven Validation Level</label>
+                        <md-select name="mavenValidationLevel" ng-model="item.mavenValidationLevel">
+                            <md-option ng-repeat="levelOption in levelOptions" value="{{levelOption.value}}">
+                                {{levelOption.key}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <md-input-container flex>
+                        <label>配置文件</label>
+                        <md-select name="settingsClassStr" ng-model="item.settings.classStr">
+                            <md-option ng-repeat="classStr in settingsClasses" value="{{classStr.value}}">
+                                {{classStr.key}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container ng-if="item.settings.classStr === 'org.jenkinsci.plugins.configfiles.maven.job.MvnSettingsProvider'" flex>
+                        <label>Provided Settings</label>
+                        <md-select name="providedSetting" ng-model="item.settings.settingsConfigId">
+                            <md-option ng-repeat="settings in providedSettings" value="{{settings.paramValue}}">
+                                {{settings.alias}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container ng-if="item.settings.classStr === 'jenkins.mvn.FilePathSettingsProvider'" flex>
+                        <label>文件路径</label>
+                        <input name="settingsPath" ng-model="item.settings.path" required>
+                    </md-input-container>
+
+                    <md-input-container flex>
+                        <label>全局配置文件</label>
+                        <md-select name="globalSettings" ng-model="item.globalSettings.classStr">
+                            <md-option ng-repeat="classStr in globalSettingsClasses" value="{{classStr.value}}">
+                                {{classStr.key}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container ng-if="item.globalSettings.classStr === 'org.jenkinsci.plugins.configfiles.maven.job.MvnGlobalSettingsProvider'" flex>
+                        <label>Provided Global Settings</label>
+                        <md-select name="providedGlobalSetting" ng-model="item.globalSettings.settingsConfigId">
+                            <md-option ng-repeat="globalSetting in providedGlobalSettings" value="{{globalSetting.paramValue}}">
+                                {{globalSetting.alias}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container ng-if="item.globalSettings.classStr === 'jenkins.mvn.FilePathGlobalSettingsProvider'" flex>
+                        <label>文件路径</label>
+                        <input name="globalSettings" ng-model="item.globalSettings.path" required>
+                    </md-input-container>
+                </div>
+                <show-more-button show-btn-name="高级..." init-status="false" selector="#mavenElem"/>
+            </div>
+            <md-divider/>
+            <h2>构建后步骤</h2>
+            <md-input-container  flex>
+                <md-radio-group ng-model="item.runPostStepsIfResult.name">
+                    <md-radio-button class="md-primary" value="SUCCESS">Run only if build succeeds</md-radio-button>
+                    <md-radio-button class="md-primary" value="UNSTABLE">Run only if build succeeds or is unstable</md-radio-button>
+                    <md-radio-button class="md-primary" value="FAILURE">Run regardless of build result</md-radio-button>
+                </md-radio-group>
+                <em>Should the post-build steps run only for successful builds, etc.</em>
+            </md-input-container>
+            <div ng-repeat="builder in item.postBuilders">
+                <maven-build-step closeable="true" builders="item.postBuilders" title="调用Maven顶层目标" maven-versions="mavenVersions" maven-build-step="builder" ng-if="builder.type === 'MAVEN'"/>
+                <sonar-build-step closeable="true" builders="item.postBuilders" title="执行SonarQube扫描" sonar-build-step="builder" ng-if="builder.type === 'SONAR'"/>
+                <shell-script shell="builder" closeable="true" builders="item.postBuilders" title="执行shell" ng-if="builder.type === 'SHELL'"/>
+            </div>
+            <md-input-container flex="20" layout-align="start center">
+                <md-menu class="menu-button" style="margin: 0" has-permissions="JENKINS_JOB:READ+CREATE">
+                    <md-button aria-label="添加构建步骤" class="md-primary" ng-click="$mdMenu.open($event)">
+                        <md-icon>add_circle_outline</md-icon>
+                        添加构建后步骤
+                    </md-button>
+                    <md-menu-content>
+                        <md-menu-item>
+                            <md-button ng-click="addBuildStep('SHELL','postBuilders')">
+                                执行shell
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addBuildStep('MAVEN','postBuilders')">
+                                调用顶层Maven目标
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addBuildStep('SONAR','postBuilders')">
+                                执行SonarQube扫描
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </md-input-container>
+
+            <md-divider/>
+            <h2>构建后操作</h2>
+            <div ng-repeat="publisher in item.publishers">
+                <f2c-publisher title="FIT2CLOUD 代码部署V2.0" f2-c-publisher="publisher" publishers="item.publishers" closeable="true" ng-if="publisher.type === 'F2C_PUBLISHER'"/>
+                <deploy-to-maven-repo title="发布到Maven仓库" publishers="item.publishers" redeploy-publisher="publisher" closeable="true" ng-if="publisher.type === 'REDEPLOY_PUBLISHER'"/>
+                <build-trigger style-class="f2c-publisher" threshold="publisher.threshold" other-jobs="publisher.childProjects" builder-trigger="publisher" job-items="jobItems"
+                               thresholds="thresholds" title="构建其他工程" closeable="true" publishers="item.publishers" ng-if="publisher.type === 'BUILDER_TRIGGER'"/>
+                <email-publisher title="电子邮件通知" type="item.type" publishers="item.publishers" email-publisher="publisher" closeable="true" ng-if="publisher.type === 'EMAIL_PUBLISHER'"/>
+            </div>
+            <md-input-container flex="20" layout-align="start center">
+                <md-menu class="menu-button" style="margin: 0" has-permissions="JENKINS_JOB:READ+CREATE">
+                    <md-button aria-label="添加构建步骤" class="md-primary" ng-click="$mdMenu.open($event)">
+                        <md-icon>add_circle_outline</md-icon>
+                        添加构建后操作步骤
+                    </md-button>
+                    <md-menu-content>
+                        <md-menu-item>
+                            <md-button ng-click="addPublisher('F2C_PUBLISHER')" ng-disabled="publishersDict['F2C_PUBLISHER']">
+                                FIT2CLOUD 代码部署V2.0
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addPublisher('BUILDER_TRIGGER')" ng-disabled="publishersDict['BUILDER_TRIGGER']">
+                                构建其他工程
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addPublisher('REDEPLOY_PUBLISHER')" ng-disabled="publishersDict['REDEPLOY_PUBLISHER']">
+                                发布到Maven仓库
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addPublisher('EMAIL_PUBLISHER')" ng-disabled="publishersDict['EMAIL_PUBLISHER']">
+                                电子邮件通知
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </md-input-container>
+        </form>
+    </md-content>
+    <div layout="row" layout-align="start center" layout-margin>
+        <md-button class="md-raised" ng-click="cancel()">
+            取消
+        </md-button>
+        <md-button class="md-raised md-primary" ng-click="submit();" ng-disabled="jenkinsAddForm.$invalid">
+            保存
+        </md-button>
+    </div>
+    <side-form width="400px" style="min-width: 0"></side-form>
+</div>

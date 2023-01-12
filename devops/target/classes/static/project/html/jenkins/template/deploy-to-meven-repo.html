@@ -1,0 +1,32 @@
+<div class="f2c-publisher no-margin" layout="column">
+    <close-btn item="redeployPublisher" items="publishers"/>
+    <div>{{title}}</div>
+    <md-input-container  flex-gt-sm style="margin-top: 14px">
+        <label>Repository URL</label>
+        <input name="repoUrl" ng-model="redeployPublisher.url" required>
+        <div ng-messages="jenkinsAddForm.repoUrl.$error">
+            <div ng-message="required">必填.</div>
+        </div>
+    </md-input-container>
+    <md-input-container  flex-gt-sm>
+        <label>Repository ID</label>
+        <input name="repoId" ng-model="redeployPublisher.id" required>
+        <div ng-messages="jenkinsAddForm.repoId.$error">
+            <div ng-message="required">必填.</div>
+        </div>
+    </md-input-container>
+    <md-input-container flex-gt-sm>
+        <md-checkbox aria-label="Active" ng-model="redeployPublisher.uniqueVersion">
+            Assign unique versions to snapshots
+        </md-checkbox>
+    </md-input-container>
+    <md-input-container  flex-gt-sm style="margin-top: 14px">
+        <label>Release environment variable	</label>
+        <input name="releaseEnvVar" ng-model="redeployPublisher.releaseEnvVar">
+    </md-input-container>
+    <md-input-container  flex-gt-sm>
+        <md-checkbox aria-label="Active" ng-model="redeployPublisher.evenIfUnstable">
+            Deploy even if the build is unstable
+        </md-checkbox>
+    </md-input-container>
+</div>

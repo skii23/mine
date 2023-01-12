@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtApplicationDeploymentLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.ApplicationDeploymentLogDTO"
+               extends="com.fit2cloud.devops.base.mapper.ApplicationDeploymentEventLogMapper.BaseResultMap">
+        <result column="server_name" property="serverName" jdbcType="VARCHAR"/>
+        <result column="manage_ip_address" property="manageIpAddress" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectApplicationDeploymentLog" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        devops_application_deployment_log.*,
+        devops_cloud_server.instance_name server_name,
+        devops_cloud_server.management_ip manage_ip_address
+        FROM devops_application_deployment_log
+        JOIN devops_cloud_server ON devops_application_deployment_log.cloud_server_id = devops_cloud_server.id
+        <where>
+            <if test="deploymentId != null">
+                and devops_application_deployment_log.deployment_id =#{deploymentId}
+            </if>
+        </where>
+        <if test="sort ==null ">
+            order by start_time DESC
+        </if>
+        <if test="sort !=null ">
+            order by ${sort}
+        </if>
+    </select>
+</mapper>

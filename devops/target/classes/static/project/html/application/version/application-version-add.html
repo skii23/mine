@@ -1,0 +1,89 @@
+<div ng-cloak ng-controller="ApplicationVersionAddCtrl" cg-busy="{promise:loading,minDuration:500}">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>添加版本</div>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <div layout="column">
+            <form name="ApplicationVersionForm" class="md-padding">
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>版本号</label>
+                        <input md-maxlength="30" required name="name" ng-model="item.name">
+                        <div ng-messages="testForm.name.$error">
+                            <div ng-message="required">必填.</div>
+                            <div ng-message="md-maxlength">不要超过30个字符</div>
+                        </div>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>应用</label>
+                        <md-select ng-model="item.applicationId" ng-change="appChange()" required>
+                            <md-option ng-repeat="app in applications" value="{{app.id}}">{{app.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>环境</label>
+                        <md-select ng-model="item.environmentValueId" ng-change="onEnvChange()" required>
+                            <md-option ng-repeat="env in envs" value="{{env.id}}">{{env.tagValueAlias}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <md-radio-group class="md-margin" ng-model="item.locationType" layout="row" required ng-init="item.locationType = 'fromArtifact'">
+                    <md-radio-button value="fromArtifact" ng-click="checkLocationType('fromArtifact')">
+                        从制品库选择
+                    </md-radio-button>
+                    <md-radio-button value="fromProxy" ng-click="checkLocationType('fromProxy')">
+                        从代理制品库选择
+                    </md-radio-button>
+                    <md-radio-button value="manualInput">
+                        手动输入
+                    </md-radio-button>
+                </md-radio-group>
+
+                <select-file-tree layout="row" ng-if="item.locationType === 'fromArtifact' || item.locationType === 'fromProxy'"
+                                  bind="item.location" placeholder="请选择软件包" required="true"
+                                  select="file" url="fileTreeUrl" repo="repo">
+                </select-file-tree>
+
+                <div layout="column">
+                    <md-input-container flex="100" ng-if="item.locationType === 'manualInput'">
+                        <label>软件包地址</label>
+                        <input ng-model="item.location" required="true">
+                    </md-input-container>
+                </div>
+
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>描述</label>
+                        <input md-maxlength="30" name="description" ng-model="item.description">
+                        <div ng-messages="ApplicationVersionForm.description.$error">
+                            <div ng-message="md-maxlength">不要超过30个字符</div>
+                        </div>
+                    </md-input-container>
+                </div>
+
+            </form>
+            <div layout="row" layout-align="start center" layout-margin>
+                <md-button class="md-raised" ng-click="toggleForm();">
+                    取消
+                </md-button>
+                <md-button class="md-raised md-primary" ng-click="submit()"
+                           ng-disabled="ApplicationVersionForm.$invalid">
+                    保存
+                </md-button>
+            </div>
+        </div>
+    </md-content>
+
+</div>
