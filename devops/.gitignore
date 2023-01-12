@@ -1,0 +1,11 @@
+target/
+.idea
+*.iml
+.DS_Store
+.mvn/
+.classpath
+.project
+.settings/
+/bin/
+/src/test/
+*.code-workspace
