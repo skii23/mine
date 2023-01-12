@@ -1,0 +1,150 @@
+<div layout-fill ng-controller="ServerCtrl" class="content-backdrop" ng-cloak>
+    <div cg-busy="{promise:loadingLayer,minDuration:500}" layout="column" layout-fill>
+        <div layout="row" flex>
+            <md-content flex="100">
+                <md-toolbar class="content-toolbar">
+                    <div class="md-toolbar-tools">
+                        <div>主机列表</div>
+                        <md-button class="md-primary" ng-click="getServerAddDefault()"
+                                   has-permission="CLOUD_SERVER:READ+GROUP">
+                            <div>
+                                <md-icon>add_circle_outline</md-icon>
+                                创建
+                            </div>
+                        </md-button>
+                        <md-button class="md-primary" ng-click="getImportBulletBox()"
+                                   has-permission="CLOUD_SERVER:READ+GROUP">
+                            <div>
+                                <md-icon>save_alt</md-icon>
+                                导入
+                            </div>
+                        </md-button>
+                        <md-button class="md-primary" has-permission="CLOUD_SERVER:READ+GROUP"
+                                   ng-click="showCloudServerImport()">
+                            <div>
+                                <md-icon>cloud_download</md-icon>
+                                云主机导入
+                            </div>
+                        </md-button>
+                        <md-button class="md-primary" ng-click="deleteServer()"
+                                   has-permission="CLOUD_SERVER:READ+GROUP">
+                            <md-icon>delete</md-icon>
+                            删除
+                        </md-button>
+                        <md-button class="md-primary" ng-click="connect()">
+                            <md-icon>keyboard_tab</md-icon>
+                            连接测试
+                        </md-button>
+                        <md-button class="md-primary" ng-click="group()" has-permission="CLOUD_SERVER:READ+GROUP">
+                            <md-icon>add</md-icon>
+                            加入主机组
+                        </md-button>
+                        <md-button class="md-primary" ng-click="unGroup()" has-permission="CLOUD_SERVER:READ+GROUP">
+                            <md-icon>present_to_all</md-icon>
+                            移出主机组
+                        </md-button>
+                        <md-button class="md-primary" ng-click="proxy()" has-permission="CLOUD_SERVER:READ+PROXY">
+                            <md-icon>add</md-icon>
+                            设置代理
+                        </md-button>
+                        <md-button class="md-primary" ng-click="unProxy()" has-permission="CLOUD_SERVER:READ+PROXY">
+                            <md-icon>delete</md-icon>
+                            取消代理
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <div class="md-padding" layout="column" flex="100">
+                    <filter-tools conditions="conditions" results="filters" search="'true'" execute="list()">
+                        <select-columns columns="columns"></select-columns>
+                        <div class="filter-item">
+                            <md-button class="md-icon-button md-whiteframe-1dp" ng-click="list()">
+                                <md-tooltip md-delay="300">刷新</md-tooltip>
+                                <md-icon>refresh</md-icon>
+                            </md-button>
+                        </div>
+                    </filter-tools>
+                    <div flex layout="column" layout-fill>
+                        <table dynamic-table columns="columns" execute="list({sql: sql})">
+                            <tbody>
+                            <tr ng-repeat="item in items"
+                                ng-class="{'tr-selected':selected === item.$$hashKey}">
+                                <td>
+                                    <md-checkbox md-no-ink aria-label="是否启用" ng-model="item.enable"
+                                                 class="md-primary" ng-click="enableClick($event)"></md-checkbox>
+                                </td>
+                                <td><a class="md-primary" href="" ng-click="showDetail(item)">{{item.instanceName}}</a>
+                                </td>
+                                <td>{{item.clusterName}}</td>
+                                <td>{{item.clusterRoleName}}</td>
+                                <td ng-if="item.cloudAccountName != null ">
+                                    <img ng-src="{{item.icon}}" height="16px"
+                                         width="16px"
+                                         style="vertical-align:middle">&nbsp;&nbsp;&nbsp;{{item.cloudAccountName}}
+                                </td>
+                                <td ng-if="item.cloudAccountName == null ">
+                                    N/A(手动导入)
+                                </td>
+                                <td>{{item.instanceType}}</td>
+                                <td>{{item.instanceTypeDescription}}</td>
+                                <td>{{item.manageOs}}</td>
+                                <td>{{item.managementIp}}</td>
+                                <td>{{item.proxyIp}}</td>
+                                <td ng-init="ipList = getIp(item)">
+                                    <span ng-repeat="ip in ipList">{{ip.value}}{{ip.label}}<br/></span>
+                                </td>
+                                <td>{{item.username}}</td>
+                                <td ng-if="item.source=='LOCAL' ">{{item.instanceStatus}}</td>
+                                <td ng-if="item.source=='CLOUD_IMPORT' ">{{item.instanceStatus | ServerStatusFilter}}
+                                </td>
+                                <td>{{item.connectable | ConnectableFilter}}</td>
+                                <td has-permission="CLOUD_SERVER:READ+GROUP">
+                                    <!--设置名成加op="'其他名称'"，默认的名称为"操作"；设置宽度加width="3 或其他整数"，默认3-->
+                                    <table-menus>
+                                        <md-menu-item>
+                                            <md-button ng-click="getServerEditDefault(item)">
+                                                <md-icon>edit</md-icon>
+                                                编辑
+                                            </md-button>
+                                        </md-menu-item>
+                                        <md-menu-item>
+                                            <md-button ng-click="deleteServer(item)">
+                                                <md-icon>delete</md-icon>
+                                                删除
+                                            </md-button>
+                                        </md-menu-item>
+                                        <md-menu-item>
+                                            <md-button ng-click="group(item)">
+                                                <md-icon>add</md-icon>
+                                                加入主机组
+                                            </md-button>
+                                        </md-menu-item>
+                                        <md-menu-item ng-if="item.clusterRoleId">
+                                            <md-button ng-click="unGroup(item)">
+                                                <md-icon>present_to_all</md-icon>
+                                                移出主机组
+                                            </md-button>
+                                        </md-menu-item>
+                                        <md-menu-item ng-if="item.clusterRoleId">
+                                            <md-button ng-click="scriptImplement(item)">
+                                                <md-icon>call_missed_outgoing</md-icon>
+                                                执行脚本
+                                            </md-button>
+                                        </md-menu-item>
+                                    </table-menus>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table-pagination pagination="pagination"></table-pagination>
+                    </div>
+                </div>
+            </md-content>
+            <!--必须定义$scope.infoUrl,width不设默认400px-->
+            <info-form width="464"></info-form>
+        </div>
+    </div>
+    <!--必须定义$scope.formUrl,width不设默认70%-->
+    <side-form width="50%"></side-form>
+</div>
+
+

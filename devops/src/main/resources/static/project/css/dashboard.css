@@ -1,0 +1,612 @@
+.uf-text-center {
+    text-align: center !important;
+}
+
+.uf-text-right {
+    text-align: right;
+}
+
+.uf-row-reverse {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.uf-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.uf-right {
+    position: absolute;
+    right: 0;
+}
+
+.uf-middle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.uf-nopadding {
+    padding: 0 !important;
+}
+
+.uf-nopadding-bottom {
+    padding-bottom: 0 !important;
+}
+
+.uf-icon {
+    position: absolute;
+}
+
+.uf-back-btn {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+}
+
+.uf-link {
+    cursor: pointer !important;
+    color: #2697FF !important;
+}
+
+.uf-navigation .uf-navigation-item {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0 0 16px;
+    line-height: 20px;
+    font-size: 14px;
+    color: #999999;
+}
+
+
+.uf-navigation .uf-navigation-item:last-child {
+    cursor: default;
+    line-height: 20px;
+    font-size: 14px;
+    color: #333333;
+}
+
+.dashboard *:not(md-icon, .uf-text4, .uf-text5, .uf-text-weight) {
+    font-family: PingFangSC-Regular;
+}
+
+.dashboard,
+.measure-detail,
+.uf-wrap-background {
+    background-color: #FAFAFA;
+}
+
+.dashboard div::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dashboard div::-webkit-scrollbar-track {
+    background-color: #aaa;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
+}
+
+.dashboard div::-webkit-scrollbar-thumb {
+    cursor: pointer;
+    background-color: #eee;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
+}
+
+
+.dashboard .uf-full-height {
+    height: 100%;
+}
+
+.dashboard .uf-chart-wrap>div,
+.measure-detail .uf-chart-wrap>div {
+    box-shadow: none !important;
+}
+
+.dashboard .uf-wrap,
+.measure-detail .uf-wrap {
+    position: relative;
+}
+
+.dashboard .uf-cont-wrap {
+    background-color: #fff;
+    padding: 16px 20px;
+}
+
+.dashboard .uf-title1 {
+    line-height: 28px;
+    font-size: 20px;
+    color: #333333;
+    font-weight: 700;
+}
+
+.dashboard .uf-title2 {
+    line-height: 25px;
+    font-size: 18px;
+    color: #333333;
+    font-weight: 700;
+}
+
+.dashboard .uf-padding1 {
+    padding: 6px 0;
+}
+
+.dashboard .uf-padding2 {
+    padding: 6px;
+}
+
+.dashboard .uf-padding3 {
+    padding: 10px 16px;
+}
+
+.dashboard .uf-padding4 {
+    padding: 0 16px;
+}
+
+.dashboard .uf-padding5 {
+    padding: 16px 0;
+}
+
+.dashboard .uf-padding6 {
+    padding: 2px 0;
+}
+
+.dashboard .uf-padding-top1 {
+    padding-top: 10px;
+}
+
+.dashboard .uf-padding-top2 {
+    padding-top: 16px;
+}
+
+.dashboard .uf-padding-top3 {
+    padding-top: 20px;
+}
+
+.dashboard .uf-padding-left1 {
+    padding-left: 22px;
+}
+
+.dashboard .uf-padding-left2 {
+    padding-left: 6px;
+}
+
+.dashboard .uf-padding-left3 {
+    padding-left: 66px;
+}
+
+.dashboard .uf-margin {
+    margin: 10px 0;
+}
+
+.dashboard .uf-margin1 {
+    margin: 0 10px;
+}
+
+.dashboard .uf-margin-left {
+    margin-left: 16px;
+}
+
+.dashboard .uf-margin-top {
+    margin-top: 16px;
+}
+
+.dashboard .uf-margin-top1 {
+    margin-top: 36px;
+}
+
+.dashboard .uf-margin-top2 {
+    margin-top: 20px;
+}
+
+.dashboard .uf-text1 {
+    font-size: 14px;
+    line-height: 20px;
+    color: #333333;
+}
+
+.dashboard .uf-text2 {
+    font-size: 14px;
+    line-height: 20px;
+    color: #777777;
+}
+
+.dashboard span.uf-text2 {
+    display: inline-block;
+}
+
+.dashboard .uf-text3 {
+    line-height: 18px;
+    font-size: 12px;
+    color: #777777;
+}
+
+.dashboard *.uf-text4 {
+    font-family: Arial-BoldMT;
+    line-height: 18px;
+    min-height: 18px;
+    font-size: 16px;
+    color: #333333;
+    font-weight: 700;
+}
+
+.dashboard *.uf-text5 {
+    line-height: 20px;
+    min-height: 20px;
+    font-size: 14px;
+    color: #FF6473;
+}
+
+.dashboard .uf-text6 {
+    font-size: 14px;
+    line-height: 20px;
+    color: #999999;
+}
+
+.dashboard .uf-text7 {
+    font-size: 14px;
+    line-height: 20px;
+    color: #7A7A7A;
+}
+
+.dashboard .uf-text-lineheight {
+    line-height: 50px;
+}
+
+.dashboard .uf-text-weight {
+    font-weight: 700;
+}
+
+.dashboard .uf-text-weight2 {
+    font-family: Arial-BoldMT;
+    font-weight: 700;
+}
+
+.dashboard .md-tab {
+    line-height: 25px;
+    font-size: 18px;
+    color: #7A7A7A;
+}
+
+.dashboard .md-tab.md-active {
+    color: #2697FF;
+    font-weight: 600;
+}
+
+.dashboard md-tabs.md-default-theme md-ink-bar,
+md-tabs md-ink-bar {
+    background: #2697FF;
+    border-radius: 1.5px;
+    color: #2697FF;
+}
+
+.dashboard .uf-no-board md-select-value,
+.dashboard .uf-no-board md-select:not([disabled]):focus .md-select-value {
+    border: none;
+}
+
+.dashboard .uf-status-label {
+    display: inline-block;
+    padding: 2px 8px;
+}
+
+.dashboard .uf-head-filters {
+    position: absolute;
+    right: 0;
+    z-index: 9;
+}
+
+.dashboard .uf-head-filters .uf-query-input {
+    margin: 0 16px;
+    font-size: 13px;
+    color: #999999;
+    letter-spacing: -0.35px;
+    line-height: 18px;
+    padding: 7px 8px;
+    width: 280px;
+    background: #FFFFFF;
+    border: 1px solid rgba(209, 213, 216, 1);
+    border-radius: 4px;
+}
+
+.dashboard .uf-head-filters .uf-icon-button {
+    color: inherit;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #999999;
+    min-width: auto;
+    min-height: auto;
+}
+
+.dashboard .uf-score1 {
+    position: relative;
+    top: -6px;
+    left: 6px;
+    line-height: 22px;
+    font-size: 16px;
+    color: #333333;
+}
+
+.dashboard .uf-score2 {
+    position: relative;
+    top: -2px;
+    left: 6px;
+    line-height: 20px;
+    font-size: 14px;
+    color: #333333;
+}
+
+.dashboard .uf-detail {
+    margin-top: 12px;
+}
+
+.dashboard .uf-input-container {
+    max-width: 100%;
+    margin: 0;
+    position: relative;
+    top: -6px;
+}
+
+.dashboard .measure-detail .uf-input-container {
+    max-width: 210px;
+}
+
+.dashboard .measure-detail .uf-head-wrap md-input-container {
+    margin: 0 0 0 16px;
+    position: relative;
+    top: -6px;
+}
+
+.dashboard .table {
+    table-layout: fixed;
+    word-break: break-all;
+}
+
+.dashboard .table * {
+    font-family: PingFangSC-Medium;
+}
+
+.dashboard .uf-table thead {
+    background: #F2F4F8;
+    border-radius: 8px;
+    color: #333333;
+    font-weight: 500;
+}
+
+.dashboard .uf-table thead th {
+    text-align: center;
+}
+
+.dashboard .uf-table tbody>tr {
+    font-size: 14px;
+    height: 52px;
+    color: #333333;
+    border-radius: 8px;
+    border-radius: 1px solid #F3F3F3;
+}
+
+.dashboard .uf-table .uf-tbody,
+.dashboard .uf-tbody {
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.dashboard .uf-tbody1 {
+    max-height: 95px;
+    overflow-y: auto;
+}
+
+.table>tbody>tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.table>tbody>tr:nth-child(2n) {
+    background-color: #f6f6f6;
+}
+
+.dashboard .uf-table tbody .uf-over-ellipsis {
+    max-width: 30%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.dashboard .uf-table .uf-over-ellipsis1 {
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.dashboard .uf-tbody .uf-over-ellipsis,
+.dashboard .uf-tbody1 .uf-over-ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.dashboard .uf-table .uf-suctr {
+    font-size: 14px;
+    color: #44B244;
+    font-weight: 500;
+}
+
+.dashboard .uf-table .uf-errtr {
+    display: inline-block;
+    padding: 0 14px;
+    line-height: 20px;
+    background: rgba(255, 100, 115, 0.2);
+    border-radius: 2px;
+    font-size: 14px;
+    color: #FF6473;
+    font-weight: 500;
+}
+
+.dashboard .uf-table md-icon {
+    color: inherit;
+}
+
+.dashboard .uf-table .uf-operate-btn1 {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    color: #2697FF;
+    padding: 5px 8px;
+}
+
+.dashboard .uf-table .uf-operate-btn2 {
+    cursor: pointer;
+    width: 88px;
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    color: #FFFFFF;
+    padding: 5px 8px;
+    background: #2697FF;
+    border-radius: 4px;
+}
+
+.dashboard .uf-table .uf-operate-btn3 {
+    cursor: pointer;
+    width: 88px;
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    color: #AAAAAA;
+    padding: 5px 8px;
+    background: #F2F2F2;
+    border-radius: 4px;
+}
+
+.dashboard .uf-table-pagination .uf-pagination-item {
+    cursor: pointer;
+    margin: 0 8px;
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 10px;
+}
+
+.dashboard .uf-table-pagination .uf-pagination-item.active {
+    background: #ECF3FE;
+    border: 1px solid rgba(142, 184, 255, 1);
+    border-radius: 2px;
+}
+
+.dashboard .uf-head-wrap::after {
+    content: "";
+    display: block;
+    height: 1px;
+    background: #F4F4F4;
+    margin: 8px 0 16px;
+    line-height: 50px;
+}
+
+.dashboard .uf-child-margin>div {
+    margin-left: 16px;
+}
+
+.dashboard .uf-child-margin>div:not(:first-child) {
+    margin-top: 16px;
+}
+
+.dashboard .uf-wrap-background1 {
+    background: #F8FAFE;
+    border-radius: 8px;
+}
+
+.dashboard .uf-wrap-background2 {
+    background: rgba(68, 178, 68, 0.07);
+    border-radius: 8px;
+    color: #44B244;
+}
+
+.dashboard .uf-warning.uf-wrap-background2 {
+    background: rgba(255, 100, 115, 0.07);
+    border-radius: 8px;
+    color: #FF6473;
+}
+
+.dashboard .uf-watch {
+    color: #44B244 !important;
+}
+
+.dashboard .uf-warning.uf-watch {
+    color: #FF6473 !important;
+}
+
+
+.dashboard .uf-wrap-background3 {
+    background: #E9F5FF;
+    border-radius: 4px;
+    color: #2697FF;
+}
+
+.dashboard .uf-chart-wrap canvas {
+    top: -44px !important;
+}
+
+.dashboard .uf-quality .uf-chart-wrap canvas,
+.dashboard .uf-apiTest-cont .uf-chart-wrap canvas {
+    top: 0px !important;
+}
+
+.dashboard .uf-chart {
+    height: 220px;
+}
+
+.dashboard .uf-chart2 {
+    height: 200px;
+}
+
+.dashboard .uf-chart3 {
+    height: 120px;
+}
+
+.dashboard .uf-chart4 {
+    height: 110px;
+}
+
+.dashboard .uf-chart5 {
+    height: 140px;
+}
+
+.dashboard .uf-chart-wrap .ng-binding {
+    display: none;
+}
+
+.dashboard .uf-chart-daterange-item {
+    cursor: pointer;
+    padding: 3px 10px;
+    line-height: 18px;
+    font-size: 13px;
+    color: #666666;
+    border: 1px solid rgba(216, 216, 216, 1);
+    border-radius: 4px;
+    margin-left: 8px;
+    z-index: 9;
+}
+
+.dashboard .uf-chart-daterange-item.active {
+    background: #F2F9FF;
+    color: #2697FF;
+}
+
+.dashboard .uf-table-wrap>div {
+    padding: 8px;
+}
+
+.dashboard .uf-build-right {
+    min-width: 320px;
+}
+
+.dashboard .uf-row-right {
+    position: absolute;
+    right: 16px;
+}

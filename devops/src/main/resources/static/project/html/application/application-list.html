@@ -1,0 +1,100 @@
+<div id="appList" layout-fill ng-controller="ApplicationCtrl" class="content-backdrop" ng-cloak>
+    <div cg-busy="{promise:loadingLayer,minDuration:500}" layout="column" layout-fill>
+        <md-toolbar class="content-toolbar">
+            <div class="md-toolbar-tools">
+                <div>应用列表</div>
+                <md-button class="md-primary" ng-click="create()" has-permission="APPLICATION:READ+CREATE">
+                    <md-icon >add_circle_outline</md-icon>
+                    创建
+                </md-button>
+            </div>
+        </md-toolbar>
+        <div layout="row" flex>
+            <div class="md-padding" layout="column" flex="100">
+                <filter-tools conditions="conditions" results="filters" search="'true'" execute="list()">
+                    <select-columns columns="columns"></select-columns>
+                    <div class="filter-item">
+                        <md-button class="md-icon-button md-whiteframe-1dp" ng-click="list()">
+                            <md-tooltip md-delay="300">刷新</md-tooltip>
+                            <md-icon>refresh</md-icon>
+                        </md-button>
+                    </div>
+                    <div class="filter-item">
+                        <md-button class="md-icon-button md-whiteframe-1dp" ng-click="export()">
+                            <md-tooltip md-delay="300">导出Excel</md-tooltip>
+                            <md-icon>cloud_download</md-icon>
+                        </md-button>
+                    </div>
+                </filter-tools>
+                <div flex layout="column" layout-fill>
+                    <table dynamic-table columns="columns" execute="list({sql: sql})">
+                        <tbody>
+                        <tr ng-repeat="item in items" ng-class="{'tr-selected':selected === item.$$hashKey}">
+                            <td><a class="md-primary" href="" ng-click="showDetail(item)">{{item.name}}</a></td>
+                            <td><a href="" class="md-primary" ng-click="goVersions(item)"
+                            ng-class="item.versionCount === 0 ? 'disabled-cursor':''">{{item.versionCount}}个应用版本</a></td>
+                            <td><a href="" class="md-primary" ng-click="getDeployHistory(item)">{{item.deployCount}}</a></td>
+                            <td>
+                                <div ng-if="item.applicationRepositorySettings">
+                                    环境:
+                                    <span ng-repeat="setting in item.applicationRepositorySettings">
+                                        <span ng-if="setting.envId === 'all'">
+                                            全部环境
+                                        </span>
+                                        <span ng-if="setting.envId !== 'all'">
+                                            {{setting.envName}}
+                                        </span>
+                                    </span>
+                                </div>
+                                {{item.systemTagValueAlias ? '业务：' + item.systemTagValueAlias:''}}
+                            </td>
+                            <td>{{item.scope | ScopeFilter}}</td>
+                            <td ng-if="currentRole == 'ADMIN'">{{item.organizationName | NullFilter}}</td>
+                            <td ng-if="currentRole == 'ORGADMIN' || currentRole == 'ADMIN'">{{item.workspaceName | NullFilter}}</td>
+                            <td>{{item.description}}</td>
+                            <td>{{item.createdTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                            <td>
+                                <!--设置名成加op="'其他名称'"，默认的名称为"操作"；设置宽度加width="3 或其他整数"，默认3-->
+                                <table-menus>
+                                    <md-menu-item has-permission="APPLICATION:READ+UPDATE" ng-if="checkRole(item.scope)">
+                                        <md-button ng-click="edit(item)">
+                                            <md-icon>edit</md-icon>
+                                            编辑
+                                        </md-button>
+                                    </md-menu-item>
+                                    <md-menu-item>
+                                        <md-button ng-click="goVersions(item)">
+                                            <md-icon>library_books</md-icon>
+                                            版本管理
+                                        </md-button>
+                                    </md-menu-item>
+                                    <md-menu-divider has-permission="APPLICATION:READ+DELETE"
+                                                     ng-if="checkRole(item.scope)"></md-menu-divider>
+                                    <md-menu-item has-permission="APPLICATION:READ+DELETE" ng-if="checkRole(item.scope)">
+                                        <md-button ng-click="delete(item)">
+                                            <md-icon>delete</md-icon>
+                                            删除
+                                        </md-button>
+                                    </md-menu-item>
+                                </table-menus>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table-pagination pagination="pagination"></table-pagination>
+                </div>
+
+            </div>
+            <!--必须定义$scope.infoUrl,width不设默认400px-->
+            <info-form></info-form>
+        </div>
+    </div>
+    <!--必须定义$scope.formUrl,width不设默认70%-->
+    <side-form width="50%"></side-form>
+    <!--用于弹窗的部署-->
+    <md-sidenav id="deployForm" class="md-sidenav-right side-form" md-component-id="deployForm" md-whiteframe="4" style="width: 40%">
+        <div ng-include="deployUrl" style="height: 100%"></div>
+    </md-sidenav>
+</div>
+
+

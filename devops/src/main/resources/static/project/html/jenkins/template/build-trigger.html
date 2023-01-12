@@ -1,0 +1,36 @@
+<div ng-class="styleClass">
+    <close-btn items="publishers" item="builderTrigger" ng-if="closeable"/>
+    <div>{{title}}</div>
+    <div layout-gt-sm="row">
+        <md-input-container flex-gt-sm>
+            <md-chips md-removable="true" md-require-match="true" md-transform-chip="$chip"
+                      ng-model="selectedJobs">
+                <md-autocomplete
+                        class="flow-auto"
+                        md-item-text="query"
+                        md-items="query in querySearch(searchText)"
+                        md-no-cache="true"
+                        md-search-text="searchText"
+                        md-selected-item="selectedItem"
+                        placeholder="选择项目">
+                    <span md-highlight-text="searchText">{{query}}</span>
+                </md-autocomplete>
+
+                <md-chip-template>
+                            <span>
+                                <em>{{$chip}}</em>
+                            </span>
+                </md-chip-template>
+            </md-chips>
+        </md-input-container>
+    </div>
+    <div layout-gt-sm="row">
+        <md-input-container class="md-block" flex-gt-sm>
+            <md-radio-group ng-model="threshold.name">
+                <md-radio-button class="md-primary" value="SUCCESS">只有构建稳定时触发</md-radio-button>
+                <md-radio-button class="md-primary" value="UNSTABLE"> 即使构建不稳定时也会触发</md-radio-button>
+                <md-radio-button class="md-primary" value="FAILURE">即使构建失败时也会触发</md-radio-button>
+            </md-radio-group>
+        </md-input-container>
+    </div>
+</div>

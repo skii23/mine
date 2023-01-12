@@ -1,0 +1,33 @@
+FROM registry.test1.dc-fz.paas.cisc.cn/xyzq-cmp/mysql:5.7.25
+
+# 配置文件
+RUN echo \
+"[mysqld]  \n\
+datadir=/var/lib/mysql  \n\
+default-storage-engine=INNODB \n\
+character_set_server=utf8 \n\
+lower_case_table_names=1 \n\
+table_open_cache=128 \n\
+max_connections=2000 \n\
+max_connect_errors=6000 \n\
+innodb_file_per_table=1 \n\
+innodb_buffer_pool_size=1G \n\
+max_allowed_packet=64M \n\
+transaction_isolation=READ-COMMITTED \n\
+innodb_flush_method=O_DIRECT \n\
+innodb_lock_wait_timeout=1800 \n\
+innodb_flush_log_at_trx_commit=0 \n\
+sync_binlog=0 \n\
+sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION \n\
+skip-name-resolve \n\
+[mysql]  \n\
+default-character-set=utf8  \n\
+[mysql.server]  \n\
+default-character-set=utf8  \n"\
+> /etc/mysql/conf.d/my.cnf
+
+ENV MYSQL_ROOT_PASSWORD=Password123@mysql
+
+ADD ./fit2cloud.sql /docker-entrypoint-initdb.d/
+
+VOLUME ["/var/lib/mysql"]

@@ -1,0 +1,33 @@
+<md-dialog aria-label="Mango (Fruit)" style="max-height: 70%">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>查看更新记录</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="closeDetail()">
+                <md-icon>close</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="width: 900px;" >
+        <div class="script-code">
+            <table dynamic-table >
+                <thead>
+                <tr>
+                    <th>提交文件</th>
+                    <th>时间</th>
+                    <th>作者</th>
+                    <th>信息</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="data in datas" >
+                    <td>{{data.affectedPaths}}</td>
+                    <td>{{data.timestamp | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                    <td>{{data.author.fullName}}</td>
+                    <td>{{data.msg}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </md-dialog-content>
+</md-dialog>

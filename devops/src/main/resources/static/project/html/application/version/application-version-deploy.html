@@ -1,0 +1,178 @@
+<div ng-cloak ng-controller="ApplicationVersionDeployCtrl" cg-busy="{promise:loading,minDuration:500}" style="height: 100%" ng-click="checkSelect($event)">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>部署应用</div>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <div layout="column">
+            <form name="deployForm" class="md-padding">
+                <table style="width: 100%">
+                    <tr>
+                        <td>目标集群</td>
+                        <td>
+                            <div layout-gt-sm="row">
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <md-select ng-model="deployment.clusterId" ng-change="clusterChange()" required>
+                                        <md-option ng-repeat="cluster in clusters" value="{{cluster.id}}">
+                                            {{cluster.name}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>目标主机组</td>
+                        <td>
+                            <div layout-gt-sm="row">
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <md-select ng-model="deployment.clusterRoleId" ng-change="clusterRoleChange()"
+                                               required>
+                                        <md-option ng-repeat="clusterRole in clusterRoles" value="{{clusterRole.id}}">
+                                            {{clusterRole.name}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>目标主机</td>
+                        <td>
+                            <div layout-gt-sm="row">
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <md-select ng-model="selectedCloudServers" ng-change="setCloudServerId()"
+                                               required multiple md-selected-html="renderHtml(selectedCloudServers)">
+                                        <md-option ng-repeat="server in servers" ng-value="server">
+                                            {{server.instanceName}}
+                                            {{server.managementIp ? '(' + server.managementIp + ')':''}}
+                                            {{server.connectable | ConnectableFilter}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>部署策略</td>
+                        <td>
+                            <div layout-gt-sm="row">
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <md-select ng-model="deployment.policy" ng-change="typeChange()" required>
+                                        <md-option ng-repeat="policy in policies" value="{{policy}}">
+                                            {{policy | DeployPolicyFilter}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>部署原因</td>
+                        <td>
+                        <div layout-gt-sm="row">
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <input md-maxlength="30" required name="description" ng-model="deployment.description">
+                                <div ng-messages="deployForm.description.$error">
+                                    <div ng-message="required">必填.</div>
+                                    <div ng-message="md-maxlength">不要超过30个字符</div>
+                                </div>
+                            </md-input-container>
+                        </div>
+                        </td>
+                    </tr>
+                </table>
+                <md-input-container flex>
+                    <md-switch aria-label="Active" class="md-warn" ng-model="deployment.autoApiTest">
+                        API自动化测试
+                    </md-switch>
+                </md-input-container>
+                <div ng-if="deployment.autoApiTest" layout="column">
+                    <div class="application-setting">
+                        <h4>应用自动化测试信息:</h4>
+                        <div layout-gt-sm="column">
+                            <virtual-select
+                                    name="productId"
+                                    value="prodId"
+                                    label="name"
+                                    items="products"
+                                    placeholder="选择项目"
+                                    result="deployment.testProdId"
+                                    change="changeProduct"
+                                    required="true"
+                            ></virtual-select>
+                            <virtual-select
+                                    name="testPlanId"
+                                    value="planId"
+                                    label="name"
+                                    items="plans"
+                                    placeholder="测试计划"
+                                    result="deployment.testPlanId"
+                                    required="true"
+                                    ng-if="deployment.testProdId"
+                            ></virtual-select>
+                            <virtual-select
+                                    name="testEvn"
+                                    value="name"
+                                    label="name"
+                                    items="testEnvs"
+                                    placeholder="测试环境"
+                                    result="deployment.testEvn"
+                                    required="true"
+                                    ng-if="deployment.testProdId"
+                            ></virtual-select>
+
+                            <md-input-container flex>
+                                <label>等待部署查询超时时间(秒)</label>
+                                <input type="number" name="pollingTimeoutSec" ng-model="deployment.pollingTimeoutSec">
+                            </md-input-container>
+                            <md-input-container flex>
+                                <label>API测试结果查询超时时间(秒)</label>
+                                <input type="number" name="testPollingTimeoutSec"
+                                       ng-model="deployment.testPollingTimeoutSec" required>
+                                <div ng-messages="jenkinsAddForm.testPollingTimeoutSec.$error">
+                                    <div ng-message="required">必填.</div>
+                                </div>
+                            </md-input-container>
+                            <md-input-container flex>
+                                <label>API测试结果查询间隔时间(秒)</label>
+                                <input type="number" name="testPollingFreqSec"
+                                       ng-model="deployment.testPollingFreqSec" required>
+                                <div ng-messages="jenkinsAddForm.testPollingFreqSec.$error">
+                                    <div ng-message="required">必填.</div>
+                                </div>
+                            </md-input-container>
+                            <md-input-container flex>
+                                <md-checkbox ng-model="deployment.onlyUnPassed">
+                                    是否仅执行未成功的案例
+                                </md-checkbox>
+                            </md-input-container>
+                            <md-input-container flex>
+                                <md-checkbox ng-model="deployment.needReport">
+                                    本次执行是否生成成报告
+                                </md-checkbox>
+                            </md-input-container>
+                            <md-input-container flex>
+                                <label>第三方业务信息</label>
+                                <input type="text" name="biz" ng-model="deployment.biz">
+                            </md-input-container>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div layout="row" layout-align="start center" layout-margin>
+            <md-button class="md-raised" ng-click="toggleForm();">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit();" ng-disabled="deployForm.$invalid">
+                部署
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="checkConnect()" ng-disabled="!deployment.cloudServerId">
+                连接测试
+            </md-button>
+        </div>
+    </md-content>
+</div>

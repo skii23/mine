@@ -1,0 +1,33 @@
+<div ng-controller="JenkinsParamsAddCtrl" ng-cloak flex>
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>{{isEdit?'编辑参数':'添加参数'}}</div>
+        </div>
+    </md-toolbar>
+    <md-content cg-busy="{promise:loadingLayer,minDuration:500}" layout="column" flex class="md-padding">
+        <form name="paramForm" layout="column">
+            <md-input-container>
+                <label>参数名</label>
+                <input name="alias" ng-model="item.alias" required/>
+            </md-input-container>
+            <md-input-container>
+                <label>键</label>
+                <input name="key" ng-model="item.paramKey" required/>
+            </md-input-container>
+            <md-input-container>
+                <label>值</label>
+                <input name="value" ng-model="item.paramValue" required/>
+            </md-input-container>
+        </form>
+        <div>
+            <md-input-container layout="row">
+                <md-button class="md-primary md-raised" ng-click="toggleForm()">
+                    取消
+                </md-button>
+                <md-button class="md-primary md-raised" ng-click="saveParam(item)" ng-disabled="paramForm.$invalid">
+                    保存
+                </md-button>
+            </md-input-container>
+        </div>
+    </md-content>
+</div>

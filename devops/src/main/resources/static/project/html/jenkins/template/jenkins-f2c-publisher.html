@@ -1,0 +1,400 @@
+<div class="f2c-publisher no-margin" layout="column">
+    <close-btn items="publishers" item="f2CPublisher"/>
+    <div>{{title}}</div>
+    <!--需求变更 用户不再填写云管地址及 f2cAccessKey f2cSecretKey-->
+    <!--<md-input-container flex style="margin-top: 14px">
+        <label>云管地址</label>
+        <input name="f2cEndpoint" ng-model="f2CPublisher.f2cEndpoint" required/>
+        <div ng-messages="jenkinsAddForm.f2cEndpoint.$error">
+            <div ng-message="required">必填.</div>
+        </div>
+    </md-input-container>
+    <md-input-container flex>
+        <label>AccessKey</label>
+        <input name="f2cAccessKey" ng-model="f2CPublisher.f2cAccessKey" required/>
+        <div ng-messages="jenkinsAddForm.f2cAccessKey.$error">
+            <div ng-message="required">必填.</div>
+        </div>
+    </md-input-container>
+    <md-input-container flex>
+        <label>SecretKey</label>
+        <input name="f2cSecretKey" ng-model="f2CPublisher.f2cSecretKey" required/>
+        <div ng-messages="jenkinsAddForm.f2cSecretKey.$error">
+            <div ng-message="required">必填.</div>
+        </div>
+    </md-input-container>-->
+   <!-- <h3>工作空间设置</h3>
+    <md-input-container flex>
+        <label>工作空间</label>
+        <md-select name="workspaceId" ng-change="changeWorkspace()"
+                   ng-model="f2CPublisher.workspaceId" required>
+            <md-option ng-repeat="workspace in workspaces" value="{{workspace.id}}">
+                {{workspace.name}}
+            </md-option>
+        </md-select>
+        <div ng-messages="jenkinsAddForm.workspaceId.$error">
+            <div ng-message="required">必填.</div>
+        </div>
+    </md-input-container>-->
+    <h3>应用设置</h3>
+    <md-input-container style="margin: 14px 0">
+        <label>选择应用</label>
+        <md-select data-md-container-class="select-header-wrapper"
+                   md-on-close="clearSearch()"
+                   ng-change="changeApp()"
+                   ng-model="f2CPublisher.applicationId">
+            <md-select-header class="select-header">
+                <input class="header-search-box md-text search-input"
+                       ng-model="appName"
+                       placeholder="输入应用名"
+                       type="search"/>
+            </md-select-header>
+            <md-optgroup label="应用">
+                <md-option ng-repeat="application in applications |
+              filter:{name:appName}" ng-value="application.id">{{application.name}}
+                </md-option>
+            </md-optgroup>
+        </md-select>
+    </md-input-container>
+    <md-input-container flex>
+        <label>选择环境</label>
+        <md-select name="repositorySettingId" ng-change="changeEnv()"
+                   ng-model="f2CPublisher.repositorySettingId" required>
+            <md-option ng-repeat="env in envs" value="{{env.id}}">
+                {{env.name}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+    <h3>Zip文件上传设置</h3>
+    <md-input-container flex style="margin: 14px 4px">
+        <label>文件上传</label>
+        <md-select name="artifactType" ng-model="f2CPublisher.artifactType">
+            <md-option ng-repeat="type in repoTypes" value="{{type}}">
+                {{type}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+
+    <div layout="column" ng-if="f2CPublisher.artifactType === 'Nexus'">
+        <md-input-container flex>
+            <label>Group Id</label>
+            <input name="nexusGroupId" ng-model="f2CPublisher.nexusGroupId" required/>
+            <div ng-messages="jenkinsAddForm.nexusGroupId.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Artifact Id</label>
+            <input name="nexusArtifactId" ng-model="f2CPublisher.nexusArtifactId" required placeholder="应用简称"/>
+            <div ng-messages="jenkinsAddForm.nexusArtifactId.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Artifact Version</label>
+            <input name="nexusArtifactVersion" ng-model="f2CPublisher.nexusArtifactVersion" required/>
+            <div ng-messages="jenkinsAddForm.nexusArtifactVersion.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <div layout="column" ng-if="f2CPublisher.artifactType === 'Nexus3'">
+        <md-input-container flex>
+            <label>Group Id</label>
+            <input name="nexus3GroupId" ng-model="f2CPublisher.nexus3GroupId" required/>
+            <div ng-messages="jenkinsAddForm.nexus3GroupId.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Artifact Id</label>
+            <input name="nexus3ArtifactId" ng-model="f2CPublisher.nexus3ArtifactId" required/>
+            <div ng-messages="jenkinsAddForm.nexus3ArtifactId.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Artifact Version</label>
+            <input name="nexus3ArtifactVersion" ng-model="f2CPublisher.nexus3ArtifactVersion" required/>
+            <div ng-messages="jenkinsAddForm.nexus3ArtifactVersion.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <div layout="column" ng-if="f2CPublisher.artifactType === 'Artifactory'">
+        <md-input-container flex>
+            <label>Path</label>
+            <input name="path" ng-model="f2CPublisher.path" required/>
+            <div ng-messages="jenkinsAddForm.path.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <div layout="column" ng-if="f2CPublisher.artifactType === '阿里云OSS'">
+        <md-input-container flex>
+            <label>Object前缀</label>
+            <input name="objectPrefixAliyun" ng-model="f2CPublisher.objectPrefixAliyun" required/>
+            <div ng-messages="jenkinsAddForm.objectPrefixAliyun.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <div layout="column" ng-if="f2CPublisher.artifactType === '亚马逊S3'">
+        <md-input-container flex>
+            <label>Object前缀</label>
+            <input name="objectPrefixAWS" ng-model="f2CPublisher.objectPrefixAWS" required/>
+            <div ng-messages="jenkinsAddForm.objectPrefixAWS.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+    </div>
+    <h3>CodeDeploy Zip文件设置</h3>
+    <div layout="column" flex class="margin-desc">
+        <md-input-container flex>
+            <label>应用版本</label>
+            <input name="applicationVersionName" ng-model="f2CPublisher.applicationVersionName" required/>
+            <div ng-messages="jenkinsAddForm.applicationVersionName.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Include Files</label>
+            <textarea name="includes" ng-model="f2CPublisher.includes" required rows="3"></textarea>
+            <div ng-messages="jenkinsAddForm.includes.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+            <em>指明哪些文件需要打包到Zip文件中，如有多个文件需要包含，请以逗号","分隔。</em>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Exclude Files</label>
+            <textarea name="excludes" ng-model="f2CPublisher.excludes" required rows="3"></textarea>
+            <div ng-messages="jenkinsAddForm.excludes.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+            <em>指明哪些文件不需要打包到Zip文件中，如有多个文件需要排除，请以逗号","分隔。</em>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Appspec文件路径</label>
+            <input name="appspecFilePath" ng-model="f2CPublisher.appspecFilePath" required>
+            <div ng-messages="jenkinsAddForm.appspecFilePath.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>备注</label>
+            <input name="description" ng-model="f2CPublisher.description">
+        </md-input-container>
+    </div>
+	<h3>镜像构建设置</h3>
+    <md-input-container>
+        <md-checkbox ng-model="f2CPublisher.buildImage">构建镜像</md-checkbox>
+    </md-input-container>
+    <div layout="column" ng-if="f2CPublisher.buildImage" flex class="margin-desc">
+        <md-input-container flex>
+            <label>选择环境</label>
+            <md-select name="imageRepoSettingId" ng-change="changeEnv()" ng-required
+                       ng-model="f2CPublisher.imageRepoSettingId">
+                <md-option ng-repeat="env in envs | ImageEnvFilter: true" value="{{env.id}}">
+                    {{env.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Docker 主机地址</label>
+            <input name="dockerHost" ng-model="f2CPublisher.dockerHost" required/>
+            <div ng-messages="jenkinsAddForm.dockerHost.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+            <em>用来打包镜像的装有 Docker 引擎的主机，需要打开供外部调用的端口，可参考
+                <a href="https://blog.csdn.net/anqixiang/article/details/105004493" target="_blank">这个文档</a>
+                ，示例: http://192.168.1.1:2375。
+            </em>
+        </md-input-container>
+        <md-input-container flex>
+            <label>镜像名</label>
+            <input name="imageName" ng-model="f2CPublisher.imageName" required/>
+            <div ng-messages="jenkinsAddForm.imageName.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>镜像标签</label>
+            <input name="imageTag" ng-model="f2CPublisher.imageTag" required>
+            <div ng-messages="jenkinsAddForm.imageTag.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Dockerfile 路径</label>
+            <input name="dockerfile" ng-model="f2CPublisher.dockerfile" required>
+            <div ng-messages="jenkinsAddForm.dockerfile.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+            <em>
+                相对路径，假如你的 Dockerfile 文件名就叫 Dockerfile，如果 Dockerfile 在项目根路径下，就写 Dockerfile，如果在文件夹 xxx 下面，就写 xxx/Dockerfile。
+            </em>
+        </md-input-container>
+        <md-input-container flex>
+            <label>镜像应用版本</label>
+            <input name="imageAppVersion" placeholder="imageAppVersion" ng-model="f2CPublisher.imageAppVersion" required>
+            <div ng-messages="jenkinsAddForm.imageAppVersion.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+
+    </div>
+    <!--这部分是兴业需要的，不让用户使用自动部署-->
+
+    <md-input-container flex>
+        <md-switch aria-label="Active" class="md-warn" ng-model="f2CPublisher.autoDeploy">
+            是否触发自动部署
+        </md-switch>
+    </md-input-container>
+    <div layout="column" ng-if="f2CPublisher.autoDeploy">
+        <md-input-container flex>
+            <label>目标集群</label>
+            <md-select name="clusterId" ng-change="changeCluster()"
+                       ng-model="f2CPublisher.clusterId" required>
+                <md-option ng-repeat="cluster in clusters" value="{{cluster.id}}">
+                    {{cluster.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container flex>
+            <label>目标主机组</label>
+            <md-select name="clusterRoleId" ng-change="changeClusterRole()"
+                       ng-model="f2CPublisher.clusterRoleId" required="">
+                <md-option ng-repeat="clusterRole in clusterRoles" value="{{clusterRole.id}}">
+                    {{clusterRole.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container>
+            <label>目标主机</label>
+            <md-select ng-model="f2CPublisher.cloudServerId"
+                       data-md-container-class="select-header-wrapper"
+                       md-on-close="clearSearch()"
+                       ng-change="checkTestHostAvailable()">
+                <md-select-header class="select-header">
+                    <input ng-model="serverIp"
+                           type="search"
+                           placeholder="输入IP地址"
+                           class="header-search-box md-text search-input">
+                </md-select-header>
+                <md-optgroup label="目标主机">
+                    <md-option ng-value="cloudServer.id" ng-repeat="cloudServer in cloudServers | filter:{ipArray:serverIp}">
+                        {{cloudServer.instanceName}}{{cloudServer.managementIp?'(' + cloudServer.managementIp + ')':''}}
+                    </md-option>
+                </md-optgroup>
+            </md-select>
+        </md-input-container>
+        <md-input-container flex>
+            <label>部署策略</label>
+            <md-select name="deployPolicy" ng-model="f2CPublisher.deployPolicy">
+                <md-option ng-selected="policy.value === 'all'" ng-repeat="policy in policies" value="{{policy.value}}">
+                    {{policy.key}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container flex>
+            <md-switch aria-label="Active" class="md-warn" ng-model="f2CPublisher.waitForCompletion">
+                是否等待部署成功
+            </md-switch>
+        </md-input-container>
+        <div ng-if="f2CPublisher.waitForCompletion" layout="column">
+            <md-input-container flex>
+                <label>查询超时时间(秒)</label>
+                <input type="number" name="pollingTimeoutSec"
+                       ng-model="f2CPublisher.pollingTimeoutSec" required>
+                <div ng-messages="jenkinsAddForm.pollingTimeoutSec.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-input-container flex>
+                <label>查询间隔时间(秒)</label>
+                <input type="number" name="pollingFreqSec"
+                       ng-model="f2CPublisher.pollingFreqSec" required>
+                <div ng-messages="jenkinsAddForm.pollingFreqSec.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+        </div>
+        <md-input-container flex>
+            <md-switch aria-label="Active" class="md-warn" ng-model="f2CPublisher.autoApiTest">
+                API自动化测试
+            </md-switch>
+        </md-input-container>
+        <div ng-if="f2CPublisher.autoApiTest" layout="column" style="margin-top: 14px">
+            <virtual-select
+                    name="productId"
+                    value="prodId"
+                    label="name"
+                    items="products"
+                    placeholder="选择项目"
+                    result="f2CPublisher.testProdId"
+                    change="changeProduct"
+                    required="true"
+            ></virtual-select>
+            <virtual-select
+                    name="testPlanId"
+                    value="planId"
+                    label="name"
+                    items="plans"
+                    placeholder="测试计划"
+                    result="f2CPublisher.testPlanId"
+                    required="true"
+                    ng-if="f2CPublisher.testProdId"
+            ></virtual-select>
+            <virtual-select
+                    name="testEvn"
+                    value="name"
+                    label="name"
+                    items="testEnvs"
+                    placeholder="测试环境"
+                    result="f2CPublisher.testEvn"
+                    required="true"
+                    ng-if="f2CPublisher.testProdId"
+            ></virtual-select>
+
+            <md-input-container flex style="margin-top: 20px">
+                <label>等待部署超时时间(秒)</label>
+                <input type="number" name="pollingTimeoutSec" ng-model="f2CPublisher.pollingTimeoutSec">
+            </md-input-container>
+            <md-input-container flex style="margin-top: 20px">
+                <label>API自动化测试结果查询超时时间(秒)</label>
+                <input type="number" name="pollingTimeoutSec"
+                       ng-model="f2CPublisher.testPollingTimeoutSec" required>
+                <div ng-messages="jenkinsAddForm.testPollingTimeoutSec.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-input-container flex style="margin-top: 20px">
+                <label>API自动化测试结果查询间隔时间(秒)</label>
+                <input type="number" name="pollingFreqSec"
+                       ng-model="f2CPublisher.testPollingFreqSec" required>
+                <div ng-messages="jenkinsAddForm.testPollingFreqSec.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-input-container flex>
+                <md-checkbox ng-model="f2CPublisher.onlyUnPassed">
+                    是否仅执行未成功的案例
+                </md-checkbox>
+            </md-input-container>
+            <md-input-container flex>
+                <md-checkbox ng-model="f2CPublisher.needReport">
+                    本次执行是否生成成报告
+                </md-checkbox>
+            </md-input-container>
+            <md-input-container flex style="margin-top: 20px">
+                <label>第三方业务信息</label>
+                <input type="text" name="biz" ng-model="f2CPublisher.biz">
+            </md-input-container>
+        </div>
+    </div>
+
+</div>

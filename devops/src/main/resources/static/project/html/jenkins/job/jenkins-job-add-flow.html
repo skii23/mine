@@ -1,0 +1,26 @@
+<div class="job-form" ng-cloak ng-controller="JenkinsJobAddCtrl" flex="100">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>{{ isEdit ? '编辑构建任务 - '+item.name : '创建构建任务' }}</div>
+            <md-button class="md-primary md-raised" ng-if="isEdit" ng-click="showWorkspace(simpleJobItem)">
+                查看工作空间
+            </md-button>
+        </div>
+    </md-toolbar>
+    <h2-anchor></h2-anchor>
+    <md-content cg-busy="{promise:loadingLayer,minDuration:500}">
+        <form class="md-padding" name="jenkinsAddForm" layout="column">
+            <flow-properties/>
+            <md-divider/>
+        </form>
+    </md-content>
+    <div layout="row" layout-align="start center" layout-margin>
+        <md-button class="md-raised" ng-click="cancel()">
+            取消
+        </md-button>
+        <md-button class="md-raised md-primary" ng-click="submit();" ng-disabled="jenkinsAddForm.$invalid">
+            保存
+        </md-button>
+    </div>
+    <side-form width="400px" style="min-width: 0"></side-form>
+</div>

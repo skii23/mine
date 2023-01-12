@@ -1,0 +1,196 @@
+<div class="content-backdrop" layout-fill ng-cloak ng-controller="JenkinsParamsCtrl">
+    <div cg-busy="{promise:loadingLayer,minDuration:500}" layout="column" layout-fill>
+        <md-toolbar class="content-toolbar">
+            <div class="md-toolbar-tools">
+                <div>Jenkins参数设置</div>
+                <md-input-container ng-if="tabIndex === 0">
+                    <md-button class="md-primary" ng-disabled="syncStatus === 'IN_SYNC'" ng-click="syncJobs()" has-permission="JENKINS_PARAMS:READ+UPDATE">
+                        <md-icon>sync</md-icon>
+                        同步构建任务
+                    </md-button>
+                    <md-button class="md-primary " has-permission="JENKINS_PARAMS:READ+UPDATE" ng-click="syncAllCredentials()">
+                        <md-icon>sync</md-icon>
+                        同步凭据
+                    </md-button>
+                </md-input-container>
+                <md-input-container ng-if="tabIndex === 1" has-permissions="JENKINS_PARAMS:READ+CREATE,JENKINS_PARAMS:READ+DELETE">
+                    <md-button class="md-primary" ng-click="editParam()" has-permission="JENKINS_PARAMS:READ+CREATE">
+                        <md-icon>add_circle_outline</md-icon>
+                        添加参数
+                    </md-button>
+                    <!--<md-button class="md-primary" ng-click="editServerParam()" has-permission="JENKINS_PARAMS:READ+CREATE">
+                        <md-icon>add_circle_outline</md-icon>
+                        添加Gitea/GitLab
+                    </md-button>-->
+                    <md-menu class="menu-button" style="margin: 0" has-permissions="JENKINS_PARAMS:READ+CREATE">
+                        <md-button aria-label="添加多分支流水线代码仓库" class="md-primary" ng-click="$mdMenu.open($event)">
+                            <md-icon>add_circle_outline</md-icon>
+                            添加多分支流水线代码仓库
+                        </md-button>
+                        <md-menu-content>
+                            <md-menu-item>
+                                <md-button ng-click="editServerParam(null,'Gitea')">
+                                    添加Gitea Server
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button ng-click="editServerParam(null,'GitLab')">
+                                    添加GitLab Server
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                    <md-button class="md-primary" has-permission="JENKINS_PARAMS:READ+DELETE" ng-click="deleteParams()">
+                        <md-icon>delete</md-icon>
+                        删除
+                    </md-button>
+                </md-input-container>
+            </div>
+        </md-toolbar>
+        <md-tabs flex="100" md-selected="tabIndex">
+            <md-tab>
+                <md-tab-label>
+                    基本参数设置
+                </md-tab-label>
+                <md-tab-body flex="100" layout="column">
+                    <form class="md-padding" name="jenkinsParamsForm">
+                        <div ng-repeat="param in params">
+                            <md-input-container class="md-block" layout-gt-xs="row" md-no-float
+                                                ng-if="param.paramKey == 'jenkins.address'"
+                                                style="margin-bottom: 0px">
+                                <label>Jenkins地址</label>
+                                <md-icon>link</md-icon>
+                                <input required ng-disabled="!isEdit" ng-model="param.paramValue"
+                                       placeholder="Jenkins服务器地址" type="text">
+                            </md-input-container>
+                            <md-input-container class="md-icon-float md-block"
+                                                ng-if="param.paramKey == 'jenkins.username'">
+                                <label>Jenkins账号</label>
+                                <md-icon class="name" style="font-size: 32px">person</md-icon>
+                                <input autocomplete="new-password" ng-disabled="!isEdit" ng-model="param.paramValue"
+                                       placeholder="用于登录Jenkins的账号" required type="text">
+                            </md-input-container>
+                            <md-input-container class="md-block" layout-gt-xs="row" md-no-float
+                                                ng-if="param.paramKey == 'jenkins.password'">
+                                <label layout-gt-xs>Jenkins密码</label>
+                                <i aria-hidden="true" class="fa fa-eye f2c-eye-jms abs-eye" id="eye" layout-gt-xs
+                                   ng-click="view('apiKey','eye')" ng-if="isEdit"></i>
+                                <md-icon>vpn_key</md-icon>
+                                <input autocomplete="new-password" id="password" layout-gt-xs ng-disabled="!isEdit"
+                                       ng-model="param.paramValue" placeholder="用于登录Jenkins的密码" required type="password">
+                            </md-input-container>
+                            <md-switch class="md-primary" ng-disabled="!isEdit" ng-if="param.paramKey === 'jenkins.enableCronSync'"
+                                       ng-model="param.paramValue" ng-change="changCronSync()" style="margin-left: 30px">
+                                <label>是否开启定时同步构建任务信息</label>
+                            </md-switch>
+                            <md-input-container ng-if="param.paramKey === 'jenkins.cronSyncSpec'" >
+
+                            </md-input-container>
+                            <md-input-container ng-disabled="!isEdit" ng-if="param.paramKey === 'jenkins.cronSyncSpec'"
+                                                ng-show="enableCronSync" class="md-block" flex>
+                                <label>Jenkins构建任务信息定时同步表达式</label>
+                                <md-icon>schedule</md-icon>
+                                <input ng-model="cronSyncSpec" type="text">
+                            </md-input-container>
+                            <md-input-container class="md-block md-icon-float" ng-if="param.paramKey === 'jenkins.directorySelector'">
+                                <label>工作空间文件夹选择器</label>
+                                <md-icon></md-icon>
+                                <input ng-model="param.paramValue" ng-disabled="!isEdit"/>
+                            </md-input-container>
+                            <md-input-container class="md-block md-icon-float"  ng-if="param.paramKey === 'jenkins.fileSelector'">
+                                <label>工作空间文件选择器</label>
+                                <md-icon></md-icon>
+                                <input ng-model="param.paramValue" ng-disabled="!isEdit"/>
+                            </md-input-container>
+                        </div>
+                    </form>
+                    <div flex style="padding: 16px">
+                        <label>同步状态: </label>
+                        <button class="status-button " ng-class="
+                                {'END_SYNC' : 'status-button-success',
+                                'UN_SYNC' : 'status-button-error',
+                                'IN_SYNC':'status-button-running',
+                                'NO_SYNC':'status-button-pending',
+                                'ERROR_SYNC':'status-button-error'
+                                }[syncStatus]">
+                            <i aria-hidden="true" class="fas fa-sync-alt fa-spin" ng-if="syncStatus==='IN_SYNC'"></i>
+                            {{syncStatus | JenkinsSyncStatusFilter}}
+                        </button>
+                    </div>
+                    <div layout="row" layout-align="center" layout-margin>
+                        <md-button class="md-raised md-primary" ng-disabled="jenkinsParamsForm.$invalid"
+                                   ng-click="validate()">
+                            测试连接
+                        </md-button>
+                        <md-button ng-if="isEdit" class="md-raised md-primary" ng-click="submit(params)"
+                                   ng-disabled="jenkinsParamsForm.$invalid">
+                            保存
+                        </md-button>
+                        <md-button ng-if="isEdit" class="md-raised" ng-click="toggleEdit()">
+                            取消
+                        </md-button>
+                        <md-button class="md-raised md-primary" ng-if="!isEdit"
+                                   ng-click="toggleEdit()">
+                            编辑
+                        </md-button>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+            <md-tab>
+                <md-tab-label>
+                    额外参数设置
+                </md-tab-label>
+                <md-tab-body>
+                    <filter-tools conditions="conditions" execute="list()" results="filters" search="'true'">
+                        <select-columns columns="columns"></select-columns>
+                        <div class="filter-item">
+                            <md-button class="md-icon-button md-whiteframe-1dp" ng-click="list()">
+                                <md-tooltip md-delay="300">刷新</md-tooltip>
+                                <md-icon>refresh</md-icon>
+                            </md-button>
+                        </div>
+                    </filter-tools>
+
+                    <div flex layout="column" layout-fill>
+                        <table columns="columns" dynamic-table execute="list({sql: sql})">
+                            <tbody>
+                            <tr ng-class="{'tr-selected':selected === item.$$hashKey}" ng-repeat="item in items">
+                                <td>
+                                    <md-checkbox aria-label="是否启用" class="md-primary" md-no-ink
+                                                 ng-click="enableClick($event)" ng-model="item.enable"></md-checkbox>
+                                </td>
+                                <td>{{item.alias}}</td>
+                                <td>{{item.paramKey}}</td>
+                                <td>{{item.paramValue}}</td>
+                                <td>
+                                    <table-menus>
+                                        <md-menu-item has-permission="JENKINS_PARAMS:READ+UPDATE">
+                                            <md-button ng-click="editParam(item)" ng-if="!item.paramKey.startsWith('configuration-as-code')">
+                                                <md-icon>edit</md-icon>
+                                                编辑
+                                            </md-button>
+                                            <md-button ng-click="editServerParam(item,'')" ng-if="item.paramKey.startsWith('configuration-as-code')">
+                                                <md-icon>edit</md-icon>
+                                                编辑
+                                            </md-button>
+                                        </md-menu-item>
+                                        <md-menu-item has-permission="JENKINS_PARAMS:READ+DELETE">
+                                            <md-button ng-click="deleteParams(item)">
+                                                <md-icon>delete</md-icon>
+                                                删除
+                                            </md-button>
+                                        </md-menu-item>
+                                    </table-menus>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table-pagination pagination="pagination"></table-pagination>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+        </md-tabs>
+    </div>
+    <side-form width="50%"></side-form>
+</div>
+

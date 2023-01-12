@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "title": "应用部署情况",
+    "directive": "card-content-text",
+    "position": "center",
+    "order": 1,
+    "url": "/devops/?banner=false#!/application/deploy",
+    "desc": "转到经典DevOps",
+    "height": "150px",
+    "permissions": [
+      "DASHBOARD:DEPLOYMENT"
+    ],
+    "setting": {
+      "url": "/devops/dashboard/deployment"
+    }
+  }
+]

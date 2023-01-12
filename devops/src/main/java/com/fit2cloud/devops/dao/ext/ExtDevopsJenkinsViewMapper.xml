@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtDevopsJenkinsViewMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.DevopsJenkinsViewDTO"
+               extends="com.fit2cloud.devops.base.mapper.DevopsJenkinsViewMapper.BaseResultMap">
+        <collection property="jobIdSet" ofType="string" javaType="java.util.HashSet" column="job_id">
+            <id column="job_id" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="getViewList" parameterType="map" resultType="arraylist" resultMap="BaseResultMap">
+        select job_view.*,view_mapping.job_id from devops_jenkins_view job_view
+        left join devops_jenkins_view_job_mapping view_mapping on job_view.id = view_mapping.view_id
+        <where>
+            <if test="organizationId != null">
+                and organization = #{organizationId}
+            </if>
+            <if test="workspaceId != null">
+                and workspace = #{workspaceId}
+            </if>
+        </where>
+        order by create_time
+    </select>
+
+    <select id="getViewById" resultMap="BaseResultMap">
+        select job_view.*,view_mapping.job_id from devops_jenkins_view job_view
+        left join devops_jenkins_view_job_mapping view_mapping on job_view.id = view_mapping.view_id
+        where job_view.id = #{id}
+    </select>
+
+</mapper>

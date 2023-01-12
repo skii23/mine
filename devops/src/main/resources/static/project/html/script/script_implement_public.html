@@ -1,0 +1,87 @@
+<div ng-controller="ScriptImplementPublicCtrl" cg-busy="{promise:loading,minDuration:500}">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>执行脚本</div>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <div layout="column">
+            <form name="ScriptForm" class="md-padding">
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" required flex-gt-sm>
+                        <label>目标集群</label>
+                        <md-select ng-model="item.clusterId"
+                                   ng-change="clusterChange()" ng-disabled="params.clusterId">
+                            <md-option ng-repeat="cluster in clusters" value="{{cluster.id}}">{{cluster.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>目标主机组</label>
+                        <md-select ng-model="item.clusterRoleId" ng-disabled="params.clusterRoleId" ng-change="clusterRoleChange()" required >
+                            <md-option ng-repeat="clusterRole in clusterRoles" value="{{clusterRole.id}}">{{clusterRole.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>目标主机</label>
+                        <md-select ng-model="item.serverId" ng-disabled="params.serverId" required >
+                            <md-option ng-repeat="server in servers" value="{{server.id}}">{{server.instanceName}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>脚本</label>
+                        <md-select ng-model="script" ng-change="scriptChange()" required>
+                            <md-option ng-repeat="script in scripts" ng-value="script">{{script.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>执行路径</label>
+                        <input md-maxlength="100"  name="executePath" ng-model="script.executePath"  >
+                        <div ng-messages="ScriptForm.executePath.$error">
+                            <div ng-message="required">必填.</div>
+                            <div ng-message="md-maxlength">不要超过100个字符</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div class="script-code">
+                    <ui-codemirror ui-codemirror-opts="cmOption" ng-model="script.content"
+                                   ng-change="conentChange()"></ui-codemirror>
+                </div>
+            </form>
+        </div>
+
+
+        <div layout="row" layout-align=" center" layout-margin ng-if="!params">
+            <md-button class="md-raised md-primary" ng-click="submit();" ng-disabled="ScriptForm.$invalid">
+                执行
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="start center" layout-margin ng-if="params">
+
+            <md-button class="md-raised" ng-click="toggleForm();">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit();" ng-disabled="ScriptForm.$invalid">
+                执行
+            </md-button>
+        </div>
+    </md-content>
+</div>
+
+

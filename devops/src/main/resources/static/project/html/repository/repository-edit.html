@@ -1,0 +1,125 @@
+<div ng-cloak ng-controller="RepositoryEditController" cg-busy="{promise:loading,minDuration:500}">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>编辑制品库</div>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <form name="repositoryForm" class="md-padding">
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>制品库名称</label>
+                    <input md-maxlength="30" required name="name" ng-model="item.name">
+                    <div ng-messages="repositoryForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>制品库类型</label>
+                    <md-select ng-model="item.type" required ng-change="typeChange()">
+                        <md-option ng-repeat="type in repositoryTypes" value="{{type}}">{{type}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row" ng-if="item.type == 'Nexus'||item.type =='Artifactory' || item.type =='Nexus3'|| item.type=='Harbor'">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>账号</label>
+                    <input md-maxlength="30" required name="name" ng-model="item.accessId" ng-change="clearRep()">
+                    <div ng-messages="testForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row" ng-if="item.type == 'Nexus'||item.type =='Artifactory' || item.type =='Nexus3'|| item.type=='Harbor'">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>密码</label>
+                    <i id="eye1" class="fa fa-eye f2c-eye" aria-hidden="true" ng-click="view('password1','eye1')"></i>
+                    <input type="password" id="password1" md-maxlength="30" required name="name" ng-change="clearRep()"
+                           ng-model="item.accessPassword">
+                    <div ng-messages="testForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <div layout-gt-sm="row" ng-if="item.type == '阿里云OSS'||item.type == '亚马逊S3'">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Access Key</label>
+                    <input md-maxlength="30" required name="name" ng-model="item.accessId" ng-change="clearRep()">
+                    <div ng-messages="testForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row" ng-if="item.type == '阿里云OSS'||item.type == '亚马逊S3'">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Secret Key</label>
+                    <i id="eye2" class="fa fa-eye f2c-eye" aria-hidden="true" ng-click="view('password2','eye2')"></i>
+                    <input type="password" id="password2" md-maxlength="50" required name="name"
+                           ng-model="item.accessPassword" ng-change="clearRep()">
+                    <div ng-messages="testForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过50个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row" ng-if="item.type == 'Nexus'||item.type =='Artifactory' || item.type =='Nexus3'|| item.type=='Harbor'">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>服务器地址</label>
+                    <input md-maxlength="100" required name="name" ng-model="item.path" ng-change="clearRep()">
+                    <div ng-messages="testForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过100个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <div layout-gt-sm="row" ng-if="item.type == 'Nexus'||item.type =='Artifactory' || item.type =='Nexus3'|| item.type=='Harbor'">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>选择制品库</label>
+                    <md-select ng-model="item.repository" required>
+                        <md-option ng-repeat="repository in repositories" value="{{repository.url}}">{{repository.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <md-button class="md-raised md-primary" ng-click="getRepositories()">
+                        加载制品库
+                    </md-button>
+                </md-input-container>
+            </div>
+
+
+            <div layout-gt-sm="row" ng-if="item.type == '阿里云OSS'||item.type == '亚马逊S3'">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>选择bucket</label>
+                    <md-select ng-model="item.repository" required>
+                        <md-option ng-repeat="bucket in buckets" value="{{bucket.url}}">{{bucket.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <md-button class="md-raised md-primary" ng-click="getBuckets()">
+                        加载Bucket
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+        <div layout="row" layout-align="start center" layout-margin>
+            <md-button class="md-raised" ng-click="toggleForm();">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit();">
+                保存
+            </md-button>
+        </div>
+    </md-content>
+</div>

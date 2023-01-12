@@ -1,0 +1,11 @@
+<div layout="column" class="build-parameter no-margin">
+    <close-btn item="parameter" items="parameters"/>
+    <md-select name="p" ng-model="parameter.type" style="padding-left: 10px">
+        <md-option ng-repeat="v in ['Include','Exclude']" value="{{v | uppercase}}">
+            {{v}}
+        </md-option>
+    </md-select>
+    <md-input-container>
+        <input ng-model="parameter.pattern">
+    </md-input-container>
+</div>

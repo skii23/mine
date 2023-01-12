@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtDevopsJenkinsJobMapper">
+
+    <select id="listDevopsJenkinsJob" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        devops_jenkins_job.*,
+        IFNULL(b.num,0) childNum,
+        org.name organizationName,workspace.name workspaceName
+        FROM devops_jenkins_job
+        LEFT JOIN organization org ON devops_jenkins_job.organization = org.id
+        LEFT JOIN workspace  ON devops_jenkins_job.workspace = workspace.id
+        LEFT JOIN (SELECT
+        count(*) num,
+        parent_id
+        FROM devops_jenkins_job WHERE parent_id is not null
+        GROUP BY parent_id ) b on devops_jenkins_job.id = b.parent_id
+        <if test="viewId != null and viewId != 'all'">
+            join devops_jenkins_view_job_mapping view_job on devops_jenkins_job.id = view_job.job_id
+            join devops_jenkins_view view on view.id = view_job.view_id
+        </if>
+        <where>
+            <if test="name !=null ">
+                AND devops_jenkins_job.name like CONCAT('%',#{name},'%')
+            </if>
+            <if test="url != null">
+                and devops_jenkins_job.url like CONCAT('%',#{url},'%')
+            </if>
+            <if test="source != null">
+                and devops_jenkins_job.source = #{source}
+            </if>
+            <if test="parentId == null and organizationId != null">
+                and devops_jenkins_job.organization = #{organizationId}
+            </if>
+            <if test="parentId == null and workspaceId != null">
+                and devops_jenkins_job.workspace = #{workspaceId}
+            </if>
+            <if test="viewId != null and viewId != 'all'">
+                and view.id=#{viewId}
+            </if>
+            <if test="parentId != null">
+                and devops_jenkins_job.parent_id = #{parentId}
+            </if>
+            <if test="parentId == null">
+                and  devops_jenkins_job.parent_id is null
+            </if>
+        </where>
+        <if test="sort != null ">
+            ORDER BY ${sort}
+        </if>
+        <if test="sort == null ">
+            ORDER BY devops_jenkins_job.create_time DESC
+        </if>
+    </select>
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.DevopsJenkinsJobDto">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="sync_status" jdbcType="VARCHAR" property="syncStatus" />
+        <result column="buildable" jdbcType="BIT" property="buildable" />
+        <result column="build_size" jdbcType="INTEGER" property="buildSize" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="create_time" jdbcType="BIGINT" property="createTime" />
+        <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+        <result column="sync_time" jdbcType="BIGINT" property="syncTime" />
+        <result column="source" jdbcType="VARCHAR" property="source" />
+        <result column="workspace" jdbcType="VARCHAR" property="workspace" />
+        <result column="organization" jdbcType="VARCHAR" property="organization" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="creator" jdbcType="VARCHAR" property="creator" />
+        <result column="build_status" jdbcType="VARCHAR" property="buildStatus" />
+        <result column="parameterized_build" jdbcType="TINYINT" property="parameterizedBuild" />
+        <result column="ext_param" jdbcType="VARCHAR" property="extParam" />
+        <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+        <result column="organizationName" property="organizationName" jdbcType="VARCHAR"/>
+        <result column="workspaceName" property="workspaceName"/>
+    </resultMap>
+</mapper>

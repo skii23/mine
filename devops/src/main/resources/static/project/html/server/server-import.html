@@ -1,0 +1,83 @@
+<div ng-cloak ng-controller="ServerImportCtrl" cg-busy="{promise:loading,minDuration:500}">
+    <div layout-fill class="cloud-server-info">
+        <md-toolbar class="content-toolbar">
+            <div class="md-toolbar-tools">
+                <div>导入主机</div>
+            </div>
+        </md-toolbar>
+        <form class="form-horizontal" id="form1" role="form" enctype="multipart/form-data">
+            <div class="md-dialog-content">
+                <md-choose-file layout="row" name="file" file="file" accept="text/xlsx" placeholder="请选择xlsx文件"
+                                required></md-choose-file>
+            </div>
+            <div layout="row" layout-align="start center" layout-margin>
+                <md-button class="md-raised md-success" href="project/html/server/templates/主机导入模板.xlsx">
+                    下载模版
+                </md-button>
+                <md-button class="md-raised" ng-click="toggleForm();">
+                    取消
+                </md-button>
+                <md-button class="md-raised md-primary" ng-click="uploadFile(file);"
+                           ng-disabled="!file || file.length == 0">
+                    保存
+                </md-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--<div layout-fill ng-cloak ng-controller="ServerImportCtrl">-->
+<!--    <div layout-fill class="cloud-server-info">-->
+<!--        <md-tabs layout-fill md-dynamic-height md-border-bottom>-->
+<!--            <md-button layout-fill class="md-primary" ng-click="toggleForm();">-->
+<!--                <div>关闭信息</div>-->
+<!--            </md-button>-->
+<!--            <md-tab label="导入主机">-->
+<!--                <md-content class="cloud-server-info-content">-->
+<!--                    <form class="form-horizontal" id="form1" role="form" enctype="multipart/form-data">-->
+<!--                        <div class="md-dialog-content">-->
+<!--                            <md-choose-file layout="row" name="file" file="file" accept="text/xlsx"-->
+<!--                                            placeholder="请选择xlsx文件"-->
+<!--                                            required></md-choose-file>-->
+<!--                        </div>-->
+<!--                        <div layout="row" layout-align="start center" layout-margin>-->
+<!--                            <md-button class="md-raised md-success" href="project/html/server/templates/主机导入.xlsx">-->
+<!--                                下载模版-->
+<!--                            </md-button>-->
+<!--                            <md-button class="md-raised" ng-click="toggleForm();">-->
+<!--                                取消-->
+<!--                            </md-button>-->
+<!--                            <md-button class="md-raised md-primary" ng-click="uploadFile(file);"-->
+<!--                                       ng-disabled="!file || file.length == 0">-->
+<!--                                保存-->
+<!--                            </md-button>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </md-content>-->
+<!--            </md-tab>-->
+<!--            <md-tab label="导入密码">-->
+<!--                <md-content class="cloud-server-info-content">-->
+<!--                    <form class="form-horizontal" id="form2" role="form" enctype="multipart/form-data">-->
+<!--                        <div class="md-dialog-content">-->
+<!--                            <md-choose-file layout="row" name="file2" file="file2" accept="text/xlsx"-->
+<!--                                            placeholder="请选择xlsx文件"-->
+<!--                                            required></md-choose-file>-->
+<!--                        </div>-->
+<!--                        <div layout="row" layout-align="start center" layout-margin>-->
+<!--                            <md-button class="md-raised md-success" href="project/html/server/templates/主机导入.xlsx">-->
+<!--                                下载模版-->
+<!--                            </md-button>-->
+<!--                            <md-button class="md-raised" ng-click="toggleForm();">-->
+<!--                                取消-->
+<!--                            </md-button>-->
+<!--                            <md-button class="md-raised md-primary" ng-click="uploadFile(file2);"-->
+<!--                                       ng-disabled="!file2 || file2.length == 0">-->
+<!--                                保存-->
+<!--                            </md-button>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </md-content>-->
+<!--            </md-tab>-->
+<!--    </div>-->
+<!--</div>-->
+

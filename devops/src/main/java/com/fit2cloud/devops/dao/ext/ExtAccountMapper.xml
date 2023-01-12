@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtAccountMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.CloudAccountDTO"
+               extends="com.fit2cloud.commons.server.base.mapper.CloudAccountMapper.BaseResultMap">
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="plugin_desc" property="pluginDesc" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getAccountList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+          cloud_account.*,
+          plugin.icon                                                                 AS icon,
+          plugin.description                                                          AS plugin_desc
+        from cloud_account
+          left join plugin on cloud_account.plugin_name = plugin.name
+        <where>
+            <if test="name !=null">
+                and cloud_account.name like #{name}
+            </if>
+            <if test="pluginName != null">
+                and cloud_account.plugin_name = #{pluginName}
+            </if>
+            <if test="status != null">
+                and cloud_account.status = #{status}
+            </if>
+            <if test="syncStatus!=null">
+                and cloud_account.sync_status = #{syncStatus}
+            </if>
+        </where>
+        <if test="sort != null">
+            order by ${sort}
+        </if>
+        <if test="sort == null">
+            order by cloud_account.create_time DESC
+        </if>
+
+    </select>
+
+</mapper>

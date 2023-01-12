@@ -1,0 +1,70 @@
+<div ng-controller="ScriptFilterAddCtrl" cg-busy="{promise:loading,minDuration:500}">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>{{isEdit?'编辑规则':'创建规则'}}</div>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <div layout="column">
+            <form name="ScriptFilterForm" class="md-padding" layout="column">
+                <md-input-container class="md-block" flex>
+                    <label>规则名称</label>
+                    <input md-maxlength="30" required name="name" ng-model="item.name">
+                    <div ng-messages="ScriptFilterForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-block" flex>
+                    <label>规则类型</label>
+                    <md-select ng-model="item.type" required ng-disabled="isEdit" ng-change="changeFilterType()">
+                        <md-option ng-repeat="type in filterTypes" value="{{type.value}}">
+                            {{type.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container ng-if="item.type === 'KEYWORD'" flex>
+                    <label>规则内容</label>
+                    <md-chips ng-model="item.values" name="value" md-removable="true" placeholder="输入关键字" required>
+                        <md-chip-template>
+                            <strong>{{$chip}}</strong>
+                        </md-chip-template>
+                    </md-chips>
+                    <div ng-messages="ScriptFilterForm.value.$invalid">
+                        <div ng-message="required">必填.</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container ng-if="item.type === 'REGEX'" flex>
+                    <label>规则内容</label>
+                    <input ng-model="item.value" name="value" required/>
+                    <div ng-messages="ScriptFilterForm.value.$invalid">
+                        <div ng-message="required">必填.</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container flex>
+                    <label>描述</label>
+                    <textarea ng-model="item.description"></textarea>
+                </md-input-container>
+                <md-input-container>
+                    <md-switch ng-model="item.active">
+                        是否启用
+                    </md-switch>
+                </md-input-container>
+            </form>
+        </div>
+        <div layout="row" layout-align="start center" layout-margin>
+            <md-button class="md-raised" ng-click="toggleForm()">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit()" ng-disabled="ScriptFilterForm.$invalid">
+                保存
+            </md-button>
+        </div>
+    </md-content>
+</div>
+
+

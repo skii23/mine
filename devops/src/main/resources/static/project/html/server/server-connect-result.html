@@ -1,0 +1,49 @@
+<div ng-cloak cg-busy="{promise:loadingLayer,minDuration:500}">
+    <md-toolbar layout="row">
+        <div style="line-height: 54px;padding-left: 10px">主机连接测试结果</div>
+        <div flex></div>
+        <md-button class="md-primary" style="color: #fff" ng-click="toggleForm()">关闭</md-button>
+    </md-toolbar>
+    <md-content style="padding: 4px">
+        <div layout="column">
+            <h2>结果统计</h2>
+            <div layout="row">
+                <div layout="column" flex>
+                    <span>测试总数：{{result.total}}</span>
+                    <span>连接成功：{{result.success}}</span>
+                    <span>连接失败：{{result.failed}}</span>
+                </div>
+                <div layout="column" flex>
+                    <span>开始时间：{{result.startTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+                    <span>开始时间：{{result.endTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+                    <span>耗时：{{(result.endTime - result.startTime)/1000}}秒</span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h2>详细信息</h2>
+            <table class="table">
+                <thead>
+                    <tr >
+                        <th>主机名</th>
+                        <th>管理IP</th>
+                        <th>集群</th>
+                        <th>主机组</th>
+                        <th>是否连通</th>
+                        <th>连接信息</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="server in result.results">
+                        <td>{{server.instanceName}}</td>
+                        <td>{{server.managementIp}}</td>
+                        <td>{{server.clusterName}}</td>
+                        <td>{{server.clusterRoleName}}</td>
+                        <td>{{server.connectable | ActiveFilter}}</td>
+                        <td style="max-width: 100px">{{server.connectMsg}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </md-content>
+</div>

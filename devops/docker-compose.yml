@@ -1,0 +1,35 @@
+version: '2.1'
+services:
+  devops:
+    image: registry.test1.dc-fz.paas.cisc.cn/xyzq-cmp/devops:dev
+    container_name: devops
+    depends_on:
+      mysql:
+          condition: service_healthy
+    volumes:
+      - "./target:/opt/apps/"
+      - "f2-logs:/opt/fit2cloud/logs"
+    ports:
+      - 80:6606
+    networks:
+      - cmp-network
+  mysql:
+    image: registry.test1.dc-fz.paas.cisc.cn/xyzq-cmp/mysql:5.7.25-dev
+    container_name: mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - cmp-network
+volumes:
+  mysql-data:
+  f2-logs:
+  
+networks:
+  cmp-network:

@@ -1,0 +1,220 @@
+<div layout="column">
+    <h2>General</h2>
+    <div layout="column" class="no-margin" flex>
+        <md-input-container class="no-margin"  flex-gt-sm>
+            <label>构建任务名称(英文、数字、-、下划线组合，不支持中文和特殊字符！)</label>
+            <!--<input name="jobName" ng-model="item.name" required ng-disabled="isEdit">-->
+            <input name="jobName" ng-model="item.name" required>
+        </md-input-container>
+
+        <md-input-container  flex-gt-sm>
+            <label>描述</label>
+            <textarea name="description" ng-model="item.description" rows="3"></textarea>
+        </md-input-container>
+    </div>
+
+    <div ng-repeat="property in item.properties" class="no-margin">
+        <div ng-if="property.type === 'BUILD_DISCARDER' && buildDiscard" layout="column">
+            <md-input-container flex style="margin-top: 10px">
+                <label>构建保持天数</label>
+                <input name="daysToKeep" ng-model="property.strategy.daysToKeep"
+                       ng-pattern="/^([0-9]+)|-1$/">
+                <div ng-messages="jenkinsAddForm.daysToKeep.$error">
+                    <div ng-message="pattern">只能正整数或-1(永久).</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container flex>
+                <label>构建保持个数</label>
+                <input name="numToKeep" ng-model="property.strategy.numToKeep"
+                       ng-pattern="/^([0-9]+)|-1$/">
+                <div ng-messages="jenkinsAddForm.numToKeep.$error">
+                    <div ng-message="pattern">只能正整数或-1(不限制).</div>
+                </div>
+            </md-input-container>
+
+            <div id="buildDiscarder" flex layout="column">
+                <md-input-container >
+                    <label>发布包保留天数</label>
+                    <input name="daysToKeep"
+                           ng-model="property.strategy.artifactDaysToKeep"
+                           ng-pattern="/^([0-9]+)|-1$/">
+                    <div ng-messages="jenkinsAddForm.artifactDaysToKeep.$error">
+                        <div ng-message="pattern">只能正整数或-1(永久).</div>
+                    </div>
+                </md-input-container>
+                <md-input-container flex="25%">
+                    <label>发布包最大保留个数</label>
+                    <input name="numToKeep" ng-model="property.strategy.artifactNumToKeep"
+                           ng-pattern="/^([0-9]+)|-1$/">
+                    <div ng-messages="jenkinsAddForm.artifactNumToKeep.$error">
+                        <div ng-message="pattern">只能正整数或-1(不限制).</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <show-more-button show-btn-name="高级..." selector="#buildDiscarder" init-status="false"/>
+        </div>
+    </div>
+
+    <!--  新增参数化构建参数  -->
+    <div layout="column" class="no-margin" flex>
+        <md-input-container>
+            <md-checkbox ng-model="item.parameterizedBuild">
+                参数化构建过程(此步骤所定义的参数可在脚本中通过 $参数名 引用)
+            </md-checkbox>
+        </md-input-container>
+    </div>
+
+    <div ng-repeat="property in item.properties" class="no-margin">
+        <div ng-if="property.type === 'PARAMETERS_DEFINITION' && item.parameterizedBuild" layout="column">
+            <div ng-repeat="parameter in property.parameterDefinitions" class="no-margin">
+                <string-parameter parameter="parameter" parameters="property.parameterDefinitions" title="字符参数" closeable="true" ng-if="parameter.type === 'STRING_PARAMETER' "/>
+                <password-parameter parameter="parameter" parameters="property.parameterDefinitions" title="密码参数" closeable="true" ng-if="parameter.type === 'PASSWORD_PARAMETER' "/>
+                <boolean-parameter parameter="parameter" parameters="property.parameterDefinitions" title="布尔值参数" closeable="true" ng-if="parameter.type === 'BOOLEAN_PARAMETER' "/>
+                <file-parameter parameter="parameter" parameters="property.parameterDefinitions" title="文件参数" closeable="true" ng-if="parameter.type === 'FILE_PARAMETER' "/>
+                <text-parameter parameter="parameter" parameters="property.parameterDefinitions" title="文本参数" closeable="true" ng-if="parameter.type === 'TEXT_PARAMETER' "/>
+                <run-parameter parameter="parameter" parameters="property.parameterDefinitions" filters="filters" filter="ALL" title="运行时参数" closeable="true" ng-if="parameter.type === 'RUN_PARAMETER' "/>
+                <choice-parameter parameter="parameter" parameters="property.parameterDefinitions" title="选项参数" closeable="true" ng-if="parameter.type === 'CHOICE_PARAMETER' "/>
+            </div>
+            <md-input-container flex="20" layout-align="start center">
+                <md-menu class="menu-button" style="margin: 0" has-permissions="JENKINS_JOB:READ+CREATE">
+                    <md-button aria-label="添加参数" class="md-primary" ng-click="$mdMenu.open($event)">
+                        <md-icon>add_circle_outline</md-icon>
+                        添加参数
+                    </md-button>
+                    <md-menu-content>
+                        <!--                <md-menu-item>-->
+                        <!--                    <md-button ng-click="addBuildStep('SHELL','builders')">-->
+                        <!--                        凭据参数-->
+                        <!--                    </md-button>-->
+                        <!--                </md-menu-item>-->
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('STRING_PARAMETER','parameterDefinitions')">
+                                字符参数
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('CHOICE_PARAMETER','parameterDefinitions')">
+                                选项参数
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('BOOLEAN_PARAMETER','parameterDefinitions')">
+                                布尔值参数
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('TEXT_PARAMETER','parameterDefinitions')">
+                                文本参数
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="addParameterDefinition('PASSWORD_PARAMETER','parameterDefinitions')">
+                                密码参数
+                            </md-button>
+                        </md-menu-item>
+
+                    </md-menu-content>
+                </md-menu>
+            </md-input-container>
+        </div>
+    </div>
+
+
+    <h2>流水线定义</h2>
+    <div layout-gt-sm="row">
+        <md-input-container  flex-gt-sm>
+            <label>Pipeline来源</label>
+            <md-select name="scmType" ng-model="item.definition.type" ng-change="changeFlowScm()">
+                <md-option value="CPS_NULL">手动编辑脚本</md-option>
+                <md-option value="CPS_SCM">Git源码仓</md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+
+    <div class="jenkins-svn" layout="column" ng-if="item.definition.type === 'CPS_SCM'">
+        <div class="jenkins-svn no-margin" ng-repeat="userRemoteConfig in item.definition.scm.userRemoteConfigs" layout="column">
+            <md-input-container  flex-gt-sm style="margin-top: 14px">
+                <label>填写Git仓库源码URL</label>
+                <input name="url" ng-model="userRemoteConfig.url" required>
+                <div ng-messages="jenkinsAddForm.url.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-input-container  flex>
+                <label>选择Git仓库凭证</label>
+                <md-select name="credentialsId" ng-model="userRemoteConfig.credentialsId">
+                    <md-option ng-repeat="credential in credentials" value="{{credential.id}}">
+                        {{credential.displayName}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+        <div layout="row" layout-align="end center">
+            <md-button class="md-primary md-raised" flex="10" ng-click="addFlowRepo()">
+                新增仓库
+            </md-button>
+        </div>
+        <div class="jenkins-svn" layout-gt-sm="row" ng-repeat="branch in item.definition.scm.branches">
+            <md-input-container  flex-gt-sm>
+                <label>分支</label>
+                <input name="branch" ng-model="branch.name" required>
+                <div ng-messages="jenkinsAddForm.branch.$error">
+                    <div ng-message="required">必填.</div>
+                </div>
+            </md-input-container>
+            <md-button class="md-primary" ng-click="deleteItem(item.definition.scm.branches,branch)"
+                       ng-disabled="item.definition.scm.branches.length === 1">
+                <aria-label>删除分支</aria-label>
+                <md-icon>
+                    delete
+                </md-icon>
+            </md-button>
+        </div>
+        <div layout="row" layout-align="end center" ng-if="item.definition.scm.userRemoteConfigs">
+            <md-button class="md-primary md-raised" flex="10" ng-click="addFlowBranch()">
+                新增分支
+            </md-button>
+        </div>
+        <md-input-container  flex-gt-sm style="margin-top: 14px">
+            <label>脚本路径</label>
+            <input name="path" ng-model="item.definition.scriptPath" required>
+            <div ng-messages="jenkinsAddForm.url.$error">
+                <div ng-message="required">必填.</div>
+            </div>
+        </md-input-container>
+        <div layout="column" class="no-margin" flex>
+            <md-input-container>
+                <md-checkbox aria-label="Active" ng-model="item.definition.lightweight">
+                    轻量级检出
+                </md-checkbox>
+            </md-input-container>
+        </div>
+    </div>
+
+    <div class="jenkins-svn" layout="column" ng-if="item.definition.type === 'CPS_NULL'">
+        <md-input-container flex>
+            <label>脚本模板</label>
+            <md-select name="scriptTemplate" ng-model="item.scriptTemplate" ng-change="changeTemplate()">
+                <md-option ng-repeat="scriptTemplate in scriptTemplates" value="{{scriptTemplate.id}}">
+                    {{scriptTemplate.displayName}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <div class="script-code" style="border: 1px solid #5a647e;border-radius: 1px;">
+            <ui-codemirror ui-codemirror-opts="cmOption" ng-model="item.definition.script"></ui-codemirror>
+        </div>
+        <div>
+            Groovy定义流水线脚本。详情请参考 <a href="https://www.jenkins.io/doc/book/pipeline/jenkinsfile/" target="_blank">流水线语法</a>。
+        </div>
+        <div layout="column" class="no-margin" flex>
+            <md-input-container>
+                <md-checkbox ng-model="item.definition.sandbox">
+                    使用 Groovy 沙盒
+                </md-checkbox>
+            </md-input-container>
+        </div>
+    </div>
+    <div layout="row" layout-align="end center" style="margin-top: 50px">
+    </div>
+</div>

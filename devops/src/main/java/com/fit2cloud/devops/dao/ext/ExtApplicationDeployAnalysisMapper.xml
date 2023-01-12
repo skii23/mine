@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtApplicationDeployAnalysisMapper">
+
+
+    <sql id="chose_date">
+        <choose>
+            <when test="start > 0 and end == 0">
+                AND devops_application_deployment.created_time &gt; #{start}
+            </when>
+            <when test="start > 0 and end > 0">
+                AND devops_application_deployment.created_time &gt; #{start}
+                AND devops_application_deployment.created_time &lt;= #{end}
+            </when>
+            <when test="end > 0 and start == 0">
+                AND devops_application_deployment.created_time &lt;= #{end}
+            </when>
+        </choose>
+    </sql>
+
+    <!---->
+    <select id="selectDeployTrend" resultType="com.fit2cloud.commons.server.model.ChartData">
+        SELECT
+        <if test="xAxis == 'day'">
+            from_unixtime(devops_application_deployment.created_time / 1000, '%Y-%m-%d') AS xAxis,
+        </if>
+        <if test="xAxis == 'week'">
+            from_unixtime(devops_application_deployment.created_time / 1000, '%Y-%u') AS xAxis,
+        </if>
+        <if test="xAxis == 'month'">
+            from_unixtime(devops_application_deployment.created_time / 1000, '%Y-%m') AS xAxis,
+        </if>
+        organization.name AS groupName,
+        count(*) AS yAxis
+        FROM devops_application_deployment
+        LEFT JOIN devops_cluster_role ON devops_cluster_role.id = devops_application_deployment.cluster_role_id
+        LEFT JOIN devops_cloud_server ON devops_cloud_server.id = devops_application_deployment.cloud_server_id
+        LEFT JOIN user ON user.id = devops_application_deployment.user_id
+        LEFT JOIN devops_application_version
+        ON devops_application_deployment.application_version_id = devops_application_version.id
+        LEFT JOIN devops_application ON devops_application.id = devops_application_version.application_id
+        LEFT JOIN devops_cluster ON devops_cluster.id = devops_application_deployment.cluster_id
+        LEFT JOIN workspace ON workspace.id = devops_application_deployment.workspace_id
+        LEFT JOIN organization ON organization.id = workspace.organization_id
+        <where>
+            <include refid="chose_date"/>
+
+            <if test="organizationId != null ">
+                and organization.id = #{organizationId}
+            </if>
+        </where>
+
+        <if test="xAxis == 'day'">
+            GROUP BY groupName, DAY(from_unixtime(devops_application_deployment.created_time / 1000, '%Y-%m-%d'))
+            order BY groupName, DAY(from_unixtime(devops_application_deployment.created_time / 1000, '%Y-%m-%d'))
+        </if>
+        <if test="xAxis == 'week'">
+            GROUP BY groupName, WEEK(from_unixtime(devops_application_deployment.created_time / 1000, '%Y-%u'))
+            order BY groupName, WEEK(from_unixtime(devops_application_deployment.created_time / 1000, '%Y-%u'))
+        </if>
+        <if test="xAxis == 'month'">
+            GROUP BY groupName, MONTH(from_unixtime(devops_application_deployment.created_time / 1000, '%Y-%m'))
+            order BY groupName, MONTH(from_unixtime(devops_application_deployment.created_time / 1000, '%Y-%m'))
+        </if>
+    </select>
+
+    <select id="selectDeployTop" resultType="com.fit2cloud.devops.common.model.DeployTopData">
+        SELECT
+        devops_application.id AS applicationId,
+        devops_application.name AS applicationName,
+        devops_application.organization_id AS resourceId,
+        ifnull(app_deploy.count_deploy, 0) countDeploy,
+        ifnull(count_version, 0) AS countVersion
+        FROM devops_application
+        LEFT JOIN (SELECT
+        count(*) count_version,
+        application_id
+        FROM devops_application_version
+        GROUP BY application_id) app_version ON app_version.application_id = devops_application.id
+        LEFT JOIN (SELECT
+        count(*) count_deploy,
+        application_id
+        FROM devops_application_deployment
+        LEFT JOIN devops_application_version
+        ON devops_application_deployment.application_version_id = devops_application_version.id
+        LEFT JOIN workspace ON workspace.id = devops_application_deployment.workspace_id
+        LEFT JOIN organization ON workspace.organization_id = organization.id
+        WHERE devops_application_deployment.status = '${status}'
+        GROUP BY application_id) app_deploy ON app_deploy.application_id = devops_application.id
+        <where>
+            <if test="organizationId != null">
+                and devops_application.organization_id=#{organizationId} or devops_application.organization_id='ROOT'
+            </if>
+        </where>
+        ORDER BY count_deploy DESC LIMIT 10
+    </select>
+
+
+</mapper>

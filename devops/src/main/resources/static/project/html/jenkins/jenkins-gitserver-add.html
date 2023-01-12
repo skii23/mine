@@ -1,0 +1,96 @@
+<div ng-controller="JenkinsParamsAddCtrl" ng-cloak flex>
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>{{isEdit ? '编辑参数' : '添加参数'}}</div>
+        </div>
+    </md-toolbar>
+    <md-content cg-busy="{promise:loadingLayer,minDuration:500}" layout="column" flex class="md-padding">
+        <!--GitLab-->
+        <form name="paramForm" layout="column" ng-if="item.type == 'GitLab'">
+            <label>GitLab Server</label>
+            <div class="jenkins-svn no-margin" ng-model="item.gitLabServer" layout="column">
+                <md-input-container flex-gt-sm style="margin-top: 14px">
+                    <label>显示名称</label>
+                    <input name="repoName" ng-model="item.gitLabServer.name" required>
+                </md-input-container>
+                <md-input-container flex-gt-sm>
+                    <label>源码 URL</label>
+                    <input name="serverUrl" ng-model="item.gitLabServer.serverUrl" required>
+                </md-input-container>
+
+                <md-input-container flex>
+                    <label>凭据</label>
+                    <md-select name="credentialsId" ng-model="item.gitLabServer.credentialsId" required>
+                        <md-option ng-repeat="credential in credentials" value="{{credential.id}}">
+                            {{credential.displayName}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <md-checkbox ng-model="item.gitLabServer.manageWebHooks">
+                        管理 Web Hook
+                    </md-checkbox>
+                </md-input-container>
+                <md-input-container>
+                    <md-checkbox ng-model="item.gitLabServer.manageSystemHooks">
+                        管理系统 Hook
+                    </md-checkbox>
+                </md-input-container>
+                <md-input-container flex-gt-sm style="margin-top: 20px">
+                    <label>Secret Token</label>
+                    <input name="secretToken" ng-model="item.gitLabServer.secretToken">
+                </md-input-container>
+
+                <md-input-container flex-gt-sm style="margin-top: 20px">
+                    <label>Root URL for hooks</label>
+                    <input name="hooksRootUrl" ng-model="item.gitLabServer.hooksRootUrl">
+                </md-input-container>
+            </div>
+        </form>
+
+        <!--Gitea-->
+        <form name="paramForm" layout="column" ng-if="item.type == 'Gitea'">
+            <label>Gitea Server</label>
+            <div class="jenkins-svn no-margin" ng-model="item.giteaServer" layout="column">
+                <md-input-container flex-gt-sm style="margin-top: 14px">
+                    <label>显示名称</label>
+                    <input name="repoName" ng-model="item.giteaServer.displayName" required>
+                </md-input-container>
+                <md-input-container flex-gt-sm>
+                    <label>源码 URL</label>
+                    <input name="serverUrl" ng-model="item.giteaServer.serverUrl" required>
+                </md-input-container>
+                <md-input-container  flex-gt-sm>
+                    <md-checkbox aria-label="Active" ng-model="item.giteaServer.manageHooks">
+                        Manage hooks
+                    </md-checkbox>
+                </md-input-container>
+                <div ng-if="item.giteaServer.manageHooks" layout="column" style="margin-top: 20px;padding-left: 20px">
+                    <md-input-container style="margin-top: 20px" flex>
+                        <label>凭据</label>
+                        <md-select name="credentialsId" ng-model="item.giteaServer.credentialsId" required>
+                            <md-option ng-repeat="credential in credentials" value="{{credential.id}}">
+                                {{credential.displayName}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <md-input-container style="margin-top: 20px" flex-gt-sm>
+                    <label>Alias URL</label>
+                    <input name="aliasUrl" ng-model="item.giteaServer.aliasUrl">
+                </md-input-container>
+            </div>
+        </form>
+
+        <div>
+            <md-input-container layout="row">
+                <md-button class="md-primary md-raised" ng-click="toggleForm()">
+                    取消
+                </md-button>
+                <md-button class="md-primary md-raised" ng-click="saveParam(item)" ng-disabled="paramForm.$invalid">
+                    保存
+                </md-button>
+            </md-input-container>
+        </div>
+    </md-content>
+</div>

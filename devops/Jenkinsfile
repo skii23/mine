@@ -1,0 +1,73 @@
+podTemplate {
+  node(POD_LABEL) {
+    def images = ''
+    def namespace = ''
+    def k8sCredentialsId = 'k8s-deploy-token'
+    def group = 'cmp'  // 云管系统名称，helm部署云管会统一加一个系统资源名称
+    def module = 'devops' //云管系统里模块名称
+    def tagName = 'no'
+    def changeTargetBranch = 'no'
+    if (env.TAG_NAME) {
+        tagName = env.TAG_NAME
+    }
+    if (env.CHANGE_TARGET) {
+        changeTargetBranch = env.CHANGE_TARGET
+    }
+    echo "git branch: ${env.BRANCH_NAME}, Tag: ${tagName}, change target:${changeTargetBranch}"
+
+    // 分支判断
+    if ( (BRANCH_NAME == "develop") || (BRANCH_NAME =~ "PR-*" && changeTargetBranch == "develop") || (BRANCH_NAME =~ "PR-*" && changeTargetBranch == "master")) {
+        namespace = 'xyzq-cmp' // 开发环境
+        if (env.K8S_DEV_NAMESPACE) {
+            namespace = env.K8S_DEV_NAMESPACE
+        }
+        group = 'cmp'
+    } else if ((BRANCH_NAME == "master") || (BRANCH_NAME =~ "release-*")) {
+        namespace = 'cmp' // 应用环境
+        if (env.K8S_RELEASE_NAMESPACE) {
+            namespace = env.K8S_RELEASE_NAMESPACE
+        }
+        group = 'cmp-release'
+    } else if ((BRANCH_NAME =~ "feature-*") || (BRANCH_NAME =~ "fixbug-*")) {
+        echo "Do nothing in this branch: ${BRANCH_NAME}"
+    }else {
+        echo "Do nothing in this branch: ${BRANCH_NAME}"
+        echo "branch must feature-* or release-* or pull merge requset."
+        return 0
+    }
+
+    // 定义具体helm命名下的容器名和资源名
+    def deployName = group + '-' + module
+    def containerName = group + '-' + module
+
+    // 构建编译
+    stage("build and Create image") {
+        def rsp = k8sDockerWithMaven()
+        if (rsp.result != 'success') {
+            currentBuild.result = 'FAIL'
+            throw new Exception("some error, check logs.")
+        }
+        images = rsp.imageRepo
+        echo "build result: ${rsp.result}, image: ${rsp.imageRepo}"
+    }
+
+    // 部署
+    stage("k8s deploy") {
+        if (namespace) {
+            echo "Starting deploy ${images} to ${namespace} on k8s."
+            if (env.K8S_DEPLOY_TOKEN_KEY) {
+                k8sCredentialsId = env.K8S_DEPLOY_TOKEN_KEY
+            }
+            echo "deploy k8s CredentialsId: ${k8sCredentialsId}"
+            def ret =kubectlUpdateImage(credentialsId:k8sCredentialsId, namespace:namespace, kind: 'deploy', name:deployName, containers: "${containerName}=${images}")
+            if(ret != 0) {
+                throw new Exception("Update containers[cmp-devops] image[${images}] fail.")
+            }
+            echo "Deploy ${images} to ${namespace} success, wait some time to restart!!!"
+        } else {
+            echo "${images} skip deploy."
+        }
+    }
+  }
+}
+

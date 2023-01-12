@@ -1,0 +1,448 @@
+/*!
+ * 项目CSS，有特殊需求就写在这里。
+**/
+
+.cloud-server-info md-tab-item {
+    line-height: 54px;
+}
+
+.cloud-server-info md-pagination-wrapper {
+    height: 54px;
+}
+
+.cloud-server-info md-tabs-canvas {
+    height: 54px;
+}
+
+.cloud-server-info md-tabs-content-wrapper {
+    height: 100%;
+}
+
+.cloud-server-info md-tabs-content-wrapper md-tab-content {
+    height: 100%;
+}
+
+.cloud-server-info md-tabs-content-wrapper md-tab-content md-content {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.cloud-server-info md-tabs-content-wrapper md-tab-content md-content .cloud-server-info-md-content {
+    padding-bottom: 100px;
+}
+
+.cloud-server-info h6 {
+    font-weight: bolder;
+    font-size: 11px;
+    letter-spacing: .02em;
+    line-height: 12px;
+    margin: 10px 0 12px;
+}
+
+.cloud-server-info span {
+    word-break: break-all;
+    font-size: 12px;
+}
+
+.cloud-server-info md-tab-data {
+    height: 54px;
+    opacity: 1;
+    right: 0;
+    left: initial;
+    z-index: 20;
+}
+
+.cloud-server-info md-tab-data .md-button {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.cloud-server-info .cloud-server-info-button {
+    margin: 0;
+}
+
+.cloud-server-info .key-duplicate {
+    color: #da4336;
+}
+
+.cloud-server-info .cloud-server-info-content {
+    padding: 24px;
+}
+
+.cloud-server-info .cloud-server-info-content p {
+    bottom: -5px;
+    margin: -8px 0 20px;
+    position: relative;
+    font-size: 12px;
+}
+
+.cloud-server-info .cloud-server-info-button-tag {
+    text-align: center;
+    width: 100%;
+    height: 26px;
+    margin: 0 0 15px;
+    border: 1.1px solid;
+    min-height: 0;
+    line-height: 0;
+    min-width: 0;
+    border-radius: 2px;
+}
+
+.cloud-server-info .cloud-server-info-button-tag md-icon {
+    margin-right: -5px;
+}
+
+.cloud-server-info .cloud-server-info-button-tag-disable {
+    box-shadow: none !important;
+    background: #fafafa !important;
+    border: 1.1px solid;
+    opacity: .6;
+    cursor: default;
+}
+
+.cloud-server-info md-icon {
+    font-size: 20px;
+}
+
+.application-setting {
+    border: 1px dashed #e3e3e3;
+    border-bottom-color: #e0e0e0;
+    border-right-color: #ececec;
+    box-shadow: 1px 2px 1px rgba(0, 0, 0, .072);
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+/*!
+ * 项目CSS，有特殊需求就写在这里。
+**/
+
+.CodeMirror-linenumbers {
+    width: 29px;
+}
+
+.status-success {
+    color: green;
+}
+
+.status-fail {
+    color: red;
+}
+
+.status-unknown {
+    color: #ffce1b;
+}
+
+.script-code {
+    height: 300px;
+}
+
+.deploy-code {
+    height: 600px;
+}
+
+.status-button {
+    color: #FFF;
+    padding: 1px 5px;
+    font-size: 14px;
+    line-height: 1.5;
+    border-radius: 2px;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.status-button-error {
+    background-color: #FF521B;
+}
+
+.status-button-success {
+    background-color: #8FB143;
+}
+
+.status-button-running {
+    background-color: #095DB1;
+}
+
+.status-button-overtime {
+    background-color: #00ff00;
+}
+
+.status-button-pending {
+    background-color: #ADD6FF;
+}
+
+.status-button-suspended {
+    background-color: #ffad5c;
+}
+
+.status-button-ignore-hangUp {
+    background-color: #7B68EE;
+}
+
+.status-button-ignore {
+    background-color: #7D6887;
+}
+
+.jenkins-svn {
+    border: 1px solid #b5b5b5;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 10px 20px 0;
+    position: relative;
+}
+
+.f2c-publisher {
+    border: 1px solid #b5b5b5;
+    border-radius: 5px;
+    margin-top: 30px;
+    padding: 10px;
+    position: relative;
+}
+
+.build-parameter-label {
+    margin: 10px 30px 30px 5px;
+    padding: 5px 5px 5px 20px;
+    font-size: inherit;
+    font-weight: bold;
+    /*background: url(’…/assets/icon_question.png’) no-repeat top left/14px 14px;*/
+    /*background: #fafafa !important;*/
+}
+
+
+.build-parameter {
+    border: 1px solid #b5b5b5;
+    border-radius: 5px;
+    margin-top: 30px;
+    padding: 10px;
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.shell-step {
+    height: 400px;
+}
+
+.select-header-wrapper {
+}
+
+.select-header-wrapper .header-search-box {
+    border: none;
+    outline: none;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+}
+
+.select-header-wrapper .select-header {
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.14), 0 0 0 0 rgba(0, 0, 0, 0.12);
+    padding-left: 4px;
+    height: 48px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: auto;
+}
+
+.select-header-wrapper md-content._md {
+    max-height: 240px;
+}
+.abs-eye{
+    position: absolute;
+    right: 0;
+    line-height: 2em;
+}
+.md-tab{
+    text-transform: none;
+}
+.disabled-cursor{
+    cursor: not-allowed;
+    color: #333 !important;
+}
+.job-form{
+    height: 100%;
+}
+.job-form > md-content{
+    height: calc(100% - 106px);
+}
+.job-form > div{
+    position: absolute;
+    bottom: 0;
+}
+/*应用部署详情页面start*/
+.deploy-event > div:nth-child(1) {
+    font-size: 14px;
+}
+.deploy-event > div:nth-child(3) {
+    height: 100px;
+    overflow: hidden;
+}
+.event-success{
+    color: forestgreen;
+}
+.event-pending{
+    color: grey;
+}
+.event-running{
+    color: dodgerblue;
+    transform: rotate(0deg);
+    animation: rot 2s linear infinite;
+}
+@keyframes rot {
+    from{transform: rotate(0deg)}
+    to{transform: rotate(-360deg)}
+}
+.event-fail{
+    color: red;
+}
+/*应用部署详情页面end*/
+/*设置margin start*/
+.no-margin md-input-container{
+    margin: 4px;
+}
+.no-margin md-checkbox,md-switch{
+    margin: 0;
+}
+.no-margin .md-errors-spacer{
+    min-height: 8px;
+}
+.margin-desc md-input-container{
+    margin: 14px 4px;
+}
+/*设置margin end*/
+/*job工作空间样式 start*/
+.job-workspace-nav span{
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 2px;
+}
+.job-workspace-nav span:not(:first-child):hover{
+    background-color: rgba(0,0,0,0.2);
+}
+/*job工作空间样式 end*/
+/*指针样式重置*/
+.reset-cursor md-select-value{
+    cursor: default !important;
+}
+/*指针样式重置*/
+
+/*重置自动部署输入框样式*/
+.reset-margin md-input-container{
+    display: inline-block;
+    position: relative;
+    padding: 2px;
+    margin: 14px 0;
+    vertical-align: middle;
+}
+/*重置自动部署输入框样式*/
+
+.tooltip-box {
+    position: relative;
+}
+
+.tooltip-box .tooltip-title {
+    cursor: pointer;
+}
+
+.tooltip-box .tooltip-title .title-icon {
+    margin-left: 6px;
+    font-size: 18px;
+    height: 18px;
+    min-height: 18px;
+    line-height: 16px;
+}
+
+.tooltip-box .tooltip-content {
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 4px 8px;
+    line-height: 2;
+    position: absolute;
+    z-index: 100;
+    border-radius: 4px;
+    left: 0;
+    top: 0;
+    transform: translate(75px, -50%) scale(1);
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+}
+
+.tooltip-box .tooltip-content.hide-content {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-100px, -50%) scale(0.1);
+}
+
+.tooltip-content p {
+    margin: 0;
+}
+
+.tooltip-content .copy-btn {
+    cursor: pointer;
+    background: #016092;
+    padding: 2px 4px;
+}
+
+.h2-anchor-box {
+    position: initial !important;
+    width: 100%;
+    display: inline-block;
+    padding: 8px 8px 0;
+    border-bottom: 1px solid #dcdcdc;
+    box-sizing: border-box;
+    background: #f3f3f3;
+}
+
+.h2-anchor-box .anchor-item {
+    float: left;
+    padding: 8px;
+    cursor: pointer;
+    position: relative;
+    bottom: -2px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.h2-anchor-box .anchor-item:hover {
+    background: #000;
+    color: #fff;
+}
+
+.h2-anchor-box .anchor-item.active-item {
+    border: 1px solid #dcdcdc;
+    border-bottom: none;
+    background: #fff;
+    color: #333;
+}
+
+.workspace-nav-toolbar .md-toolbar-tools {
+    max-width: calc(100% - 176px);
+}
+
+.workspace-nav-toolbar .md-toolbar-tools .toolbar-title {
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.workspace-nav-toolbar .toolbar-btn {
+    margin: 0;
+}

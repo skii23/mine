@@ -1,0 +1,176 @@
+<div ng-cloak ng-controller="ServerAddCtrl" cg-busy="{promise:loading,minDuration:500}">
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>添加主机</div>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <form name="serverForm" class="md-padding">
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>集群名称</label>
+                    <md-select ng-model="item.clusterId" ng-change="clusterChange()" required>
+                        <md-option ng-repeat="cluster in clusters" value="{{cluster.id}}">{{cluster.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>主机组名称</label>
+                    <md-select ng-model="item.clusterRoleId" required>
+                        <!-- <md-select multiple ng-model="item.clusterRoleId" required>-->
+                        <md-option ng-repeat="clusterRole in clusterRoles" value="{{clusterRole.id}}">
+                            {{clusterRole.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>主机名称</label>
+                    <input md-maxlength="30" required name="name" ng-model="item.instanceName">
+                    <div ng-messages="serverForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>代理</label>
+                        <md-select ng-model="item.proxyId">
+                        <md-option ng-repeat="proxy in proxys" value="{{proxy.id}}">
+                            {{proxy.ip}}[{{proxy.tag}}]
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>管理IP</label>
+                    <input md-maxlength="30" required name="name" ng-model="item.managementIp"
+                           ng-pattern="/^(?:(?:1[0-9][0-9]\.)|(?:2[0-4][0-9]\.)|(?:25[0-5]\.)|(?:[1-9][0-9]\.)|(?:[0-9]\.)){3}(?:(?:1[0-9][0-9])|(?:2[0-4][0-9])|(?:25[0-5])|(?:[1-9][0-9])|(?:[0-9]))$/">
+                    <div ng-messages="serverForm.name.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                        <div ng-message="pattern">请输入正确的IP地址</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>管理端口</label>
+                    <input md-maxlength="30" name="description" ng-model="item.managementPort"
+                           ng-init="item.managementPort='22'" required>
+                    <div ng-messages="serverForm.description.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>用户名</label>
+                    <input md-maxlength="30" name="description" ng-model="item.username" required>
+                    <div ng-messages="serverForm.description.$error">
+                        <div ng-message="required">必填.</div>
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>密码</label>
+                    <i id="eye" class="fa fa-eye f2c-eye" aria-hidden="true" ng-click="view('password','eye')"></i>
+                    <input autocomplete="off" id="password" md-maxlength="30" type="password"
+                           name="password"
+                           ng-model="item.password">
+                    <div ng-messages="serverForm.password.$error">
+                        <div ng-message="md-maxlength">不超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div class="tooltip-box">
+                <span class="tooltip-title" ng-click="toggleTooltip()">秘钥<md-icon class="title-icon">help</md-icon><md-tooltip md-direction="top">点击查看帮助</md-tooltip></span>
+                <div class="tooltip-content" ng-class="{'hide-content':tooltip.hide}">
+                    <p>在主机上执行： <span class="copy-btn" data-clipboard-text="ssh-keygen -t rsa">ssh-keygen -t rsa<md-tooltip md-direction="top">点击复制</md-tooltip></span></p>
+                    <p>一直回车执行， 会在~/.ssh 下会生成 id_rsa 和 id_rsa.pub</p>
+                    <p>执行如下命令， 将公钥添加到主机的~/.ssh/authorized_keys 中</p>
+                    <p><span class="copy-btn" data-clipboard-text="cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys">cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys<md-tooltip md-direction="top">点击复制</md-tooltip></span></p>
+                    <p>然后拷贝秘钥 id_rsa 内容， 粘贴到秘钥框</p>
+                    <p><span class="copy-btn" data-clipboard-text="cat ~/.ssh/id_rsa">cat ~/.ssh/id_rsa<md-tooltip md-direction="top">点击复制</md-tooltip></span></p>
+                </div>
+            </div>
+            <div layout="row" style="height: 300px;margin: 10px 0">
+                <ui-codemirror flex="100" ui-codemirror-opts="cmOption" ng-model="item.secretKey"/>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container ng-hide="true" class="md-block" flex-gt-sm>
+                    <label>代理IP</label>
+                    <input md-maxlength="50" name="proxyId" ng-model="item.proxyId">
+                    <div ng-messages="serverForm.proxyId.$error">
+                        <div ng-message="md-maxlength">不超过50个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>主机配置</label>
+                    <md-select ng-model="item.instanceType" ng-init="item.instanceType='vm.1c1g'">
+                        <md-option ng-repeat="instanceType in instanceTypes" value="{{instanceType.name}}">
+                            {{instanceType.name}}
+                        </md-option>
+                    </md-select>
+                    <div ng-messages="serverForm.description.$error">
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>操作系统</label>
+                    <md-select ng-model="item.os" required ng-change="osVersionsChange()">
+                        <md-option ng-repeat="os in oslist" value="{{os.key}}">{{os.value}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>系统版本</label>
+                    <md-select ng-model="item.osVersion" required>
+                        <md-option ng-repeat="osVersion in osVersions" value="{{osVersion}}">{{osVersion}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>主机状态</label>
+                    <md-select ng-model="item.instanceStatus" ng-init="item.instanceStatus='Running'" required>
+                        <md-option value="Running">Running</md-option>
+                        <md-option value="Stopped">Stopped</md-option>
+                    </md-select>
+                    <div ng-messages="serverForm.description.$error">
+                        <div ng-message="md-maxlength">不要超过30个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+        </form>
+        <div layout="row" layout-align="start center" layout-margin>
+            <md-button class="md-raised" ng-click="toggleForm();">
+                取消
+            </md-button>
+            <md-button class="md-raised md-warn" ng-click="checkConnect(item)">
+                连接测试
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit();" ng-disabled="serverForm.$invalid">
+                保存
+            </md-button>
+        </div>
+    </md-content>
+</div>

@@ -1,0 +1,31 @@
+<div layout-fill ng-cloak>
+    <div layout-fill class="cloud-server-info">
+        <md-tabs layout-fill md-dynamic-height md-border-bottom>
+            <md-button layout-fill class="md-primary" ng-click="toggleInfoForm(false)">
+                <div>关闭信息</div>
+            </md-button>
+            <md-tab label="详情">
+                <md-content ng-controller="ServerInfoController" class="cloud-server-info-content">
+                    <div class="cloud-server-info-md-content">
+                        <md-list flex="">
+                            <md-list-item ng-repeat="item in info" class="md-2-line">
+                                <div class="md-list-item-text">
+                                    <h6>{{item.label}}</h6>
+                                    <div><span>{{getValueOrDefault(detail, item, '无')}}</span></div>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </div>
+                </md-content>
+            </md-tab>
+
+            <md-tab label="监控" ng-if="item.source=='CLOUD_IMPORT'">
+                <md-content ng-controller="ServerMetricCtrl" class="cloud-server-info-content">
+                    <div layout-fill layout="column">
+                        <cloud-metric class="cloud-server-info-md-content" show-date-type="true"
+                                      request="request"></cloud-metric>
+                    </div>
+                </md-content>
+            </md-tab>
+    </div>
+</div>

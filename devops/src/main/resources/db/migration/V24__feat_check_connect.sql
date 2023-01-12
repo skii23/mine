@@ -1,0 +1,1 @@
+ALTER TABLE devops_cloud_server ADD COLUMN connectable tinyint(1) default null

@@ -1,0 +1,36 @@
+<div cg-busy="{promise:loading,minDuration:500}" layout="column" ng-cloak ng-controller="JobWorkspaceCtrl" style="height: 100%">
+    <md-toolbar class="md-toolbar-tools" layout="row">
+        <div class="md-toolbar-tools">
+            <div>{{jobName}}的工作空间</div>
+        </div>
+        <md-button ng-click="cleanWorkspace(jobName)" has-permission="JENKINS_JOB:READ+BUILD">清理工作区</md-button>
+        <div flex></div>
+        <md-button ng-click="closeForm()" style="color: #fff">关闭</md-button>
+    </md-toolbar>
+    <md-content flex style="overflow: hidden" layout="column">
+        <div flex="1" class="job-workspace-nav">
+                <span ng-click="jumpToNav({'path':'/'},-1)">
+                    <md-icon>home</md-icon>
+                </span>
+                <span ng-click="jumpToNav(nav,$index)" ng-repeat="nav in navs">
+                    {{'> ' + nav.name + ' '}}
+                </span>
+        </div>
+        <div flex="9" style="overflow: auto">
+            <table class="table">
+                <tbody>
+                <tr ng-repeat="item in fileNodes">
+                    <td ng-if="item.type === 'directory'">
+                        <md-icon>folder_open</md-icon>
+                        <a flex href="javascript:void(0)" ng-click="enterFolder(item)">{{item.name}}</a>
+                    </td>
+                    <td ng-if="item.type === 'file'">
+                        <md-icon>description</md-icon>
+                        <a flex href="javascript:void(0)" ng-click="getWorkspaceFile(item)">{{item.name}}</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </md-content>
+</div>

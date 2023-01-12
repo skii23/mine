@@ -1,0 +1,34 @@
+<div ng-controller="JenkinsAddJobToViewCtrl" ng-cloak layout-fill>
+    <md-toolbar class="content-toolbar">
+        <div class="md-toolbar-tools">
+            <div>添加到视图</div>
+        </div>
+    </md-toolbar>
+    <md-content flex cg-busy="{promise:loadingLayer,minDuration:500}">
+        <form layout="column" name="jobViewForm" class="md-padding">
+            <md-input-container>
+                <label>选择视图</label>
+                <md-select ng-model="selectedViews" multiple="true" required
+                           data-md-container-class="select-header-wrapper"
+                           md-on-close="clearSearch()">
+                    <md-select-header class="select-header">
+                        <input ng-model="viewName" type="search" placeholder="输入视图名"
+                               class="header-search-box md-text search-input">
+                    </md-select-header>
+                    <md-optgroup label="视图">
+                        <md-option ng-value="jobView" ng-repeat="jobView in jobViews |
+              filter:{name:viewName}">{{jobView.name}}</md-option>
+                    </md-optgroup>
+                </md-select>
+            </md-input-container>
+        </form>
+        <div layout="row" layout-align="start center" flex layout-margin>
+            <md-button class="md-raised" ng-click="toggleForm()">
+                取消
+            </md-button>
+            <md-button class="md-raised md-primary" ng-click="submit()" ng-disabled="jobViewForm.$invalid">
+                保存
+            </md-button>
+        </div>
+    </md-content>
+</div>

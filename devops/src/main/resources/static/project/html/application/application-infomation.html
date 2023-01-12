@@ -1,0 +1,85 @@
+<div layout-fill ng-cloak>
+    <md-content layout-fill class="cloud-server-info">
+        <md-tabs layout-fill md-dynamic-height md-border-bottom>
+            <md-button layout-fill class="md-primary" ng-click="closeInformation()">
+                <div>关闭信息</div>
+            </md-button>
+            <md-tab label="详情">
+                <md-content ng-controller="ApplicationInfoCtrl" class="cloud-server-info-content">
+                    <div class="cloud-server-info-md-content">
+                        <md-list flex="">
+                            <md-list-item ng-repeat="item in info" class="md-2-line">
+                                <div class="md-list-item-text">
+                                    <h6>{{item.label}}</h6>
+                                    <div><span>{{getValueOrDefault(detail, item, '无')}}</span></div>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </div>
+                </md-content>
+            </md-tab>
+
+            <md-tab label="标签" ng-if="checkRole(detail.scope)">
+                <md-content ng-controller="ApplicationTagCtrl" class="cloud-server-info-content"
+                            cg-busy="{promise:loading,minDuration:500}">
+                    <p>标签有助于您整理资源</p>
+                    <div class="cloud-server-info-md-content">
+                        <div ng-show="addItem.length > 0" layout-align="start">
+                            <div layout="row">
+                                <span flex="50">键</span>
+                                <span flex="50">值</span>
+                            </div>
+                            <form name="tagForm">
+                                <div ng-repeat="item in addItem" layout="row">
+                                    <md-input-container flex="45">
+                                        <md-select name="key" ng-model="item.tagKey" required
+                                                   ng-change="changeTag(item)">
+                                            <md-option ng-value="tag.tagKey" ng-repeat="tag in tags">{{tag.tagAlias}}
+                                            </md-option>
+                                        </md-select>
+                                        <div ng-show="item.required === true && !item.tagValueId" class="key-duplicate">
+                                            <span>必填标签</span>
+                                        </div>
+                                        <div ng-show="item.duplicate" class="key-duplicate">
+                                            <span>键值重复</span>
+                                        </div>
+                                    </md-input-container>
+                                    <md-input-container flex="45">
+                                        <md-select name="value" ng-model="item.tagValueId" required
+                                                   ng-change="changeTagValue()">
+                                            <md-option ng-value="tagValue.id" ng-repeat="tagValue in item.values">
+                                                {{tagValue.tagValueAlias}}
+                                            </md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                    <md-icon ng-click="deleteTag($index)" class="pointer" name="deleteTagNode"
+                                    >clear
+                                    </md-icon>
+                                </div>
+                            </form>
+                        </div>
+                        <div layout="row" flex="90">
+                            <md-button
+                                    ng-class="{'cloud-server-info-button-tag-disable': tagForm.$invalid && editing === true}"
+                                    ng-disabled="tagForm.$invalid && editing === true"
+                                    ng-click="addTag()"
+                                    class="md-primary cloud-server-info-button-tag">
+                                <md-icon>add</md-icon>
+                                <span>添加标签</span>
+                            </md-button>
+                        </div>
+
+                        <md-button ng-click="reset()" ng-disabled="!editing"
+                                   class="md-raised cloud-server-info-button">
+                            舍弃更改
+                        </md-button>
+                        <md-button ng-click="saveTag()"
+                                   class="cloud-server-info-button md-raised md-primary"
+                                   ng-disabled="editing !== true || tagForm.$invalid || duplicate">
+                            保存
+                        </md-button>
+                    </div>
+                </md-content>
+            </md-tab>
+        </md-tabs>
+</div>

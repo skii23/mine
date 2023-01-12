@@ -1,0 +1,17 @@
+<md-dialog aria-label="Mango (Fruit)" style="max-height: 70%">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>{{title}}</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="closeDetail()">
+                <md-icon>close</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="width: 1000px;" cg-busy="{promise:detailLoding,minDuration:500}">
+        <div class="script-code">
+            <ui-codemirror ui-codemirror-opts="cmOption"
+                           ng-model="detail"></ui-codemirror>
+        </div>
+    </md-dialog-content>
+</md-dialog>

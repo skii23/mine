@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtApplicationDeploymentMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.ApplicationDeploymentDTO"
+               extends="com.fit2cloud.devops.base.mapper.ApplicationDeploymentMapper.BaseResultMap">
+        <result column="application_name" property="applicationName" jdbcType="VARCHAR"/>
+        <result column="application_version_name" property="applicationVersionName" jdbcType="VARCHAR"/>
+        <result column="cluster_name" property="clusterName" jdbcType="VARCHAR"/>
+        <result column="cluster_role_name" property="clusterRoleName" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="cloud_server_name" property="cloudServerName" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="selectApplicationDeployments" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        devops_application_deployment.*,
+        devops_application.name application_name,
+        devops_application_version.name application_version_name,
+        devops_cluster.name cluster_name,
+        ifnull(devops_cluster_role.name, devops_application_deployment.cluster_role_id) cluster_role_name,
+        user.name user_name
+        FROM devops_application_deployment
+        LEFT JOIN devops_cluster_role ON devops_cluster_role.id = devops_application_deployment.cluster_role_id
+        JOIN user ON user.id = devops_application_deployment.user_id
+        JOIN devops_application_version ON
+        devops_application_deployment.application_version_id=devops_application_version.id
+        JOIN devops_application ON devops_application.id = devops_application_version.application_id
+        JOIN devops_cluster ON devops_cluster.id = devops_application_deployment.cluster_id
+        JOIN workspace ON workspace.id = devops_application_deployment.workspace_id
+        JOIN organization ON organization.id = workspace.organization_id
+        <where>
+            <choose>
+                <when test="start > 0 and end == 0">
+                    AND start_time &gt;= #{start}
+                </when>
+                <when test="start > 0 and end > 0">
+                    AND start_time &gt;= #{start}
+                    AND end_time &lt;= #{end}
+                </when>
+                <when test="end > 0 and start == 0">
+                    AND end_time &lt;= #{end}
+                </when>
+            </choose>
+            <if test="workspaceId != null">
+                and workspace.id = #{workspaceId}
+            </if>
+            <if test="organizationId != null">
+                and organization.id = #{organizationId}
+            </if>
+            <if test="applicationId!=null ">
+                and devops_application.id = #{applicationId}
+            </if>
+            <if test="applicationNameQuery!=null ">
+                and devops_application.name like CONCAT('%',#{applicationNameQuery},'%')
+            </if>
+        </where>
+            order by created_time DESC
+    </select>
+</mapper>

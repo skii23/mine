@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fit2cloud.devops.dao.ext.ExtDevopsJenkinsJobHistoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.fit2cloud.devops.dto.DevopsJenkinsJobHistoryDto"
+               extends="com.fit2cloud.devops.base.mapper.DevopsJenkinsJobHistoryMapper.BaseResultMap">
+    </resultMap>
+
+    <select id="listDevopsJenkinsHistoryJob" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        devops_jenkins_job_history.*
+        FROM devops_jenkins_job_history
+        <where>
+            <if test="name !=null ">
+                AND devops_jenkins_job_history.name like CONCAT('%',#{name},'%')
+            </if>
+            <if test="jobName !=null ">
+                AND devops_jenkins_job_history.job_name like CONCAT('%',#{jobName},'%')
+            </if>
+            <if test="url != null">
+                and devops_jenkins_job_history.url like CONCAT('%',#{url},'%')
+            </if>
+            <if test="jobIds !=null and jobIds.size() > 0 ">
+                devops_jenkins_job_history.job_id IN
+                <foreach collection="jobIds" item="jobId" separator="," open="(" close=")">
+                    #{jobId}
+                </foreach>
+            </if>
+        </where>
+        <if test="sort!=null ">
+            ORDER BY ${sort}
+        </if>
+        <if test="sort == null ">
+            ORDER BY order_num desc
+        </if>
+    </select>
+
+</mapper>

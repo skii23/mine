@@ -1,0 +1,16 @@
+<div layout="column" class="build-parameter no-margin">
+    <close-btn item="parameter" items="parameters"/>
+    <div class="build-parameter-label">{{title}}</div>
+    <md-input-container flex>
+        <label>名称</label>
+        <input name="name" ng-model="parameter.name" require/>
+    </md-input-container>
+    <md-input-container flex>
+        <label>选项</label>
+        <textarea name="choices" ng-model="parameter.choices"></textarea>
+    </md-input-container>
+    <md-input-container flex>
+        <label>描述</label>
+        <textarea name="description" ng-model="parameter.description"></textarea>
+    </md-input-container>
+</div>

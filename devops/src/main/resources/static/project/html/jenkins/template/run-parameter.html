@@ -1,0 +1,55 @@
+<div layout="column" class="build-parameter no-margin">
+    <close-btn item="parameter" items="parameters"/>
+    <div class="build-parameter-label">{{title}}</div>
+    <md-input-container flex>
+        <label>名称</label>
+        <input name="name" ng-model="parameter.name" require/>
+    </md-input-container>
+    <!-- 改造为自动完成组件 键入字符 自动查找匹配下拉选择 排序 限制10个 autoCompleteProjectName -->
+    <md-input-container flex>
+        <label>项目</label>
+        <!--            md-search-text-change = "searchTextChange(ctrl.searchText)"-->
+        <!--            md-selected-item-change = "ctrl.selectedItemChange(item)"-->
+        <!--md-selected-item = "selectedItem"-->
+        <!--class="flow-auto"-->
+        <!--md-no-cache = "true"-->
+        <!--md-min-length = "0"
+        md-delay="100"-->
+        <md-autocomplete
+                class="flow-auto"
+                md-no-cache="true"
+                md-search-text = "searchText"
+                md-items = "jobName in querySearch(searchText)"
+                md-item-text = "jobName"
+                md-selected-item = "parameter.projectName"
+                placeholder = "请输入并确认构建任务">
+            <md-item-template>
+                     <span md-highlight-text = "searchText"
+                           md-highlight-flags = "^i">{{jobName}}</span>
+            </md-item-template>
+
+        </md-autocomplete>
+
+        <!--        <md-not-found>-->
+        <!--            No states matching "{{ctrl.searchText}}" were found.-->
+        <!--            <a ng-click = "ctrl.newState(ctrl.searchText)">Create a new one!</a>-->
+        <!--        </md-not-found>-->
+    </md-input-container>
+
+
+
+    <md-input-container flex>
+        <label>描述</label>
+        <textarea name="description" ng-model="parameter.description"></textarea>
+    </md-input-container>
+
+    <!--  过滤是限制查询条件  -->
+    <md-input-container flex-gt-sm>
+        <label>过滤</label>
+        <md-select name="filter" ng-model="parameter.filter">
+            <md-option ng-repeat="filter in filters" value="{{filter.id}}">
+                {{filter.name}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+</div>

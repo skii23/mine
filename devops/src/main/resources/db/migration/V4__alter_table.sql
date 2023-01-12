@@ -1,0 +1,1 @@
+ALTER TABLE devops_script_implement_log ADD execute_path VARCHAR(255) NULL;
